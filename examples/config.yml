@@ -1,0 +1,16 @@
+---
+server:
+  host: localhost
+  user: guest
+  password: guest
+
+virtual_hosts:
+  virtual_host1:
+    exchanges:
+      dx_configuration_manager_present:
+        routing_keys:
+          - Admin
+
+exchanges:
+  dx_configuration_manager_present:
+    command: tuxis-cron configuration-manager-present.cron

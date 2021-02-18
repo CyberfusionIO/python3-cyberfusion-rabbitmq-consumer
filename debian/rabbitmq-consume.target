@@ -1,0 +1,6 @@
+[Unit]
+Description=Description=RabbitMQ Consumer for Virtual Hosts
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
