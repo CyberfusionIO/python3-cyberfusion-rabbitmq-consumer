@@ -16,7 +16,7 @@ def callback(
     properties: pika.spec.BasicProperties,
     body: bytes,
 ) -> None:
-    """Callback method for RabbitMQ messages."""
+    """Callback method for RabbitMQ messages."""  # noqa: D202,D401
 
     # Print message
 
