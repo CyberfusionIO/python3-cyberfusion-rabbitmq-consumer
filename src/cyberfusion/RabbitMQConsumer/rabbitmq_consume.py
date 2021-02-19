@@ -4,6 +4,7 @@ import sys
 from typing import Optional
 
 import pika
+import sdnotify
 
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
@@ -65,6 +66,10 @@ def main() -> None:
             auto_ack=True,
         )
         rabbitmq.channel.start_consuming()
+
+        # Notify systemd at startup
+
+        sdnotify.SystemdNotifier().notify("READY=1")
     finally:
         if rabbitmq:
             rabbitmq.channel.stop_consuming()

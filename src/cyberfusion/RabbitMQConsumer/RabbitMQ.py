@@ -1,6 +1,8 @@
 """Program to interact with RabbitMQ."""
 
 import os
+import ssl
+from typing import Optional
 
 import pika
 import yaml
@@ -16,6 +18,7 @@ class RabbitMQ:
         self.virtual_host = virtual_host
 
         self.set_config()
+        self.set_ssl_options()
         self.set_connection()
         self.set_channel()
         self.declare_queue()
@@ -30,11 +33,21 @@ class RabbitMQ:
         with open(path, "rb") as fh:
             self.config = yaml.load(fh.read(), Loader=yaml.SafeLoader)
 
+    def set_ssl_options(self) -> None:
+        """Set SSL options."""
+        self.ssl_options: Optional[pika.SSLOptions] = None
+
+        if self.config["server"]["ssl"]:
+            self.ssl_options = pika.SSLOptions(
+                ssl.create_default_context(), self.config["server"]["host"]
+            )
+
     def set_connection(self) -> None:
         """Set RabbitMQ connection."""
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.config["server"]["host"],
+                port=self.config["server"]["port"],
                 virtual_host=self.virtual_host,
                 credentials=pika.credentials.PlainCredentials(
                     self.config["server"]["username"],
