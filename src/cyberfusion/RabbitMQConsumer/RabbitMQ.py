@@ -53,6 +53,7 @@ class RabbitMQ:
                     self.config["server"]["username"],
                     self.config["server"]["password"],
                 ),
+                ssl_options=self.ssl_options,
             )
         )
 
@@ -68,19 +69,23 @@ class RabbitMQ:
 
     def declare_exchanges(self) -> None:
         """Declare RabbitMQ exchanges and bind to queue."""
-        for virtual_host in self.config["virtual_hosts"]:
-            for exchange, values in virtual_host["exchanges"]:
+        for _virtual_host_name, virtual_host_values in self.config[
+            "virtual_hosts"
+        ].items():
+            for exchange_name, exchange_values in virtual_host_values[
+                "exchanges"
+            ].items():
                 # Declare exchange
 
                 self.channel.exchange_declare(
-                    exchange=exchange, exchange_type=self.TYPE_EXCHANGE
+                    exchange=exchange_name, exchange_type=self.TYPE_EXCHANGE
                 )
 
                 # Bind to queue for each routing key
 
-                for routing_key in values["routing_keys"]:
+                for routing_key in exchange_values["routing_keys"]:
                     self.channel.queue_bind(
-                        exchange=exchange,
+                        exchange=exchange_name,
                         queue=self.queue_name,
                         routing_key=routing_key,
                     )

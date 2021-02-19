@@ -42,6 +42,8 @@ def callback(
 
         print(f"Error running command '{command}': {e}")
 
+    print(f"Success running command: '{command}'")
+
 
 def main() -> None:
     """Spawn relevant class for CLI function."""
@@ -65,11 +67,15 @@ def main() -> None:
             ),
             auto_ack=True,
         )
-        rabbitmq.channel.start_consuming()
 
         # Notify systemd at startup
 
         sdnotify.SystemdNotifier().notify("READY=1")
+
+        # Consume
+
+        rabbitmq.channel.start_consuming()
+
     finally:
         if rabbitmq:
             rabbitmq.channel.stop_consuming()
