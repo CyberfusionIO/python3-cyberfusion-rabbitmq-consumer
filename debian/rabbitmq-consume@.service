@@ -1,0 +1,14 @@
+[Unit]
+Description=RabbitMQ Consumer for Virtual Host with name %i
+After=network.target
+PartOf=rabbitmq-consume.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/cf-cluster-rabbitmq-consume %i
+Environment=PYTHONUNBUFFERED=true
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=rabbitmq-consume.target
