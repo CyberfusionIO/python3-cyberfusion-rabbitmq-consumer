@@ -11,7 +11,7 @@ import yaml
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
-    TYPE_EXCHANGE = "direct"
+    TYPE_EXCHANGE = "fanout"
 
     def __init__(self, virtual_host: str):
         """Set attributes and call functions."""
@@ -23,6 +23,7 @@ class RabbitMQ:
         self.set_channel()
         self.declare_queue()
         self.declare_exchanges()
+        self.bind_queue()
 
     def set_config(self) -> None:
         """Set config from YAML file."""
@@ -62,30 +63,28 @@ class RabbitMQ:
         self.channel = self.connection.channel()
 
     def declare_queue(self) -> None:
-        """Declare volatile (exclusive) RabbitMQ queue."""
-        self.queue_name = self.channel.queue_declare(
-            queue="", exclusive=True
-        ).method.queue
+        """Declare RabbitMQ queue."""
+        self.channel.queue_declare(
+            queue=self.config["virtual_hosts"][self.virtual_host]["queue"],
+            durable=True,
+        )
 
     def declare_exchanges(self) -> None:
-        """Declare RabbitMQ exchanges and bind to queue."""
-        for _virtual_host_name, virtual_host_values in self.config[
-            "virtual_hosts"
-        ].items():
-            for exchange_name, exchange_values in virtual_host_values[
-                "exchanges"
-            ].items():
-                # Declare exchange
+        """Declare RabbitMQ exchanges."""
+        for exchange_name, _exchange_values in self.config["virtual_hosts"][
+            self.virtual_host
+        ]["exchanges"].items():
+            self.channel.exchange_declare(
+                exchange=exchange_name, exchange_type=self.TYPE_EXCHANGE
+            )
 
-                self.channel.exchange_declare(
-                    exchange=exchange_name, exchange_type=self.TYPE_EXCHANGE
-                )
+    def bind_queue(self) -> None:
+        """Bind to RabbitMQ queue at each exchange."""
+        for exchange_name, _exchange_values in self.config["virtual_hosts"][
+            self.virtual_host
+        ]["exchanges"].items():
+            queue = self.config["virtual_hosts"][self.virtual_host]["queue"]
 
-                # Bind to queue for each routing key
+            print(f"Binding: exchange '{exchange_name}', queue '{queue}'")
 
-                for routing_key in exchange_values["routing_keys"]:
-                    self.channel.queue_bind(
-                        exchange=exchange_name,
-                        queue=self.queue_name,
-                        routing_key=routing_key,
-                    )
+            self.channel.queue_bind(exchange=exchange_name, queue=queue)

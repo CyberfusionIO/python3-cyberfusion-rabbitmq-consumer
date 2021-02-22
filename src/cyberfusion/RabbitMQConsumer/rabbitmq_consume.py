@@ -21,17 +21,13 @@ def callback(
 
     # Print message
 
-    routing_key = method.routing_key
-
-    print(
-        "Received message. Routing key: '{}'. Body: '{!r}'".format(
-            routing_key, body
-        )
-    )
+    print("Received message. Body: '{!r}'".format(body))
 
     # Run command
 
-    command = rabbitmq.config["exchanges"][method.exchange]["command"]
+    command = rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
+        "exchanges"
+    ][method.exchange]["command"]
 
     print(f"Running command: '{command}'")
 
@@ -61,7 +57,9 @@ def main() -> None:
         # Consume
 
         rabbitmq.channel.basic_consume(
-            queue=rabbitmq.queue_name,
+            queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
+                "queue"
+            ],
             on_message_callback=lambda channel, method, properties, body: callback(  # noqa: E501
                 rabbitmq, channel, method, properties, body
             ),

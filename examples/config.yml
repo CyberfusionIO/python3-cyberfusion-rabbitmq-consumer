@@ -7,12 +7,13 @@ server:
   ssl: true
 
 virtual_hosts:
-  test:
+  test1:
+    queue: test
     exchanges:
-      dx_configuration_manager_present:
-        routing_keys:
-          - Apache
-
-exchanges:
-  dx_configuration_manager_present:
-    command: tuxis-cron configuration-manager-present.cron
+      fx_configuration_manager_present:
+        command: tuxis-cron configuration-manager-present.cron
+  test2:
+    queue: test
+    exchanges:
+      fx_configuration_manager_present:
+        command: tuxis-cron configuration-manager-present.cron
