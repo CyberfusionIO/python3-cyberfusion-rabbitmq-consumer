@@ -13,7 +13,7 @@ def handle(
     properties: pika.spec.BasicProperties,
     body: bytes,
 ) -> None:
-    """Handle message."""
+    """Handle message."""  # noqa: D202
 
     # Run command
 
