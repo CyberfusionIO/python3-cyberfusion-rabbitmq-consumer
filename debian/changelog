@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.1) unstable; urgency=low
+
+  - Use separate sub-modules for exchanges
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 1 Mrt 2021 14:33:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.0) unstable; urgency=low
 
   - Initial release

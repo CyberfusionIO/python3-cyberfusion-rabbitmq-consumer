@@ -6,8 +6,9 @@ from typing import Optional
 import pika
 import sdnotify
 
-from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+
+importlib = __import__("importlib")
 
 
 def callback(
@@ -23,22 +24,15 @@ def callback(
 
     print("Received message. Body: '{!r}'".format(body))
 
-    # Run command
+    # Import exchange module
 
-    command = rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
-        "exchanges"
-    ][method.exchange]["command"]
+    exchange_obj = importlib.import_module(
+        f"cyberfusion.RabbitMQConsumer.exchanges.{method.exchange}"
+    )
 
-    print(f"Running command: '{command}'")
+    # Call exchange module handle method
 
-    try:
-        CyberfusionCommand(command)
-    except CommandNonZeroError as e:
-        # If command fails, don't crash entire program
-
-        print(f"Error running command '{command}': {e}")
-
-    print(f"Success running command: '{command}'")
+    exchange_obj.handle(rabbitmq, channel, method, properties, body)
 
 
 def main() -> None:
