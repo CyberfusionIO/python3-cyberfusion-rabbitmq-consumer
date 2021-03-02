@@ -1,3 +1,11 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.2) unstable; urgency=low
+
+  - Turn body into string
+  - Add fx_wordpress_installation_one_time_login_url exchange
+  - Make 'output' optional
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 2 Mrt 2021 14:46:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.1) unstable; urgency=low
 
   - Use separate sub-modules for exchanges
