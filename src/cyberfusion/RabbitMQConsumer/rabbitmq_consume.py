@@ -55,7 +55,7 @@ def main() -> None:
                 "queue"
             ],
             on_message_callback=lambda channel, method, properties, body: callback(  # noqa: E501
-                rabbitmq, channel, method, properties, body
+                rabbitmq, channel, method, properties, body.decode("utf-8")
             ),
             auto_ack=True,
         )
