@@ -54,14 +54,13 @@ def handle(
     if output:
         print(f"Success running command: '{command}'")
 
-        # Publish response
+        # Publish message
 
         channel.basic_publish(
             exchange=method.exchange,
             routing_key=properties.reply_to,
             properties=pika.BasicProperties(
                 correlation_id=properties.correlation_id,
-                delivery_mode=2,
                 content_type="application/json",
             ),
             body=output.stdout,

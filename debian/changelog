@@ -1,3 +1,11 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.2.1) unstable; urgency=low
+
+  - Specify exchange type in config
+  - Rename fx_wordpress_installation_one_time_login_url to dx_wordpress_installation_one_time_login_url
+  - dx_wordpress_installation_one_time_login_url: Use default delivery_mode for RPC response
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 3 Mar 2021 11:46:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.2) unstable; urgency=low
 
   - Turn body into string
