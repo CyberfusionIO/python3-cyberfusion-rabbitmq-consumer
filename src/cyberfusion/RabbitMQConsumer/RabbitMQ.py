@@ -11,8 +11,6 @@ import yaml
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
-    TYPE_EXCHANGE = "fanout"
-
     def __init__(self, virtual_host: str):
         """Set attributes and call functions."""
         self.virtual_host = virtual_host
@@ -75,7 +73,7 @@ class RabbitMQ:
             self.virtual_host
         ]["exchanges"].items():
             self.channel.exchange_declare(
-                exchange=exchange_name, exchange_type=self.TYPE_EXCHANGE
+                exchange=exchange_name, exchange_type=_exchange_values["type"]
             )
 
     def bind_queue(self) -> None:
