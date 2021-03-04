@@ -9,6 +9,7 @@ from cyberfusion.ClusterApiCli import ClusterApiRequest
 from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.exceptions.exchange import ExchangeNotEnabled
+from cyberfusion.RabbitMQConsumer.exchange.command import BinaryNotAllowed
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 
@@ -43,6 +44,18 @@ def handle(
     # Get command object
 
     command_obj = support.get_commands(id_=json_body["command_id"])[0]
+
+    # Check if binary allowed
+
+    for allowed_binary in rabbitmq.config["virtual_hosts"][
+        rabbitmq.virtual_host
+    ]["exchanges"][method.exchange]["allowed_binaries"]:
+        if command == allowed_binary or command.startswith(
+            allowed_binary + " "
+        ):
+            break
+
+        raise BinaryNotAllowed
 
     # Run command
 
