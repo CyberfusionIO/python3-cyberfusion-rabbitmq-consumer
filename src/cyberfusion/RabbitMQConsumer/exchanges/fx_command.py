@@ -8,7 +8,6 @@ import pika
 from cyberfusion.ClusterApiCli import ClusterApiRequest
 from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
-from cyberfusion.RabbitMQConsumer.exceptions.exchange import ExchangeNotEnabled
 from cyberfusion.RabbitMQConsumer.exchange.command import BinaryNotAllowed
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
@@ -21,13 +20,6 @@ def handle(
     body: str,
 ) -> None:
     """Handle message."""  # noqa: D202
-
-    # Check if exchange enabled
-
-    if not rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
-        "exchanges"
-    ][method.exchange]["enabled"]:
-        raise ExchangeNotEnabled
 
     # Cast body
 
