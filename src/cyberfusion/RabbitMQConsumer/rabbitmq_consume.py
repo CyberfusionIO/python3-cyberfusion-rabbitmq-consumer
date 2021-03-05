@@ -67,7 +67,6 @@ def main() -> None:
         # Consume
 
         rabbitmq.channel.start_consuming()
-
     finally:
         if rabbitmq:
             rabbitmq.channel.stop_consuming()

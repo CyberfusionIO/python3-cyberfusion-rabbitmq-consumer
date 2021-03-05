@@ -11,6 +11,7 @@ setup(
     packages=[
         "cyberfusion.RabbitMQConsumer",
         "cyberfusion.RabbitMQConsumer.exchanges",
+        "cyberfusion.RabbitMQConsumer.exceptions",
     ],
     package_dir={"": "src"},
     platforms=["linux"],
