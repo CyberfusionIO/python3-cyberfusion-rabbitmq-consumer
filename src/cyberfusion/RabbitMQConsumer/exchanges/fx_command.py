@@ -8,7 +8,9 @@ import pika
 from cyberfusion.ClusterApiCli import ClusterApiRequest
 from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
-from cyberfusion.RabbitMQConsumer.exchange.command import BinaryNotAllowed
+from cyberfusion.RabbitMQConsumer.exceptions.command import (
+    BinaryNotAllowedError,
+)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 
@@ -39,15 +41,20 @@ def handle(
 
     # Check if binary allowed
 
-    for allowed_binary in rabbitmq.config["virtual_hosts"][
-        rabbitmq.virtual_host
-    ]["exchanges"][method.exchange]["allowed_binaries"]:
-        if command == allowed_binary or command.startswith(
-            allowed_binary + " "
-        ):
-            break
+    try:
+        for allowed_binary in rabbitmq.config["virtual_hosts"][
+            rabbitmq.virtual_host
+        ]["exchanges"][method.exchange]["allowed_binaries"]:
+            if command == allowed_binary or command.startswith(
+                allowed_binary + " "
+            ):
+                break
 
-        raise BinaryNotAllowed
+            raise BinaryNotAllowedError
+    except BinaryNotAllowedError:
+        print("Binary not allowed, not running command")
+
+        return
 
     # Run command
 
@@ -88,5 +95,12 @@ def handle(
     support.execute_api_call(
         ClusterSupport.ENDPOINT_COMMANDS + "/" + str(json_body["command_id"]),
         method=ClusterApiRequest.METHOD_PUT,
-        data=command_obj,
+        data={
+            "id": command_obj.id,
+            "command": command_obj.command,
+            "return_code": command_obj.return_code,
+            "standard_out": command_obj.standard_out,
+            "virtual_host_id": command_obj.virtual_host_id,
+            "cluster_id": command_obj.cluster_id,
+        },
     )

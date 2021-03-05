@@ -1,7 +1,7 @@
 """Command related exceptions."""
 
 
-class BinaryNotAllowed:
+class BinaryNotAllowedError(Exception):
     """Exception to raise if binary not allowed."""
 
     pass
