@@ -12,8 +12,8 @@ from cyberfusion.RabbitMQConsumer.exceptions.command import (
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
-PREFIX_SECRET_VALUE = "${"
-SUFFIX_SECRET_VALUE = "}"
+PREFIX_SECRET_VALUE = "${"  # noqa: S105
+SUFFIX_SECRET_VALUE = "}"  # noqa: S105
 
 
 def handle(
