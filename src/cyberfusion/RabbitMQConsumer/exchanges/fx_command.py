@@ -59,7 +59,7 @@ def handle(
     substituted_command = command
 
     for k, v in json_body["secret_values"].items():
-        substituted_command.replace(
+        substituted_command = substituted_command.replace(
             PREFIX_SECRET_VALUE + k + SUFFIX_SECRET_VALUE, v
         )
 

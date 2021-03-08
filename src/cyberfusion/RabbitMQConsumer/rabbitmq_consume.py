@@ -29,10 +29,13 @@ def callback(
 
     # Remove values from body to print
 
-    print_body = json_body
+    print_body = {}
 
-    for v in VALUES_SKIP_PRINT:
-        del print_body[v]
+    for k, v in json_body.items():
+        if k in VALUES_SKIP_PRINT:
+            continue
+
+        print_body[k] = v
 
     # Print message
 
