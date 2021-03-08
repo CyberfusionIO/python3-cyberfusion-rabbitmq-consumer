@@ -11,7 +11,7 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
 
-VALUES_SKIP = ["secret_values"]
+VALUES_SKIP_PRINT = ["secret_values"]
 
 
 def callback(
@@ -27,10 +27,12 @@ def callback(
 
     json_body = json.loads(body)
 
-    # Remove secret_values from body to print
+    # Remove values from body to print
 
     print_body = json_body
-    del print_body["secret_values"]
+
+    for v in VALUES_SKIP_PRINT:
+        del print_body[v]
 
     # Print message
 
