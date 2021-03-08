@@ -1,5 +1,6 @@
 """Program to consume RabbitMQ messages."""
 
+import json
 import sys
 from typing import Optional
 
@@ -9,6 +10,8 @@ import sdnotify
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
+
+VALUES_SKIP = ["secret_values"]
 
 
 def callback(
@@ -20,9 +23,18 @@ def callback(
 ) -> None:
     """Callback method for RabbitMQ messages."""  # noqa: D202,D401
 
+    # Cast body
+
+    json_body = json.loads(body)
+
+    # Remove secret_values from body to print
+
+    print_body = json_body
+    del print_body["secret_values"]
+
     # Print message
 
-    print("Received message. Body: '{!r}'".format(body))
+    print("Received message. Body: '{!r}'".format(print_body))
 
     # Import exchange module
 
@@ -32,7 +44,7 @@ def callback(
 
     # Call exchange module handle method
 
-    exchange_obj.handle(rabbitmq, channel, method, properties, body)
+    exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
 
 
 def main() -> None:
