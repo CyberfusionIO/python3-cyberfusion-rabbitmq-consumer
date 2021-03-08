@@ -1,6 +1,5 @@
 """Methods for exchange."""
 
-import json
 from typing import Optional
 
 import pika
@@ -14,13 +13,9 @@ def handle(
     channel: pika.adapters.blocking_connection.BlockingChannel,
     method: pika.spec.Basic.Deliver,
     properties: pika.spec.BasicProperties,
-    body: str,
+    json_body: dict,
 ) -> None:
     """Handle message."""  # noqa: D202
-
-    # Cast body
-
-    json_body = json.loads(body)
 
     # Get command
 

@@ -1,6 +1,5 @@
 """Methods for exchange."""
 
-import json
 from typing import Optional
 
 import pika
@@ -13,19 +12,18 @@ from cyberfusion.RabbitMQConsumer.exceptions.command import (
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
+PREFIX_SECRET_VALUE = "${"  # noqa: S105
+SUFFIX_SECRET_VALUE = "}"  # noqa: S105
+
 
 def handle(
     rabbitmq: RabbitMQ,
     channel: pika.adapters.blocking_connection.BlockingChannel,
     method: pika.spec.Basic.Deliver,
     properties: pika.spec.BasicProperties,
-    body: str,
+    json_body: dict,
 ) -> None:
     """Handle message."""  # noqa: D202
-
-    # Cast body
-
-    json_body = json.loads(body)
 
     # Set variable
 
@@ -56,6 +54,15 @@ def handle(
 
         return
 
+    # Substitute variables
+
+    substituted_command = command
+
+    for k, v in json_body["secret_values"].items():
+        substituted_command = substituted_command.replace(
+            PREFIX_SECRET_VALUE + k + SUFFIX_SECRET_VALUE, v
+        )
+
     # Run command
 
     print(f"Running command: '{command}'")
@@ -64,7 +71,7 @@ def handle(
 
     try:
         output = CyberfusionCommand(
-            command,
+            substituted_command,
             uid=json_body["unix_id"],
             gid=json_body["unix_id"],
             path=json_body["path"],
@@ -98,6 +105,7 @@ def handle(
         data={
             "id": command_obj.id,
             "command": command_obj.command,
+            "secret_values": command_obj.secret_values,
             "return_code": command_obj.return_code,
             "standard_out": command_obj.standard_out,
             "virtual_host_id": command_obj.virtual_host_id,

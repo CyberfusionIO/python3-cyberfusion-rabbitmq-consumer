@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4) unstable; urgency=low
+
+  - Implement secret_values
+  - Cast body in callback method
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 8 Mar 2021 10:54:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.3) unstable; urgency=low
 
   - Add exceptions submodule
