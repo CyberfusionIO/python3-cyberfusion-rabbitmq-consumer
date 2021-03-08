@@ -12,6 +12,9 @@ from cyberfusion.RabbitMQConsumer.exceptions.command import (
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
+PREFIX_SECRET_VALUE = "${"
+SUFFIX_SECRET_VALUE = "}"
+
 
 def handle(
     rabbitmq: RabbitMQ,
@@ -51,6 +54,15 @@ def handle(
 
         return
 
+    # Substitute variables
+
+    substituted_command = command
+
+    for k, v in json_body["secret_values"].items():
+        substituted_command.replace(
+            PREFIX_SECRET_VALUE + k + SUFFIX_SECRET_VALUE, v
+        )
+
     # Run command
 
     print(f"Running command: '{command}'")
@@ -59,7 +71,7 @@ def handle(
 
     try:
         output = CyberfusionCommand(
-            command,
+            substituted_command,
             uid=json_body["unix_id"],
             gid=json_body["unix_id"],
             path=json_body["path"],
@@ -93,6 +105,7 @@ def handle(
         data={
             "id": command_obj.id,
             "command": command_obj.command,
+            "secret_values": command_obj.secret_values,
             "return_code": command_obj.return_code,
             "standard_out": command_obj.standard_out,
             "virtual_host_id": command_obj.virtual_host_id,
