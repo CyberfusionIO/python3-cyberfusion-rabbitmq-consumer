@@ -84,7 +84,20 @@ def main() -> None:
         # Consume
 
         rabbitmq.channel.start_consuming()
+    except KeyboardInterrupt:
+        # Occurs when receiving SIGINT (systemd KillMode is set to send SIGINT). Just run code in finally block  # noqa: E501
+
+        pass
     finally:
+        # Shutdown gracefully
+
         if rabbitmq:
+            # Stop consuming
+
+            print("Stopping consuming...")
             rabbitmq.channel.stop_consuming()
+
+            # Close connection
+
+            print("Closing connection...")
             rabbitmq.connection.close()
