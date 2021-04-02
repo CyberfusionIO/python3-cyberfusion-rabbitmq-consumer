@@ -1,6 +1,7 @@
 """Program to consume RabbitMQ messages."""
 
 import json
+import signal
 import sys
 from typing import Optional
 
@@ -12,6 +13,35 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 importlib = __import__("importlib")
 
 VALUES_SKIP_PRINT = ["secret_values"]
+
+processing = False
+shutdown_requested = False
+
+
+def handle_sigterm(  # type: ignore
+    _signal_number: int,
+    _frame,  # Ignore lack of type annotation. Not going to import frame stuff
+) -> None:
+    """Handle SIGTERM."""
+    print("Received SIGTERM")
+
+    # If currently processing, delay (handled in callback())
+
+    global processing
+
+    if processing:
+        global shutdown_requested
+
+        shutdown_requested = True
+
+        print("Currently processing. Delayed shutdown")
+
+        return
+
+    # If not currently processing, exit
+
+    print("Not currently processing. Exiting directly after SIGTERM...")
+    sys.exit(0)
 
 
 def callback(
@@ -41,6 +71,12 @@ def callback(
 
     print("Received message. Body: '{!r}'".format(print_body))
 
+    # Set processing
+
+    global processing
+
+    processing = True
+
     # Import exchange module
 
     exchange_obj = importlib.import_module(
@@ -50,6 +86,18 @@ def callback(
     # Call exchange module handle method
 
     exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
+
+    # Set processing
+
+    processing = False
+
+    # Exit if shutdown requested
+
+    global shutdown_requested
+
+    if shutdown_requested:
+        print("Exiting delayed after SIGTERM request...")
+        sys.exit(0)
 
 
 def main() -> None:
@@ -81,16 +129,14 @@ def main() -> None:
 
         sdnotify.SystemdNotifier().notify("READY=1")
 
+        # Set signal handler
+
+        signal.signal(signal.SIGTERM, handle_sigterm)
+
         # Consume
 
         rabbitmq.channel.start_consuming()
-    except KeyboardInterrupt:
-        # Occurs when receiving SIGINT (systemd KillMode is set to send SIGINT). Just run code in finally block  # noqa: E501
-
-        pass
     finally:
-        # Shutdown gracefully
-
         if rabbitmq:
             # Stop consuming
 
