@@ -8,7 +8,12 @@ Type=notify
 ExecStart=/usr/bin/cf-cluster-rabbitmq-consume %i
 Environment=PYTHONUNBUFFERED=true
 Restart=on-failure
-RestartSec=60
+RestartSec=120
+
+# We wait for the child process to exit in the parent when the parent receives SIGTERM. So, we want to wait for the child process to return, and thus not send it SIGTERM as well.
+# With 'mixed', systemd sends SIGTERM only to the parent. If the child process doesn't return before the systemd timeout, then eventually, systemd will send SIGKILL to all processes.
+# When the parent process receives SIGKILL, it doesn't get a chance to run the 'finally' block. We assume the consumer reconnects quickly, so we don't see that as much of a problem.
+KillMode=mixed
 
 [Install]
 WantedBy=rabbitmq-consume.target

@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.1) unstable; urgency=low
+
+  - Implement semi-graceful shutdown
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 2 Apr 2021 19:00:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4) unstable; urgency=low
 
   - Implement secret_values
