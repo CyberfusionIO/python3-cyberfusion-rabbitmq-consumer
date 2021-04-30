@@ -23,8 +23,14 @@ def handle(
         rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host]["exchanges"][
             method.exchange
         ]["command"]
-        + " --path="
+        + " --repository-path="
         + json_body["path"]
+        + " --repository-passphrase="
+        + json_body["passphrase"]
+        + " --repository-uid="
+        + str(json_body["unix_id"])
+        + " --repository-gid="
+        + str(json_body["unix_id"])
     )
 
     print(f"Running command: '{command}'")
@@ -38,8 +44,6 @@ def handle(
             command,
             uid=json_body["unix_id"],
             gid=json_body["unix_id"],
-            path=json_body["path"],
-            environment={"PWD": json_body["path"], "HOME": json_body["home"]},
         )
     except CommandNonZeroError as e:
         # If command fails, don't crash entire program
@@ -56,7 +60,6 @@ def handle(
             routing_key=properties.reply_to,
             properties=pika.BasicProperties(
                 correlation_id=properties.correlation_id,
-                content_type="application/json",
             ),
             body=output.stdout.encode("utf-8"),
         )
