@@ -1,5 +1,6 @@
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.2.1) unstable; urgency=low
 
+  - dx_borg_repository_archives_list: Pass passphrase as environment variable
   - Add 'passphrase' as secret value (used for Borg exchange)
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 1 May 2021 15:06:00 +0200

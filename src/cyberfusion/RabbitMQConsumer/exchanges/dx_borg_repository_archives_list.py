@@ -25,8 +25,6 @@ def handle(
         ]["command"]
         + " --repository-path="
         + json_body["path"]
-        + " --repository-passphrase="
-        + json_body["passphrase"]
         + " --repository-uid="
         + str(json_body["unix_id"])
         + " --repository-gid="
@@ -44,6 +42,7 @@ def handle(
             command,
             uid=json_body["unix_id"],
             gid=json_body["unix_id"],
+            environment={"BORG_PASSPHRASE": json_body["passphrase"]},
         )
     except CommandNonZeroError as e:
         # If command fails, don't crash entire program
