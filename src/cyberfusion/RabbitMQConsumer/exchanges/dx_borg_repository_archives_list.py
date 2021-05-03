@@ -30,7 +30,7 @@ def handle(
         + " --repository-gid="
         + str(json_body["unix_id"])
         + " --identity-file-path="
-        + str(json_body["identity_file_path"])
+        + json_body["identity_file_path"]
     )
 
     print(f"Running command: '{command}'")
