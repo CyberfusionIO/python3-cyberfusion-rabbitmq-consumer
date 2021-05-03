@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.2.2) unstable; urgency=low
+
+  - Add 'password' as secret value
+  - dx_borg_repository_archives_list: Pass only --repository-id to command
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 3 May 2021 14:05:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.2.1) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Pass passphrase as environment variable

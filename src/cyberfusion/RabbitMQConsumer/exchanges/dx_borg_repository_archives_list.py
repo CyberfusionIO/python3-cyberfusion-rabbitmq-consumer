@@ -23,12 +23,8 @@ def handle(
         rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host]["exchanges"][
             method.exchange
         ]["command"]
-        + " --repository-path="
-        + json_body["path"]
-        + " --repository-uid="
-        + str(json_body["unix_id"])
-        + " --repository-gid="
-        + str(json_body["unix_id"])
+        + " --repository-id="
+        + str(json_body["borg_repository_id"])
     )
 
     print(f"Running command: '{command}'")
@@ -42,7 +38,6 @@ def handle(
             command,
             uid=json_body["unix_id"],
             gid=json_body["unix_id"],
-            environment={"BORG_PASSPHRASE": json_body["passphrase"]},
         )
     except CommandNonZeroError as e:
         # If command fails, don't crash entire program
