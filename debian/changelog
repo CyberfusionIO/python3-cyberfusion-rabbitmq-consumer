@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.2.3) unstable; urgency=low
+
+  - dx_borg_repository_archives_list: Revert "Pass only --repository-id to command"
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 3 May 2021 16:54:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.2.2) unstable; urgency=low
 
   - Add 'password' as secret value
