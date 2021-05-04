@@ -20,9 +20,9 @@ def handle(
     # Get command
 
     command = (
-        rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host]["exchanges"][
-            method.exchange
-        ]["command"]
+        rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
+            "exchanges"
+        ][method.exchange]["command"]
         + " --repository-path="
         + json_body["path"]
         + " --repository-uid="

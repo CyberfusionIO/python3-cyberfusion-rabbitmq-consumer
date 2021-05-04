@@ -19,7 +19,7 @@ def handle(
 
     # Get command
 
-    command = rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
+    command = rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
         "exchanges"
     ][method.exchange]["command"]
 
