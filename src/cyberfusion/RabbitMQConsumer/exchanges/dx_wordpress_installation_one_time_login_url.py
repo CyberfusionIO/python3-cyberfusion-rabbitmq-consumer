@@ -21,12 +21,13 @@ def handle(
     # Set variables
 
     path = json_body["path"]
+    home = json_body["home"]
     uid = json_body["unix_id"]
     gid = json_body["unix_id"]
 
     # Get object
 
-    installation = Installation(path, uid, gid)
+    installation = Installation(path, uid, gid, home)
 
     # Get administrator users
 
