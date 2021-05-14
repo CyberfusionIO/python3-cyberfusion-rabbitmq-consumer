@@ -116,7 +116,7 @@ def main() -> None:
         # Consume
 
         rabbitmq.channel.basic_consume(
-            queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host][
+            queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
                 "queue"
             ],
             on_message_callback=lambda channel, method, properties, body: callback(  # noqa: E501
