@@ -11,9 +11,9 @@ import yaml
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
-    def __init__(self, virtual_host: str):
+    def __init__(self, virtual_host_name: str):
         """Set attributes and call functions."""
-        self.virtual_host = virtual_host
+        self.virtual_host_name = virtual_host_name
 
         self.set_config()
         self.set_ssl_options()
@@ -47,7 +47,7 @@ class RabbitMQ:
             pika.ConnectionParameters(
                 host=self.config["server"]["host"],
                 port=self.config["server"]["port"],
-                virtual_host=self.virtual_host,
+                virtual_host=self.virtual_host_name,
                 credentials=pika.credentials.PlainCredentials(
                     self.config["server"]["username"],
                     self.config["server"]["password"],
@@ -63,25 +63,29 @@ class RabbitMQ:
     def declare_queue(self) -> None:
         """Declare RabbitMQ queue."""
         self.channel.queue_declare(
-            queue=self.config["virtual_hosts"][self.virtual_host]["queue"],
+            queue=self.config["virtual_hosts"][self.virtual_host_name][
+                "queue"
+            ],
             durable=True,
         )
 
     def declare_exchanges(self) -> None:
         """Declare RabbitMQ exchanges."""
-        for exchange_name, _exchange_values in self.config["virtual_hosts"][
-            self.virtual_host
+        for exchange_name, exchange_values in self.config["virtual_hosts"][
+            self.virtual_host_name
         ]["exchanges"].items():
             self.channel.exchange_declare(
-                exchange=exchange_name, exchange_type=_exchange_values["type"]
+                exchange=exchange_name, exchange_type=exchange_values["type"]
             )
 
     def bind_queue(self) -> None:
         """Bind to RabbitMQ queue at each exchange."""
         for exchange_name, _exchange_values in self.config["virtual_hosts"][
-            self.virtual_host
+            self.virtual_host_name
         ]["exchanges"].items():
-            queue = self.config["virtual_hosts"][self.virtual_host]["queue"]
+            queue = self.config["virtual_hosts"][self.virtual_host_name][
+                "queue"
+            ]
 
             print(f"Binding: exchange '{exchange_name}', queue '{queue}'")
 

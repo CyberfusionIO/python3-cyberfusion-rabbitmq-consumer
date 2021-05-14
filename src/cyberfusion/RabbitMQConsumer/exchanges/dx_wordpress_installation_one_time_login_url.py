@@ -1,11 +1,12 @@
 """Methods for exchange."""
 
-from typing import Optional
+import json
 
 import pika
 
-from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.WordPressSupport import Installation
+from cyberfusion.WordPressSupport.users import User, Users
 
 
 def handle(
@@ -17,46 +18,52 @@ def handle(
 ) -> None:
     """Handle message."""  # noqa: D202
 
-    # Get command
+    # Set variables
 
-    command = (
-        rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host]["exchanges"][
-            method.exchange
-        ]["command"]
-        + " --path="
-        + json_body["path"]
+    path = json_body["path"]
+    home = json_body["home"]
+    uid = json_body["unix_id"]
+    gid = json_body["unix_id"]
+
+    # Get object
+
+    installation = Installation(path, uid, gid, home)
+
+    # Get administrator users
+
+    users = Users(installation).get(role=User.NAME_ROLE_ADMINISTRATOR)
+
+    # Pick first user
+
+    user = users[0]
+
+    # Get one time login URL
+
+    print(
+        f"Getting one time login URL for installation with path '{path}', user with ID '{user.id}'"  # noqa: E501
     )
 
-    print(f"Running command: '{command}'")
-
-    # Run command
-
-    output: Optional[CyberfusionCommand] = None
-
     try:
-        output = CyberfusionCommand(
-            command,
-            uid=json_body["unix_id"],
-            gid=json_body["unix_id"],
-            path=json_body["path"],
-            environment={"PWD": json_body["path"], "HOME": json_body["home"]},
+        one_time_login_url = user.get_one_time_login_url()
+
+        print(
+            f"Success getting one time login URL for installation with path '{path}', user with ID '{user.id}'"  # noqa: E501
         )
-    except CommandNonZeroError as e:
-        # If command fails, don't crash entire program
+    except Exception as e:
+        # If action fails, don't crash entire program
 
-        print(f"Error running command '{command}': {e}")
-
-    if output:
-        print(f"Success running command: '{command}'")
-
-        # Publish message
-
-        channel.basic_publish(
-            exchange=method.exchange,
-            routing_key=properties.reply_to,
-            properties=pika.BasicProperties(
-                correlation_id=properties.correlation_id,
-                content_type="application/json",
-            ),
-            body=output.stdout.encode("utf-8"),
+        print(
+            f"Error getting one time login URL for installation with path '{path}', user with ID '{user.id}': {e}"  # noqa: E501
         )
+
+    # Publish message
+
+    channel.basic_publish(
+        exchange=method.exchange,
+        routing_key=properties.reply_to,
+        properties=pika.BasicProperties(
+            correlation_id=properties.correlation_id,
+            content_type="application/json",
+        ),
+        body=json.dumps({"one_time_login_url": one_time_login_url}),
+    )

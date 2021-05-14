@@ -41,7 +41,7 @@ def handle(
 
     try:
         for allowed_binary in rabbitmq.config["virtual_hosts"][
-            rabbitmq.virtual_host
+            rabbitmq.virtual_host_name
         ]["exchanges"][method.exchange]["allowed_binaries"]:
             if command == allowed_binary or command.startswith(
                 allowed_binary + " "
