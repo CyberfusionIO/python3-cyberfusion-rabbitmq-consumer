@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.4) unstable; urgency=low
+
+  - dx_borg_repository_archives_list: Do not use command
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 14 May 2021 22:19:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.3) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Do not unnecessarily cast identity_file_path to str
