@@ -5,6 +5,7 @@ import json
 import pika
 
 from cyberfusion.BorgSupport.repositories import Repository
+from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 
@@ -17,33 +18,39 @@ def handle(
 ) -> None:
     """Handle message."""  # noqa: D202
 
-    # Set variables
+    # Get support object
 
-    passphrase = json_body["passphrase"]
-    path = json_body["path"]
-    identity_file_path = json_body["identity_file_path"]
-    uid = json_body["unix_id"]
-    gid = json_body["unix_id"]
+    support = ClusterSupport()
+
+    # Get API object
+
+    obj = support.get_borg_repositories(id_=json_body["borg_repository_id"])[0]
 
     # Get object
 
-    repository = Repository(path, passphrase, uid, gid, identity_file_path)
+    repository = Repository(
+        obj.path,
+        obj.passphrase,
+        obj.unix_user.user_id,
+        obj.unix_user.user_id,
+        obj.ssh_key.identity_file_path,
+    )
 
     # Get archives
 
-    print(f"Getting archives for Borg repository with path '{path}'")
+    print(f"Getting archives for Borg repository with path '{obj.path}'")
 
     try:
         archives = repository.list()
 
         print(
-            f"Success getting archives for Borg repository with path '{path}'"
+            f"Success getting archives for Borg repository with path '{obj.path}'"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error getting archives for Borg repository with path '{path}': {e}"  # noqa: E501
+            f"Error getting archives for Borg repository with path '{obj.path}': {e}"  # noqa: E501
         )
 
     # Publish message
