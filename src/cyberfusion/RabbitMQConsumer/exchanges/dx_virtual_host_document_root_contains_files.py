@@ -43,7 +43,7 @@ def handle(
 
         # Loop through files in document root
 
-        for path in Path(obj.document_root).rglob(f"*.{file_suffix}"):
+        for _path in Path(obj.document_root).rglob(f"*.{file_suffix}"):
             # If we reach this code, we found file. Set to true and stop loop  # noqa: E501
 
             document_root_contains_files = True
