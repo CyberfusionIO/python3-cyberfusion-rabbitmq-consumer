@@ -29,28 +29,30 @@ def handle(
     # Get object
 
     repository = Repository(
-        obj.path,
+        obj.remote_url,
         obj.passphrase,
-        obj.unix_user.user_id,
-        obj.unix_user.user_id,
+        obj.unix_user.unix_id,
+        obj.unix_user.unix_id,
         obj.ssh_key.identity_file_path,
     )
 
     # Get archives
 
-    print(f"Getting archives for Borg repository with path '{obj.path}'")
+    print(
+        f"Getting archives for Borg repository with remote URL '{obj.remote_url}'"  # noqa: E501
+    )
 
     try:
         archives = repository.list()
 
         print(
-            f"Success getting archives for Borg repository with path '{obj.path}'"  # noqa: E501
+            f"Success getting archives for Borg repository with remote URL '{obj.remote_url}'"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error getting archives for Borg repository with path '{obj.path}': {e}"  # noqa: E501
+            f"Error getting archives for Borg repository with remote URL '{obj.remote_url}': {e}"  # noqa: E501
         )
 
     # Publish message
