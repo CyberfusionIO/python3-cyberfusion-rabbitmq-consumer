@@ -33,7 +33,7 @@ def handle(
     # Get document root contains files
 
     print(
-        f"Getting document root contains files for virtual host with ID '{obj.id}' (document root: {obj.document_root})"  # noqa: E501
+        f"Getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: {obj.document_root})"  # noqa: E501
     )
 
     try:
@@ -51,13 +51,13 @@ def handle(
             break
 
         print(
-            f"Success getting document root contains files for virtual host with ID '{obj.id}' (document root: {obj.document_root}). Result: {document_root_contains_files}"  # noqa: E501
+            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: {obj.document_root}). Result: {document_root_contains_files}"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error getting document root contains files for virtual host with ID '{obj.id}' (document root: {obj.document_root}): {e}"  # noqa: E501
+            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: {obj.document_root}): {e}"  # noqa: E501
         )
 
     # Publish message
