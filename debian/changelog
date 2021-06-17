@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.7) unstable; urgency=low
+
+  - Add fx_letsencrypt_create_certificates exchange
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 17 Jun 2021 10:36:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.6) unstable; urgency=low
 
   - dx_wordpress_installation_one_time_login_url: Use ClusterSupport to retrieve virtual host information
