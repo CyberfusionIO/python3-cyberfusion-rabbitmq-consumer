@@ -2,7 +2,6 @@
 
 import pika
 
-from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.WordPressSupport import Config, Core, Installation
 
@@ -16,19 +15,16 @@ def handle(
 ) -> None:
     """Handle message."""  # noqa: D202
 
-    # Get support object
+    # Set variables
 
-    support = ClusterSupport()
-
-    # Get API object
-
-    obj = support.get_virtual_hosts(id_=json_body["virtual_host_id"])[0]
+    public_root = json_body["public_root"]
+    virtual_hosts_directory = json_body["virtual_hosts_directory"]
 
     # Get Installation object
 
     installation = Installation(
-        obj.public_root,
-        obj.unix_user.virtual_hosts_directory,
+        public_root,
+        virtual_hosts_directory,
     )
 
     # Get core
@@ -38,20 +34,20 @@ def handle(
     # Download core
 
     print(
-        f"Downloading core for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+        f"Downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
     )
 
     try:
         core.download(version=json_body["version"], locale=json_body["locale"])
 
         print(
-            f"Success downloading core for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+            f"Success downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error downloading core for CMS on Virtual Host with public root '{obj.public_root}': {e}"  # noqa: E501
+            f"Error downloading core for CMS on Virtual Host with public root '{public_root}': {e}"  # noqa: E501
         )
 
         return
@@ -63,7 +59,7 @@ def handle(
     # Create config
 
     print(
-        f"Creating config for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+        f"Creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
     )
 
     try:
@@ -75,13 +71,13 @@ def handle(
         )
 
         print(
-            f"Success creating config for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+            f"Success creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error creating config for CMS on Virtual Host with public root '{obj.public_root}': {e}"  # noqa: E501
+            f"Error creating config for CMS on Virtual Host with public root '{public_root}': {e}"  # noqa: E501
         )
 
         return
@@ -89,7 +85,7 @@ def handle(
     # Install core
 
     print(
-        f"Installing core for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+        f"Installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
     )
 
     try:
@@ -102,13 +98,13 @@ def handle(
         )
 
         print(
-            f"Success installing core for CMS on Virtual Host with public root '{obj.public_root}'"  # noqa: E501
+            f"Success installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error installing core for CMS on Virtual Host with public root '{obj.public_root}': {e}"  # noqa: E501
+            f"Error installing core for CMS on Virtual Host with public root '{public_root}': {e}"  # noqa: E501
         )
 
         return
