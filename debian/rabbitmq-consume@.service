@@ -7,6 +7,7 @@ PartOf=rabbitmq-consume.target
 Type=notify
 ExecStart=/usr/bin/cf-cluster-rabbitmq-consume %i
 Environment=PYTHONUNBUFFERED=true
+Environment=RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml
 Restart=on-failure
 RestartSec=120
 

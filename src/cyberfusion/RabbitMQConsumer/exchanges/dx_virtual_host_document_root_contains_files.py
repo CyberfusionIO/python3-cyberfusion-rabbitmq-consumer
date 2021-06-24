@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pika
 
-from cyberfusion.ClusterSupport import ClusterSupport
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 SUFFIX_FILE_PHP = "php"
@@ -23,20 +22,13 @@ def handle(
 
     # Set variables
 
+    document_root = json_body["document_root"]
     file_suffix = json_body["file_suffix"]
-
-    # Get support object
-
-    support = ClusterSupport()
-
-    # Get API object
-
-    obj = support.get_virtual_hosts(id_=json_body["virtual_host_id"])[0]
 
     # Get document root contains files
 
     print(
-        f"Getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: '{obj.document_root}')"  # noqa: E501
+        f"Getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
     )
 
     # Check file suffix allowed. We have this to discourage
@@ -44,7 +36,7 @@ def handle(
 
     if file_suffix not in SUFFIXES_FILE:
         print(
-            f"Not getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: '{obj.document_root}'): file suffix not allowed"  # noqa: E501
+            f"Not getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): file suffix not allowed"  # noqa: E501
         )
 
         return
@@ -56,7 +48,7 @@ def handle(
 
         # Loop through files in document root
 
-        for _path in Path(obj.document_root).rglob(f"*.{file_suffix}"):
+        for _path in Path(document_root).rglob(f"*.{file_suffix}"):
             # If we reach this code, we found file. Set to true and stop loop  # noqa: E501
 
             document_root_contains_files = True
@@ -64,13 +56,13 @@ def handle(
             break
 
         print(
-            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: '{obj.document_root}'). Result: {document_root_contains_files}"  # noqa: E501
+            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'). Result: {document_root_contains_files}"  # noqa: E501
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host with ID '{obj.id}' (document root: '{obj.document_root}'): {e}"  # noqa: E501
+            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): {e}"  # noqa: E501
         )
 
     # Publish message

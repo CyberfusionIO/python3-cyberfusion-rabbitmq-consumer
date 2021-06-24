@@ -7,6 +7,6 @@ Standards-Version: 3.9.1
 
 Package: python-cyberfusion-cluster-rabbitmq-consumer
 Architecture: all
-Depends: python-cyberfusion-common, python-cyberfusion-cluster-apicli, python-cyberfusion-cluster-support, python3-sdnotify, python3-yaml
+Depends: python-cyberfusion-common, python-cyberfusion-cluster-apicli, python3-sdnotify, python3-yaml
 Description: Python programs for RabbitMQ Consumers
  Python programs for RabbitMQ Consumers
