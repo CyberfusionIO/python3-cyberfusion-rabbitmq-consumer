@@ -9,6 +9,7 @@ python-cyberfusion-cluster-rabbitmq-consumer: SDIR		:= python
 python-cyberfusion-cluster-rabbitmq-consumer:
 	rm -rf $(CURDIR)/build
 	python3 package-setup.py install --force --root=$(PKGPREFIX) --no-compile -O0 --install-layout=deb
+	mkdir -p $(PKGPREFIX)/etc/cyberfusion/rabbitmq.d/
 
 clean:
 	rm -rf $(PREFIX)/python-cyberfusion-cluster-rabbitmq-consumer/
