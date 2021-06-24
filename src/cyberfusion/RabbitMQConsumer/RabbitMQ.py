@@ -11,6 +11,10 @@ import yaml
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
+    NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
+        "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
+    )
+
     def __init__(self, virtual_host_name: str):
         """Set attributes and call functions."""
         self.virtual_host_name = virtual_host_name
@@ -25,11 +29,9 @@ class RabbitMQ:
 
     def set_config(self) -> None:
         """Set config from YAML file."""
-        path = os.path.join(
-            os.path.sep, *["etc", "cyberfusion", "rabbitmq.yml"]
-        )
-
-        with open(path, "rb") as fh:
+        with open(
+            os.environ[self.NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH], "rb"
+        ) as fh:
             self.config = yaml.load(fh.read(), Loader=yaml.SafeLoader)
 
     def set_ssl_options(self) -> None:
