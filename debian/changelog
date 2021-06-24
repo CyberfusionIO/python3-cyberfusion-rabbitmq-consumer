@@ -1,5 +1,6 @@
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.8) unstable; urgency=low
 
+  - Create /etc/rabbitmq.d dir
   - Make config path configurable with RABBITMQ_CONSUMER_CONFIG_FILE_PATH environment variable
   - Get variables from message body instead of from API
   - Remove fx_command for now
