@@ -9,6 +9,8 @@ from cyberfusion.WordPressSupport import Installation as WordPressInstallation
 
 
 class CMSSoftwareNames:
+    """Constants for CMS software names."""
+
     WP = "WordPress"
 
 
