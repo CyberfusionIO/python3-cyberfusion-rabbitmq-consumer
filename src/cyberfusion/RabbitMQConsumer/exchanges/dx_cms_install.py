@@ -2,16 +2,11 @@
 
 import pika
 
+from cyberfusion.ClusterSupport.cmses import CMSSoftwareNames
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.WordPressSupport import Config as WordPressConfig
 from cyberfusion.WordPressSupport import Core as WordPressCore
 from cyberfusion.WordPressSupport import Installation as WordPressInstallation
-
-
-class CMSSoftwareNames:
-    """Constants for CMS software names."""
-
-    WP = "WordPress"
 
 
 def handle(
