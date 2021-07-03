@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.4.9) unstable; urgency=low
+
+  - Add dx_cms_install exchange
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sat, 3 Jul 2021 16:21:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.8) unstable; urgency=low
 
   - Create /etc/rabbitmq dir

@@ -12,7 +12,13 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
 
-VALUES_SKIP_PRINT = ["secret_values", "passphrase", "password"]
+VALUES_SKIP_PRINT = [
+    "secret_values",
+    "passphrase",
+    "password",
+    "admin_password",
+    "database_user_password",
+]
 
 processing = False
 shutdown_requested = False
