@@ -1,12 +1,15 @@
 """Methods for exchange."""
 
 import json
+import logging
 
 import pika
 
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.WordPressSupport import Installation
 from cyberfusion.WordPressSupport.users import User, Users
+
+logger = logging.getLogger(__name__)
 
 
 def handle(
@@ -40,21 +43,19 @@ def handle(
 
     # Get one time login URL
 
-    print(
+    logger.info(
         f"Getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
     )
 
     try:
         one_time_login_url = user.get_one_time_login_url()
 
-        print(
+        logger.info(
             f"Success getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
         )
-    except Exception as e:
-        # If action fails, don't crash entire program
-
-        print(
-            f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}': {e}"  # noqa: E501
+    except Exception:
+        logger.exception(
+            f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
         )
 
     # Publish message

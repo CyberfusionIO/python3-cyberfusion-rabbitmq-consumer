@@ -1,11 +1,14 @@
 """Methods for exchange."""
 
+import logging
 from typing import Optional
 
 import pika
 
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+
+logger = logging.getLogger(__name__)
 
 
 def handle(
@@ -23,7 +26,7 @@ def handle(
         "exchanges"
     ][method.exchange]["command"]
 
-    print(f"Running command: '{command}'")
+    logger.info(f"Running command: '{command}'")
 
     # Run command
 
@@ -31,10 +34,10 @@ def handle(
 
     try:
         output = CyberfusionCommand(command)
-    except CommandNonZeroError as e:
-        # If command fails, don't crash entire program
-
-        print(f"Error running command '{command}': {e}")
+    except CommandNonZeroError:
+        logger.error(f"Error running command '{command}'", exc_info=True)
+    except Exception:
+        logger.exception("Unknown error")
 
     if output:
-        print(f"Success running command: '{command}'")
+        logger.info(f"Success running command: '{command}'")
