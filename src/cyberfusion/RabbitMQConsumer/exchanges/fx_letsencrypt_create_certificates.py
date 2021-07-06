@@ -36,8 +36,6 @@ def handle(
         output = CyberfusionCommand(command)
     except CommandNonZeroError:
         logger.error(f"Error running command '{command}'", exc_info=True)
-    except Exception:
-        logger.exception("Unknown error")
 
     if output:
         logger.info(f"Success running command: '{command}'")

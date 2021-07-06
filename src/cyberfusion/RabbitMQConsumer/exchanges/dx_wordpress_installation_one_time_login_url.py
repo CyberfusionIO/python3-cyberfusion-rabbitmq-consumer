@@ -58,6 +58,8 @@ def handle(
             f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
         )
 
+        return
+
     # Publish message
 
     channel.basic_publish(

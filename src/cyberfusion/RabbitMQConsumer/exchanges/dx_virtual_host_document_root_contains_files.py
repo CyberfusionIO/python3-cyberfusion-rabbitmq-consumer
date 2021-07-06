@@ -66,6 +66,8 @@ def handle(
             f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
         )
 
+        return
+
     # Publish message
 
     channel.basic_publish(

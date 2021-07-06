@@ -169,7 +169,12 @@ def callback(
 
     # Call exchange module handle method
 
-    exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
+    try:
+        exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
+    except Exception:
+        # Catch exceptions we didn't catch in module itself
+
+        logger.exception("Unknown error")
 
     # Set processing
 
