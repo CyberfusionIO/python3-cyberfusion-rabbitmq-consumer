@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5) unstable; urgency=low
+
+  - Implement logging
+  - Use get_hostname from Common
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 6 Jul 2021 16:42:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.4.9) unstable; urgency=low
 
   - Add dx_cms_install exchange
