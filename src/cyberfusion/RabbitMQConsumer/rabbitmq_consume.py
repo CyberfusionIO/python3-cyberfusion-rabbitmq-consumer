@@ -5,13 +5,13 @@ import logging
 import signal
 import sys
 from logging.handlers import SMTPHandler
-from socket import gethostname
 from typing import Optional
 
 import pika
 import sdnotify
 from systemd.journal import JournalHandler
 
+from cyberfusion.Common import get_hostname
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
@@ -40,7 +40,7 @@ root_logger.setLevel(logging.DEBUG)
 
 # Set hostname for use in handler and formatter
 
-hostname: str = gethostname()
+hostname: str = get_hostname()
 
 # Create handlers
 
