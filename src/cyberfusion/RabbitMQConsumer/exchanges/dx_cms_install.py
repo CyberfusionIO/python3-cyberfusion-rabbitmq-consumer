@@ -53,9 +53,33 @@ def handle(
 
         core = WordPressCore(installation)
 
+        # Do nothing if already installed
+
+        if core.is_installed:
+            logger.info(
+                f"Core for CMS on Virtual Host with public root '{public_root}' already installed, doing nothing"  # noqa: E501
+            )
+
+            return
+
         # Download core
 
-        core.download(version=version, locale=locale)
+        logger.info(
+            f"Downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+        )
+
+        try:
+            core.download(version=version, locale=locale)
+
+            logger.info(
+                f"Success downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+            )
+        except Exception:
+            logger.exception(
+                f"Error downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+            )
+
+            return
 
         # Get Config object
 
@@ -109,3 +133,15 @@ def handle(
             )
 
             return
+
+        # Done, return
+
+        return
+
+    # When we get here, other software than WordPress: not supported
+
+    logger.info(
+        f"Software '{software_name}' for CMS on Virtual Host with public root '{public_root}' not supported, doing nothing"  # noqa: E501
+    )
+
+    return
