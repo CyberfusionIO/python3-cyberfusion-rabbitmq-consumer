@@ -1,11 +1,14 @@
 """Program to interact with RabbitMQ."""
 
+import logging
 import os
 import ssl
 from typing import Optional
 
 import pika
 import yaml
+
+logger = logging.getLogger(__name__)
 
 
 class RabbitMQ:
@@ -89,6 +92,8 @@ class RabbitMQ:
                 "queue"
             ]
 
-            print(f"Binding: exchange '{exchange_name}', queue '{queue}'")
+            logger.info(
+                f"Binding: exchange '{exchange_name}', queue '{queue}'"
+            )
 
             self.channel.queue_bind(exchange=exchange_name, queue=queue)

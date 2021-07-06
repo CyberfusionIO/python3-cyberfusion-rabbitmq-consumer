@@ -1,5 +1,7 @@
 """Methods for exchange."""
 
+import logging
+
 import pika
 
 from cyberfusion.ClusterSupport.cmses import CMSSoftwareNames
@@ -7,6 +9,8 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.WordPressSupport import Config as WordPressConfig
 from cyberfusion.WordPressSupport import Core as WordPressCore
 from cyberfusion.WordPressSupport import Installation as WordPressInstallation
+
+logger = logging.getLogger(__name__)
 
 
 def handle(
@@ -59,7 +63,7 @@ def handle(
 
         # Create config
 
-        print(
+        logger.info(
             f"Creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
         )
 
@@ -71,21 +75,19 @@ def handle(
                 database_host=database_host,
             )
 
-            print(
+            logger.info(
                 f"Success creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
             )
-        except Exception as e:
-            # If action fails, don't crash entire program
-
-            print(
-                f"Error creating config for CMS on Virtual Host with public root '{public_root}': {e}"  # noqa: E501
+        except Exception:
+            logger.exception(
+                f"Error creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
             )
 
             return
 
         # Install core
 
-        print(
+        logger.info(
             f"Installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
         )
 
@@ -98,14 +100,12 @@ def handle(
                 admin_email_address=admin_email_address,
             )
 
-            print(
+            logger.info(
                 f"Success installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
             )
-        except Exception as e:
-            # If action fails, don't crash entire program
-
-            print(
-                f"Error installing core for CMS on Virtual Host with public root '{public_root}': {e}"  # noqa: E501
+        except Exception:
+            logger.exception(
+                f"Error installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
             )
 
             return

@@ -1,13 +1,17 @@
 """Program to consume RabbitMQ messages."""
 
 import json
+import logging
 import signal
 import sys
+from logging.handlers import SMTPHandler
 from typing import Optional
 
 import pika
 import sdnotify
+from systemd.journal import JournalHandler
 
+from cyberfusion.Common import get_hostname
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
@@ -20,6 +24,80 @@ VALUES_SKIP_PRINT = [
     "database_user_password",
 ]
 
+NAME_HOST_SMTP = "smtp.prorelay.nl"
+PORT_HOST_SMTP = 587
+SENDER_EMAIL_ADDRESS = "engineering@cyberfusion.nl"
+RECIPIENT_EMAIL_ADDRESS = "engineering@cyberfusion.nl"
+
+
+# Create root logger
+
+print("Configuring root logger...")
+
+root_logger = logging.getLogger()
+root_logger.propagate = False
+root_logger.setLevel(logging.DEBUG)
+
+# Set hostname for use in handler and formatter
+
+hostname: str = get_hostname()
+
+# Create handlers
+
+systemd_handler = JournalHandler()
+systemd_handler.setLevel(logging.INFO)
+
+smtp_handler = SMTPHandler(
+    (NAME_HOST_SMTP, PORT_HOST_SMTP),
+    SENDER_EMAIL_ADDRESS,
+    [RECIPIENT_EMAIL_ADDRESS],
+    f"[{hostname}] Logging notification from RabbitMQ Consumer",
+    credentials=None,
+    secure=None,
+)
+smtp_handler.setLevel(logging.WARNING)
+
+handlers = [systemd_handler, smtp_handler]
+
+# Set email message
+
+email_message = "Dear reader,\n\n"
+email_message += "This is process %(process)d reporting %(levelname)s message from the '%(name)s' logger.\n\n"  # noqa: E501
+email_message += "Message:\n\n"
+email_message += "%(message)s\n\n"
+email_message += "--\n"
+email_message += "With kind regards,\n"
+email_message += hostname + "\n\n"
+
+# Create formatters
+
+systemd_formatter = logging.Formatter("[%(levelname)s] %(name)s: %(message)s")
+smtp_formatter = logging.Formatter(email_message)
+
+# Set handlers formatters
+
+systemd_handler.setFormatter(systemd_formatter)
+smtp_handler.setFormatter(smtp_formatter)
+
+# Add handlers to root logger
+
+for h in handlers:
+    print("Configuring root logger handler...")
+
+    root_logger.addHandler(h)
+
+    print("Configured root logger handler")
+
+# Log end
+
+print("Configured root logger")
+
+# Create module logger
+
+logger = logging.getLogger(__name__)
+
+# Set handle_sigterm variables
+
 processing = False
 shutdown_requested = False
 
@@ -29,7 +107,7 @@ def handle_sigterm(  # type: ignore
     _frame,  # Ignore lack of type annotation. Not going to import frame stuff
 ) -> None:
     """Handle SIGTERM."""
-    print("Received SIGTERM")
+    logger.info("Received SIGTERM")
 
     # If currently processing, delay (handled in callback())
 
@@ -40,13 +118,13 @@ def handle_sigterm(  # type: ignore
 
         shutdown_requested = True
 
-        print("Currently processing. Delayed shutdown")
+        logger.info("Currently processing. Delayed shutdown")
 
         return
 
     # If not currently processing, exit
 
-    print("Not currently processing. Exiting directly after SIGTERM...")
+    logger.info("Not currently processing. Exiting directly after SIGTERM...")
     sys.exit(0)
 
 
@@ -75,7 +153,7 @@ def callback(
 
     # Print message
 
-    print("Received message. Body: '{!r}'".format(print_body))
+    logger.info("Received message. Body: '{!r}'".format(print_body))
 
     # Set processing
 
@@ -102,7 +180,7 @@ def callback(
     global shutdown_requested
 
     if shutdown_requested:
-        print("Exiting delayed after SIGTERM request...")
+        logger.info("Exiting delayed after SIGTERM request...")
         sys.exit(0)
 
 
@@ -116,7 +194,7 @@ def main() -> None:
         try:
             rabbitmq = RabbitMQ(sys.argv[1])
         except IndexError:
-            print("Specify virtual host as first argument")
+            logger.critical("Specify virtual host as first argument")
             sys.exit(1)
 
         # Consume
@@ -146,10 +224,10 @@ def main() -> None:
         if rabbitmq:
             # Stop consuming
 
-            print("Stopping consuming...")
+            logger.info("Stopping consuming...")
             rabbitmq.channel.stop_consuming()
 
             # Close connection
 
-            print("Closing connection...")
+            logger.info("Closing connection...")
             rabbitmq.connection.close()

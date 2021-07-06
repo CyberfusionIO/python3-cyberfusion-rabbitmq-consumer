@@ -1,6 +1,7 @@
 """Methods for exchange."""
 
 import json
+import logging
 from pathlib import Path
 
 import pika
@@ -9,6 +10,8 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 SUFFIX_FILE_PHP = "php"
 SUFFIXES_FILE = [SUFFIX_FILE_PHP]
+
+logger = logging.getLogger(__name__)
 
 
 def handle(
@@ -27,7 +30,7 @@ def handle(
 
     # Get document root contains files
 
-    print(
+    logger.info(
         f"Getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
     )
 
@@ -35,7 +38,7 @@ def handle(
     # using this a lot because of possible blocking I/O
 
     if file_suffix not in SUFFIXES_FILE:
-        print(
+        logger.info(
             f"Not getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): file suffix not allowed"  # noqa: E501
         )
 
@@ -55,14 +58,12 @@ def handle(
 
             break
 
-        print(
+        logger.info(
             f"Success getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'). Result: {document_root_contains_files}"  # noqa: E501
         )
-    except Exception as e:
-        # If action fails, don't crash entire program
-
-        print(
-            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): {e}"  # noqa: E501
+    except Exception:
+        logger.exception(
+            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
         )
 
     # Publish message
