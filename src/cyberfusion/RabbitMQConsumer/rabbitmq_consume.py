@@ -11,7 +11,7 @@ import pika
 import sdnotify
 from systemd.journal import JournalHandler
 
-from cyberfusion.Common import get_hostname
+from cyberfusion.Common import EmailAddresses, get_hostname
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 importlib = __import__("importlib")
@@ -26,8 +26,6 @@ VALUES_SKIP_PRINT = [
 
 NAME_HOST_SMTP = "smtp.prorelay.nl"
 PORT_HOST_SMTP = 587
-SENDER_EMAIL_ADDRESS = "engineering@cyberfusion.nl"
-RECIPIENT_EMAIL_ADDRESS = "engineering@cyberfusion.nl"
 
 
 # Create root logger
@@ -49,8 +47,8 @@ systemd_handler.setLevel(logging.INFO)
 
 smtp_handler = SMTPHandler(
     (NAME_HOST_SMTP, PORT_HOST_SMTP),
-    SENDER_EMAIL_ADDRESS,
-    [RECIPIENT_EMAIL_ADDRESS],
+    EmailAddresses.ENGINEERING,
+    [EmailAddresses.ENGINEERING],
     f"[{hostname}] Logging notification from RabbitMQ Consumer",
     credentials=None,
     secure=None,
@@ -169,7 +167,12 @@ def callback(
 
     # Call exchange module handle method
 
-    exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
+    try:
+        exchange_obj.handle(rabbitmq, channel, method, properties, json_body)
+    except Exception:
+        # Catch exceptions we didn't catch in module itself
+
+        logger.exception("Unknown error")
 
     # Set processing
 

@@ -6,6 +6,7 @@ from typing import Optional
 import pika
 
 from cyberfusion.Common.Command import CommandNonZeroError, CyberfusionCommand
+from cyberfusion.Common.Cron import CyberfusionTuxisCron
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 logger = logging.getLogger(__name__)
@@ -34,10 +35,20 @@ def handle(
 
     try:
         output = CyberfusionCommand(command)
-    except CommandNonZeroError:
-        logger.error(f"Error running command '{command}'", exc_info=True)
-    except Exception:
-        logger.exception("Unknown error")
+    except CommandNonZeroError as e:
+        # We assume the command is tuxis-cron.
+        # Only log error when RC not expected.
+        # Otherwise, tuxis-cron should notify us.
+
+        if e.rc not in [
+            CyberfusionTuxisCron.RC_WARNINGS,
+            CyberfusionTuxisCron.RC_ERRORS,
+        ]:
+            logger.error(f"Error running command '{command}'", exc_info=True)
+        else:
+            logger.info(
+                f"Error running command '{command}', letting tuxis-cron notify us"  # noqa: E501
+            )
 
     if output:
         logger.info(f"Success running command: '{command}'")
