@@ -1,11 +1,16 @@
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.1) unstable; urgency=low
 
-  - Add dependency python3-systemd
+  - Add package dependency python3-systemd
   - Add more verbose logging to all exchanges
+  - fx_configuration_manager_present: Do not log error when RC is likely to be from tuxis-cron
+    so consumer logger doesn't notify us in addition to tuxis-cron
+  - fx_letsencrypt_create_certificates: Do not log error when RC is likely to be from tuxis-cron
+    so consumer logger doesn't notify us in addition to tuxis-cron
   - Use EmailAddresses from Common for SMTP handler
-  - Wrap exchange handle method in catch all exceptions try/except so program doesn't crash
+  - Wrap exchange handle method in catch all exceptions try/except, so program doesn't crash
+    in case exception is not caught already
 
- -- William Edwards <wedwards@cyberfusion.nl>  Mon, 2 Aug 2021 11:30:00 +0200
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 2 Aug 2021 11:50:00 +0200
 
 python-cyberfusion-cluster-rabbitmq-consumer (1.5) unstable; urgency=low
 
