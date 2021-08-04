@@ -1,4 +1,4 @@
-image: debian:stretch
+image: debian:buster
 
 stages:
   - test
@@ -18,18 +18,29 @@ styling test:
     reports:
       junit: report-*.xml
 
-buildjob:
+build test:
+  stage: build
+  script:
+    - apt update
+    - apt --no-install-recommends -y install apt-transport-https ca-certificates build-essential devscripts equivs gnupg lintian
+    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cyberfusion-packages.list
+    - apt-key adv --fetch-keys https://deb.cyberfusion.nl/cfpkg.gpg
+    - apt update
+    - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
+    - dpkg-buildpackage -us -uc
+    - lintian --dont-check-part=manpages ../*.deb
+
+build:
   stage: build
   only:
     - master
   script:
-    - apt-get update
-    - apt-get install -y gnupg2 apt-transport-https
-    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cfpackages.list
+    - apt update
+    - apt --no-install-recommends -y install apt-transport-https ca-certificates build-essential devscripts equivs gnupg
+    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cyberfusion-packages.list
     - apt-key adv --fetch-keys https://deb.cyberfusion.nl/cfpkg.gpg
-    - apt-get update
-    - apt-get --no-install-recommends -y install build-essential devscripts equivs wget gnupg rsync
-    - mk-build-deps -i -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
+    - apt update
+    - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
     - dpkg-buildpackage -us -uc
     - mkdir publish
     - cp ../*.deb publish/
