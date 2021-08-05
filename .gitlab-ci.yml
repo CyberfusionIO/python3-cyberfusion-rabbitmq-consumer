@@ -28,7 +28,8 @@ build test:
     - apt update
     - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
     - dpkg-buildpackage -us -uc
-    - lintian --dont-check-part=manpages ../*.changes
+    - dpkg-genchanges > ../pkg.changes
+    - lintian --dont-check-part=manpages ../pkg.changes
 
 build:
   stage: build
