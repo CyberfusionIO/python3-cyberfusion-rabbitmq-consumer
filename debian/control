@@ -7,6 +7,6 @@ Standards-Version: 4.3.0
 
 Package: python-cyberfusion-cluster-rabbitmq-consumer
 Architecture: all
-Depends: python3, python-cyberfusion-common, python3-sdnotify, python3-yaml, python3-systemd
+Depends: python3, python-cyberfusion-common, python3-sdnotify, python3-yaml, python3-systemd, ${misc:Depends}
 Description: RabbitMQConsumer Python library/tools
  RabbitMQConsumer provides a RabbitMQ consumer for Cluster API messages.
