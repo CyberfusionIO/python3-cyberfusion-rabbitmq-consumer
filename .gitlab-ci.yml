@@ -19,7 +19,7 @@ styling test:
       junit: report-*.xml
 
 build test:
-  stage: build
+  stage: test
   script:
     - apt update
     - apt --no-install-recommends -y install apt-transport-https ca-certificates build-essential devscripts equivs gnupg lintian
