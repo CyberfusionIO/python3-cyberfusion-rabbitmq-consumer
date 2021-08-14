@@ -12,7 +12,10 @@ import sdnotify
 from systemd.journal import JournalHandler
 
 from cyberfusion.Common import EmailAddresses, get_hostname
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.RabbitMQ import (
+    RabbitMQ,
+    get_config_file_path,
+)
 
 importlib = __import__("importlib")
 
@@ -61,6 +64,8 @@ handlers = [systemd_handler, smtp_handler]
 
 email_message = "Dear reader,\n\n"
 email_message += "This is process %(process)d reporting %(levelname)s message from the '%(name)s' logger.\n\n"  # noqa: E501
+email_message += "Used config file path:\n\n"
+email_message += get_config_file_path() + "\n\n"
 email_message += "Message:\n\n"
 email_message += "%(message)s\n\n"
 email_message += "--\n"
