@@ -30,7 +30,6 @@ VALUES_SKIP_PRINT = [
 NAME_HOST_SMTP = "smtp.prorelay.nl"
 PORT_HOST_SMTP = 587
 
-
 # Create root logger
 
 print("Configuring root logger...")
