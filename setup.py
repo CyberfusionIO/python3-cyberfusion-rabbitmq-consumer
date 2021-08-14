@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name="python-cyberfusion-cluster-rabbitmq-consumer",
-    version="1.0",
-    description="Program for RabbitMQ consumers",
+    version="1.5.1",
+    description="RabbitMQConsumer Python library/tools",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
     url="https://vcs.cyberfusion.nl/cyberfusion/python-cyberfusion-cluster-rabbitmq-consumer",  # noqa: E501
