@@ -12,7 +12,10 @@ import sdnotify
 from systemd.journal import JournalHandler
 
 from cyberfusion.Common import EmailAddresses, get_hostname
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.RabbitMQ import (
+    RabbitMQ,
+    get_config_file_path,
+)
 
 importlib = __import__("importlib")
 
@@ -26,7 +29,6 @@ VALUES_SKIP_PRINT = [
 
 NAME_HOST_SMTP = "smtp.prorelay.nl"
 PORT_HOST_SMTP = 587
-
 
 # Create root logger
 
@@ -61,6 +63,8 @@ handlers = [systemd_handler, smtp_handler]
 
 email_message = "Dear reader,\n\n"
 email_message += "This is process %(process)d reporting %(levelname)s message from the '%(name)s' logger.\n\n"  # noqa: E501
+email_message += "Used config file path:\n\n"
+email_message += get_config_file_path() + "\n\n"
 email_message += "Message:\n\n"
 email_message += "%(message)s\n\n"
 email_message += "--\n"
@@ -192,15 +196,19 @@ def main() -> None:
     rabbitmq: Optional[RabbitMQ] = None
 
     try:
-        # Get RabbitMQ object
+        # Set virtual host name
 
         try:
-            rabbitmq = RabbitMQ(sys.argv[1])
+            virtual_host_name = sys.argv[1]
         except IndexError:
             logger.critical("Specify virtual host as first argument")
             sys.exit(1)
 
-        # Consume
+        # Get RabbitMQ object
+
+        rabbitmq = RabbitMQ(virtual_host_name)
+
+        # Configure consuming
 
         rabbitmq.channel.basic_consume(
             queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
@@ -220,7 +228,7 @@ def main() -> None:
 
         signal.signal(signal.SIGTERM, handle_sigterm)
 
-        # Consume
+        # Start consuming
 
         rabbitmq.channel.start_consuming()
     finally:

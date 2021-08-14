@@ -10,13 +10,18 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
+    "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
+)
+
+
+def get_config_file_path() -> str:
+    """Get config file path."""
+    return os.environ[NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH]
+
 
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
-
-    NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
-        "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
-    )
 
     def __init__(self, virtual_host_name: str):
         """Set attributes and call functions."""
@@ -32,9 +37,7 @@ class RabbitMQ:
 
     def set_config(self) -> None:
         """Set config from YAML file."""
-        with open(
-            os.environ[self.NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH], "rb"
-        ) as fh:
+        with open(get_config_file_path(), "rb") as fh:
             self.config = yaml.load(fh.read(), Loader=yaml.SafeLoader)
 
     def set_ssl_options(self) -> None:
@@ -93,7 +96,7 @@ class RabbitMQ:
             ]
 
             logger.info(
-                f"Binding: exchange '{exchange_name}', queue '{queue}'"
+                f"Binding: exchange '{exchange_name}', queue '{queue}', virtual host '{self.virtual_host_name}'"  # noqa: E501
             )
 
             self.channel.queue_bind(exchange=exchange_name, queue=queue)
