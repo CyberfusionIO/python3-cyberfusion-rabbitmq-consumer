@@ -192,13 +192,17 @@ def main() -> None:
     rabbitmq: Optional[RabbitMQ] = None
 
     try:
-        # Get RabbitMQ object
+        # Set virtual host name
 
         try:
-            rabbitmq = RabbitMQ(sys.argv[1])
+            virtual_host_name = sys.argv[1]
         except IndexError:
             logger.critical("Specify virtual host as first argument")
             sys.exit(1)
+
+        # Get RabbitMQ object
+
+        rabbitmq = RabbitMQ(virtual_host_name)
 
         # Consume
 
