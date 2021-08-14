@@ -204,7 +204,7 @@ def main() -> None:
 
         rabbitmq = RabbitMQ(virtual_host_name)
 
-        # Consume
+        # Configure consuming
 
         rabbitmq.channel.basic_consume(
             queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
@@ -224,7 +224,7 @@ def main() -> None:
 
         signal.signal(signal.SIGTERM, handle_sigterm)
 
-        # Consume
+        # Start consuming
 
         rabbitmq.channel.start_consuming()
     finally:
