@@ -1,3 +1,13 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.2) unstable; urgency=low
+
+  - Bump debhelper compatibility level to 10
+  - Bump Standards-Version to 4.3.0
+  - Add used config file path to email message
+  - Log virtual host name in binding message
+  - Set virtual host name before getting RabbitMQ object
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sat, 14 Aug 2021 19:29:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.1) unstable; urgency=low
 
   - Add package dependency python3-systemd
