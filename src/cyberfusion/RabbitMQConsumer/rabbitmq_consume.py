@@ -137,7 +137,7 @@ def callback(
     properties: pika.spec.BasicProperties,
     body: bytes,
 ) -> None:
-    """Callback method for RabbitMQ messages."""  # noqa: D401
+    """Handle callback for RabbitMQ messages."""
 
     # Cast body
 
