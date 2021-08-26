@@ -19,7 +19,7 @@ def handle(
     properties: pika.spec.BasicProperties,
     body: str,
 ) -> None:
-    """Handle message."""  # noqa: D202
+    """Handle message."""
 
     # Get command
 

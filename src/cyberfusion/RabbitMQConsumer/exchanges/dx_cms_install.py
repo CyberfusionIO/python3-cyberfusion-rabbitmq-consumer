@@ -20,7 +20,7 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""  # noqa: D202
+    """Handle message."""
 
     # Set variables
 
