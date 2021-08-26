@@ -3,8 +3,6 @@ repos:
     rev: v5.6.4
     hooks:
       - id: isort
-        additional_dependencies: [toml]
-        exclude: env.py
   - repo: https://github.com/ambv/black
     rev: 20.8b1
     hooks:
@@ -18,7 +16,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-json
       - id: check-yaml
-        exclude: (charts/*|.gitlab-ci.yml)
+        exclude: '^.gitlab-ci.yml$'
       - id: debug-statements
       - id: requirements-txt-fixer
       - id: detect-private-key
