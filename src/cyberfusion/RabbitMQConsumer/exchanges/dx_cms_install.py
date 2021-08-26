@@ -57,7 +57,7 @@ def handle(
 
         if core.is_installed:
             logger.info(
-                f"Core for CMS on Virtual Host with public root '{public_root}' already installed, doing nothing"  # noqa: E501
+                f"Core for CMS on Virtual Host with public root '{public_root}' already installed, doing nothing"
             )
 
             return
@@ -65,18 +65,18 @@ def handle(
         # Download core
 
         logger.info(
-            f"Downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+            f"Downloading core for CMS on Virtual Host with public root '{public_root}'"
         )
 
         try:
             core.download(version=version, locale=locale)
 
             logger.info(
-                f"Success downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Success downloading core for CMS on Virtual Host with public root '{public_root}'"
             )
         except Exception:
             logger.exception(
-                f"Error downloading core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Error downloading core for CMS on Virtual Host with public root '{public_root}'"
             )
 
             return
@@ -88,7 +88,7 @@ def handle(
         # Create config
 
         logger.info(
-            f"Creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+            f"Creating config for CMS on Virtual Host with public root '{public_root}'"
         )
 
         try:
@@ -100,11 +100,11 @@ def handle(
             )
 
             logger.info(
-                f"Success creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Success creating config for CMS on Virtual Host with public root '{public_root}'"
             )
         except Exception:
             logger.exception(
-                f"Error creating config for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Error creating config for CMS on Virtual Host with public root '{public_root}'"
             )
 
             return
@@ -112,7 +112,7 @@ def handle(
         # Install core
 
         logger.info(
-            f"Installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+            f"Installing core for CMS on Virtual Host with public root '{public_root}'"
         )
 
         try:
@@ -125,11 +125,11 @@ def handle(
             )
 
             logger.info(
-                f"Success installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Success installing core for CMS on Virtual Host with public root '{public_root}'"
             )
         except Exception:
             logger.exception(
-                f"Error installing core for CMS on Virtual Host with public root '{public_root}'"  # noqa: E501
+                f"Error installing core for CMS on Virtual Host with public root '{public_root}'"
             )
 
             return
@@ -141,7 +141,7 @@ def handle(
     # When we get here, other software than WordPress: not supported
 
     logger.info(
-        f"Software '{software_name}' for CMS on Virtual Host with public root '{public_root}' not supported, doing nothing"  # noqa: E501
+        f"Software '{software_name}' for CMS on Virtual Host with public root '{public_root}' not supported, doing nothing"
     )
 
     return

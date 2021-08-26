@@ -31,7 +31,7 @@ def handle(
     # Get document root contains files
 
     logger.info(
-        f"Getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
+        f"Getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"
     )
 
     # Check file suffix allowed. We have this to discourage
@@ -39,31 +39,31 @@ def handle(
 
     if file_suffix not in SUFFIXES_FILE:
         logger.info(
-            f"Not getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): file suffix not allowed"  # noqa: E501
+            f"Not getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): file suffix not allowed"
         )
 
         return
 
     try:
-        # Assume document root does not contain files, let loop prove otherwise  # noqa: E501
+        # Assume document root does not contain files, let loop prove otherwise
 
         document_root_contains_files = False
 
         # Loop through files in document root
 
         for _path in Path(document_root).rglob(f"*.{file_suffix}"):
-            # If we reach this code, we found file. Set to true and stop loop  # noqa: E501
+            # If we reach this code, we found file. Set to true and stop loop
 
             document_root_contains_files = True
 
             break
 
         logger.info(
-            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'). Result: {document_root_contains_files}"  # noqa: E501
+            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'). Result: {document_root_contains_files}"
         )
     except Exception:
         logger.exception(
-            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"  # noqa: E501
+            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"
         )
 
         return
@@ -77,8 +77,6 @@ def handle(
             correlation_id=properties.correlation_id,
         ),
         body=json.dumps(
-            {
-                "document_root_contains_files": document_root_contains_files  # noqa: E501
-            }
+            {"document_root_contains_files": document_root_contains_files}
         ),
     )

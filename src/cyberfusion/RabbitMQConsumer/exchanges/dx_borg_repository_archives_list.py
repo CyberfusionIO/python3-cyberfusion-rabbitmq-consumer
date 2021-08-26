@@ -34,20 +34,20 @@ def handle(
     # Get archives
 
     print(
-        f"Getting archives for Borg repository with remote URL '{remote_url}'"  # noqa: E501
+        f"Getting archives for Borg repository with remote URL '{remote_url}'"
     )
 
     try:
         archives = repository.list()
 
         print(
-            f"Success getting archives for Borg repository with remote URL '{remote_url}'"  # noqa: E501
+            f"Success getting archives for Borg repository with remote URL '{remote_url}'"
         )
     except Exception as e:
         # If action fails, don't crash entire program
 
         print(
-            f"Error getting archives for Borg repository with remote URL '{remote_url}': {e}"  # noqa: E501
+            f"Error getting archives for Borg repository with remote URL '{remote_url}': {e}"
         )
 
     # Publish message
