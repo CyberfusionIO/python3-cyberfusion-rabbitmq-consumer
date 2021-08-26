@@ -104,7 +104,7 @@ processing = False
 shutdown_requested = False
 
 
-def handle_sigterm(  # type: ignore
+def handle_sigterm(  # type: ignore[no-untyped-def]
     _signal_number: int,
     _frame,  # Ignore lack of type annotation. Not going to import frame stuff
 ) -> None:
