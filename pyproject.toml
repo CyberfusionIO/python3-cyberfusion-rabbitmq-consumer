@@ -1,7 +1,7 @@
 [tool.isort]
 profile = "black"
 line_length = 79
-known_first_party = ["cyberfusion", "bin", "src", "migrations"]
+known_first_party = ["cyberfusion"]
 default_section = "THIRDPARTY"
 
 [tool.black]
