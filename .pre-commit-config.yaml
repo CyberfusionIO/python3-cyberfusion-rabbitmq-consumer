@@ -5,6 +5,11 @@ repos:
       - id: isort
         additional_dependencies: [toml]
         exclude: env.py
+  - repo: https://github.com/ambv/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -29,8 +34,3 @@ repos:
     rev: v1.6.0
     hooks:
       - id: python-use-type-annotations
-  - repo: https://github.com/ambv/black
-    rev: 20.8b1
-    hooks:
-      - id: black
-        language_version: python3
