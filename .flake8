@@ -4,3 +4,4 @@
 ; W503: black formats binary operators differently
 ; D202: blank line is fine when line after newline is comment
 ignore = T001,W503,E501,D202
+exclude = tests/
