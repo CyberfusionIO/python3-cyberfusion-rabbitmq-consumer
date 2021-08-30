@@ -19,7 +19,7 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""  # noqa: D202
+    """Handle message."""
 
     # Set variables
 
@@ -44,18 +44,18 @@ def handle(
     # Get one time login URL
 
     logger.info(
-        f"Getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
+        f"Getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
     )
 
     try:
         one_time_login_url = user.get_one_time_login_url()
 
         logger.info(
-            f"Success getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
+            f"Success getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
         )
     except Exception:
         logger.exception(
-            f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"  # noqa: E501
+            f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
         )
 
         return

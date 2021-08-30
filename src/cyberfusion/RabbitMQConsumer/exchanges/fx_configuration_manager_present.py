@@ -19,7 +19,7 @@ def handle(
     properties: pika.spec.BasicProperties,
     body: str,
 ) -> None:
-    """Handle message."""  # noqa: D202
+    """Handle message."""
 
     # Get command
 
@@ -47,7 +47,7 @@ def handle(
             logger.error(f"Error running command '{command}'", exc_info=True)
         else:
             logger.info(
-                f"Error running command '{command}', letting tuxis-cron notify us"  # noqa: E501
+                f"Error running command '{command}', letting tuxis-cron notify us"
             )
 
     if output:

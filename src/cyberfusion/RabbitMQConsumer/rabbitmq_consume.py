@@ -62,7 +62,7 @@ handlers = [systemd_handler, smtp_handler]
 # Set email message
 
 email_message = "Dear reader,\n\n"
-email_message += "This is process %(process)d reporting %(levelname)s message from the '%(name)s' logger.\n\n"  # noqa: E501
+email_message += "This is process %(process)d reporting %(levelname)s message from the '%(name)s' logger.\n\n"
 email_message += "Used config file path:\n\n"
 email_message += get_config_file_path() + "\n\n"
 email_message += "Message:\n\n"
@@ -104,7 +104,7 @@ processing = False
 shutdown_requested = False
 
 
-def handle_sigterm(  # type: ignore
+def handle_sigterm(  # type: ignore[no-untyped-def]
     _signal_number: int,
     _frame,  # Ignore lack of type annotation. Not going to import frame stuff
 ) -> None:
@@ -137,7 +137,7 @@ def callback(
     properties: pika.spec.BasicProperties,
     body: bytes,
 ) -> None:
-    """Callback method for RabbitMQ messages."""  # noqa: D202,D401
+    """Handle callback for RabbitMQ messages."""
 
     # Cast body
 
@@ -214,7 +214,7 @@ def main() -> None:
             queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
                 "queue"
             ],
-            on_message_callback=lambda channel, method, properties, body: callback(  # noqa: E501
+            on_message_callback=lambda channel, method, properties, body: callback(
                 rabbitmq, channel, method, properties, body.decode("utf-8")
             ),
             auto_ack=True,
