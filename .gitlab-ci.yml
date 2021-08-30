@@ -9,8 +9,8 @@ styling test:
   image: python:3.7
   script:
     - pip install --no-cache-dir -r requirements/dev.txt
-    - mypy src/cyberfusion/RabbitMQConsumer/ --junit-xml report-mypy.xml
-    - flake8 src/cyberfusion/RabbitMQConsumer/ --tee --output-file flake8.txt; exit_code=$?; flake8_junit flake8.txt report-flake8.xml; exit_code=$?; flake8_junit flake8.txt report-flake8.xml
+    - mypy . --junit-xml report-mypy.xml
+    - flake8 . --tee --output-file flake8.txt; exit_code=$?; flake8_junit flake8.txt report-flake8.xml
     - if [ $exit_code -ne 0 ]; then exit 1; fi;
     - isort -c .
     - black --check .

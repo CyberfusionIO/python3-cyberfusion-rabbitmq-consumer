@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.2.1) unstable; urgency=low
+
+  - Remove now ignored flake8 noqa's
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 30 Aug 2021 10:42:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.2) unstable; urgency=low
 
   - Bump debhelper compatibility level to 10
