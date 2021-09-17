@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.3) unstable; urgency=low
+
+  - Add dx_service_restart exchange
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 17 Sep 2021 11:36:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.2.1) unstable; urgency=low
 
   - Remove now ignored flake8 noqa's
