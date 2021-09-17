@@ -1,4 +1,5 @@
 """Methods for exchange."""
+
 import logging
 from random import randint
 from time import sleep
@@ -35,7 +36,7 @@ def handle(
 
     # Restart unit
 
-    print(
+    logger.info(
         f"Restarting service with unit name '{unit_name}'. Random delay: '{delay}'"
     )
 
@@ -46,8 +47,12 @@ def handle(
     try:
         unit.restart()
 
-        print(f"Success restarting service with unit name '{unit_name}'")
-    except Exception as e:
+        logger.info(f"Success restarting service with unit name '{unit_name}'")
+    except Exception:
         # If action fails, don't crash entire program
 
-        print(f"Error restarting service with unit name '{unit_name}': {e}")
+        logger.exception(
+            f"Error restarting service with unit name '{unit_name}'"
+        )
+
+        return
