@@ -1,6 +1,7 @@
 """Methods for exchange."""
-
 import logging
+from random import randint
+from time import sleep
 
 import pika
 
@@ -27,9 +28,20 @@ def handle(
 
     unit = CyberfusionUnit(unit_name)
 
+    # Set delay to minimise the chance of restarting services
+    # providing the same service on multiple nodes at the same time
+
+    delay = randint(5, 10)  # noqa: S311
+
     # Restart unit
 
-    print(f"Restarting service with unit name '{unit_name}'")
+    print(
+        f"Restarting service with unit name '{unit_name}'. Random delay: '{delay}'"
+    )
+
+    # Delay
+
+    sleep(delay)
 
     try:
         unit.restart()
