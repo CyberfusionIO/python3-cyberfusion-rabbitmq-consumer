@@ -34,7 +34,7 @@ def handle(
     output: Optional[CyberfusionCommand] = None
 
     try:
-        output = CyberfusionCommand(command)
+        output = CyberfusionCommand([command])
     except CommandNonZeroError as e:
         # We assume the command is tuxis-cron.
         # Only log error when RC not expected.
