@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.3.1) unstable; urgency=low
+
+  - Pass command as list to CyberfusionCommand
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 19 Oct 2021 17:55:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.3) unstable; urgency=low
 
   - Add dx_service_restart exchange
