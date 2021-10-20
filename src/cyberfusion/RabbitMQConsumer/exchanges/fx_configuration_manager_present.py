@@ -25,7 +25,7 @@ def handle(
 
     command = rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
         "exchanges"
-    ][method.exchange]["command"]
+    ][method.exchange]["command"].split(" ")
 
     logger.info(f"Running command: '{command}'")
 
@@ -34,7 +34,7 @@ def handle(
     output: Optional[CyberfusionCommand] = None
 
     try:
-        output = CyberfusionCommand([command])
+        output = CyberfusionCommand(command)
     except CommandNonZeroError as e:
         # We assume the command is tuxis-cron.
         # Only log error when RC not expected.
