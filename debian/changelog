@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.4) unstable; urgency=low
+
+  - Add dx_service_reload exchange
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 31 Jan 2022 11:03:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.3.1.1) unstable; urgency=low
 
   - Pass correct list elements of command to CyberfusionCommand
