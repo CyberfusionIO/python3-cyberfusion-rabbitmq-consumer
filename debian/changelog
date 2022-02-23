@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.4.1) unstable; urgency=low
+
+  - Remove fx_letsencrypt_create_certificates exchange
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 23 Feb 2022 14:28:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.4) unstable; urgency=low
 
   - Add dx_service_reload exchange
