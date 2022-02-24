@@ -13,7 +13,7 @@ from cyberfusion.RabbitMQConsumer.exceptions.dx_cms_install import (
     WordPressCoreInstallError,
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-from cyberfusion.RabbitMQConsumer.utilities import prefix_result
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 from cyberfusion.WordPressSupport import Config as WordPressConfig
 from cyberfusion.WordPressSupport import Core as WordPressCore
 from cyberfusion.WordPressSupport import Installation as WordPressInstallation
@@ -49,7 +49,7 @@ def handle(
         # Set preliminary result
 
         success = True
-        result = prefix_result(public_root, "CMS installed")
+        result = _prefix_message(public_root, "CMS installed")
 
         # Get installation
 
@@ -65,12 +65,16 @@ def handle(
         if core.is_installed:
             raise CMSInstalledError
 
+        logger.info(_prefix_message(public_root, "Downloading core"))
+
         try:
             core.download(version=version, locale=locale)
         except Exception:
             raise WordPressCoreDownloadError
 
         # Create config
+
+        logger.info(_prefix_message(public_root, "Creating config"))
 
         config = WordPressConfig(installation)
 
@@ -85,6 +89,8 @@ def handle(
             raise WordPressConfigCreateError
 
         # Install core
+
+        logger.info(_prefix_message(public_root, "Install core"))
 
         try:
             core.install(
@@ -101,7 +107,7 @@ def handle(
         # Set result from error and log exception
 
         success = False
-        result = prefix_result(public_root, e.result)
+        result = _prefix_message(public_root, e.result)
 
         logger.exception(result)
 
