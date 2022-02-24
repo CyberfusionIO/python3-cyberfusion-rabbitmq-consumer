@@ -1,3 +1,11 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.5) unstable; urgency=low
+
+  - Turn dx_cms_install into RPC call
+  - Add facilities for new-style RPC exchanges: _prefix_message,
+    exchange-specific exceptions
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 24 Feb 2022 09:36:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.4.1) unstable; urgency=low
 
   - Remove fx_letsencrypt_create_certificates exchange
