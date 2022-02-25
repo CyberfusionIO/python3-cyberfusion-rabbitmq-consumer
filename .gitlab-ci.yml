@@ -36,7 +36,7 @@ unit test:
     - apt -y install python-cyberfusion-common python3-sdnotify python3-yaml python3-systemd
     - pip install --no-cache-dir -r requirements/test.txt
     - cp $CI_PROJECT_DIR/rabbitmq.yml /etc/cyberfusion/rabbitmq.yml
-    - RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=10 --junitxml=report-pytest.xml
+    - RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=5 --junitxml=report-pytest.xml
   artifacts:
     reports:
       junit: report-*.xml
