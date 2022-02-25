@@ -1,13 +1,16 @@
 """Methods for exchange."""
 
+import json
 import logging
-from random import randint
-from time import sleep
 
 import pika
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
+from cyberfusion.RabbitMQConsumer.exceptions.dx_service_reload import (
+    ServiceReloadError,
+)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
@@ -20,39 +23,45 @@ def handle(
     json_body: dict,
 ) -> None:
     """Handle message."""
-
-    # Set variables
-
-    unit_name = json_body["unit_name"]
-
-    # Get object
-
-    unit = CyberfusionUnit(unit_name)
-
-    # Set delay to minimise the chance of reloading services
-    # providing the same service on multiple nodes at the same time
-
-    delay = randint(5, 10)  # noqa: S311
-
-    # Reload unit
-
-    logger.info(
-        f"Reloading service with unit name '{unit_name}'. Random delay: '{delay}'"
-    )
-
-    # Delay
-
-    sleep(delay)
-
     try:
-        unit.reload()
+        # Set variables
 
-        logger.info(f"Success reloading service with unit name '{unit_name}'")
-    except Exception:
-        # If action fails, don't crash entire program
+        unit_name = json_body["unit_name"]
 
-        logger.exception(
-            f"Error reloading service with unit name '{unit_name}'"
-        )
+        # Set preliminary result
 
-        return
+        success = True
+        result = _prefix_message(unit_name, "Service reloaded")
+
+        # Get object
+
+        unit = CyberfusionUnit(unit_name)
+
+        # Reload unit
+
+        logger.info(_prefix_message(unit_name, "Reloading service"))
+
+        try:
+            unit.reload()
+        except Exception:
+            raise ServiceReloadError
+
+    except ServiceReloadError as e:
+        # Set result from error and log exception
+
+        success = False
+        result = _prefix_message(unit_name, e.result)
+
+        logger.exception(result)
+
+    # Publish result
+
+    channel.basic_publish(
+        exchange=method.exchange,
+        routing_key=properties.reply_to,
+        properties=pika.BasicProperties(
+            correlation_id=properties.correlation_id,
+            content_type="application/json",
+        ),
+        body=json.dumps({"success": success, "message": result}),
+    )

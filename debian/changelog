@@ -1,3 +1,11 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.5.1) unstable; urgency=low
+
+  - Turn dx_service_reload into RPC call
+  - Remove dx_borg_repository_archives_list exchange
+  - Fix dx_cms_install exceptions by inhering from CMSInstallError and BaseException
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 25 Feb 2022 17:46:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.5) unstable; urgency=low
 
   - Turn dx_cms_install into RPC call
