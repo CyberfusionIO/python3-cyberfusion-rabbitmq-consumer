@@ -90,7 +90,7 @@ def handle(
 
         # Install core
 
-        logger.info(_prefix_message(public_root, "Install core"))
+        logger.info(_prefix_message(public_root, "Installing core"))
 
         try:
             core.install(
