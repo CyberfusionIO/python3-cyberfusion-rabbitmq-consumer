@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.5.2) unstable; urgency=low
+
+  - Turn dx_service_restart into RPC call
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 27 Feb 2022 16:19:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.5.1) unstable; urgency=low
 
   - Turn dx_service_reload into RPC call
