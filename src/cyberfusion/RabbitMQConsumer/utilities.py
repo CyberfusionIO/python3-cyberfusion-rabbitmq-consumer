@@ -1,6 +1,11 @@
 """Generic utilities."""
 
+from typing import Optional
 
-def _prefix_message(prefix: str, result: str) -> str:
+
+def _prefix_message(prefix: Optional[str], result: str) -> str:
     """Add user-specified prefix to message."""
-    return f"[{prefix}] {result}"
+    if prefix:
+        return f"[{prefix}] {result}"
+
+    return result
