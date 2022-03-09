@@ -57,11 +57,25 @@ def handle(
                 # is set to warning, so this takes care of that
 
                 if output["changed"]:
-                    logger.warning(
-                        _prefix_message(
-                            command, f"Changes: {output['changed']}"
-                        )
-                    )
+                    # Add changed
+
+                    message = "Changed:\n"
+                    message += f"{output['changed']}\n"
+                    message += "\n"
+
+                    # Add differences
+
+                    for key, differences in output["differences"]:
+                        message += _prefix_message(key, "Differences:\n")
+
+                        for difference in differences:
+                            message += _prefix_message(
+                                key, f"\t{difference}\n"
+                            )
+
+                    # Log message
+
+                    logger.warning(_prefix_message(command, message))
                 else:
                     logger.info(_prefix_message(command, "No changes"))
 
