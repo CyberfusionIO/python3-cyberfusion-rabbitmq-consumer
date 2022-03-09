@@ -27,6 +27,12 @@ def handle(
         # Set commands. We decide the commands in the config, so that the commands
         # can be determined by any data source (e.g. Ansible based on Cluster API
         # output), rather than being hardcoded here.
+        #
+        # Every command has to return JSON. This JSON must contain the objects
+        # 'changed' and 'unchanged'. These objects contain an object per action.
+        # In turn, these action objects contain a list with human-readable strings
+        # describing the action per item. Currently, only the 'changed' and
+        # 'unchanged' objects are used.
 
         commands = [
             command.split(" ")
@@ -37,8 +43,10 @@ def handle(
 
         # Set preliminary result
 
+        changed_commands = []
+
         success = True
-        result = _prefix_message(None, "Configuration present")
+        result = _prefix_message(None, "No configurations updated")
 
         # Run commands
 
@@ -46,7 +54,10 @@ def handle(
             logger.info(_prefix_message(None, f"Running '{command}'"))
 
             try:
-                CyberfusionCommand(command)
+                output = json.loads(CyberfusionCommand(command).stdout)
+
+                if output["changed"]:
+                    changed_commands.append(command)
             except Exception:
                 raise ConfigurationManagerPresentError
 
@@ -57,6 +68,12 @@ def handle(
         result = _prefix_message(None, e.result)
 
         logger.exception(result)
+
+    # If any configurations were updated, set result
+
+    result = _prefix_message(
+        None, f"{len(changed_commands)} configurations updated"
+    )
 
     # Publish result
 
