@@ -29,10 +29,7 @@ def handle(
         # output), rather than being hardcoded here.
         #
         # Every command has to return JSON. This JSON must contain the objects
-        # 'changed' and 'unchanged'. These objects contain an object per action.
-        # In turn, these action objects contain a list with human-readable strings
-        # describing the action per item. Currently, only the 'changed' and
-        # 'unchanged' objects are used.
+        # 'changed' and 'unchanged'.
 
         commands = [
             command.split(" ")
@@ -43,21 +40,31 @@ def handle(
 
         # Set preliminary result
 
-        changed_commands = []
-
         success = True
-        result = _prefix_message(None, "No configurations updated")
+        result = _prefix_message(None, "Configurations updated")
 
         # Run commands
 
         for command in commands:
-            logger.info(_prefix_message(None, f"Running '{command}'"))
+            logger.info(_prefix_message(command, "Running..."))
 
             try:
+                # Run command, should return JSON (see comment above)
+
                 output = json.loads(CyberfusionCommand(command).stdout)
 
+                # We want to receive notifications in case of changes. Log leve
+                # is set to warning, so this takes care of that
+
                 if output["changed"]:
-                    changed_commands.append(command)
+                    logger.warning(
+                        _prefix_message(
+                            command, f"Changes: {output['changed']}"
+                        )
+                    )
+                else:
+                    logger.info(_prefix_message(command, "No changes"))
+
             except Exception:
                 raise ConfigurationManagerPresentError
 
@@ -68,12 +75,6 @@ def handle(
         result = _prefix_message(None, e.result)
 
         logger.exception(result)
-
-    # If any configurations were updated, set result
-
-    result = _prefix_message(
-        None, f"{len(changed_commands)} configurations updated"
-    )
 
     # Publish result
 
