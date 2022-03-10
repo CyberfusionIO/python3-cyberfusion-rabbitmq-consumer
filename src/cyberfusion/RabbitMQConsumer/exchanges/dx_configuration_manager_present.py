@@ -53,7 +53,7 @@ def handle(
 
                 output = json.loads(CyberfusionCommand(command).stdout)
 
-                # We want to receive notifications in case of changes. Log leve
+                # We want to receive notifications in case of changes. Log level
                 # is set to warning, so this takes care of that
 
                 if output["changed"]:
