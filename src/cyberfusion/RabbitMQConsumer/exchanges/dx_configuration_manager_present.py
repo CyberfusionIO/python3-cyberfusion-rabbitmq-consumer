@@ -46,7 +46,9 @@ def handle(
         # Run commands
 
         for command in commands:
-            logger.info(_prefix_message(command, "Running..."))
+            split_command = " ".join(command)  # Human-readable for messages
+
+            logger.info(_prefix_message(split_command, "Running..."))
 
             try:
                 # Run command, should return JSON (see comment above)
@@ -61,11 +63,11 @@ def handle(
                 ):  # If any list in 'changed' is non-empty
                     # Add changed
 
-                    message = f"Changed: {output['changed']}\n\n"
+                    message = f"Changed: {output['changed']}\n"
 
                     # Add differences
 
-                    for key, differences in output["differences"]:
+                    for key, differences in output["differences"].items():
                         message += _prefix_message(key, "Differences:\n")
 
                         for difference in differences:
@@ -75,9 +77,9 @@ def handle(
 
                     # Log message
 
-                    logger.warning(_prefix_message(command, message))
+                    logger.warning(_prefix_message(split_command, message))
                 else:
-                    logger.info(_prefix_message(command, "No changes"))
+                    logger.info(_prefix_message(split_command, "No changes"))
 
             except Exception:
                 raise ConfigurationManagerPresentError
