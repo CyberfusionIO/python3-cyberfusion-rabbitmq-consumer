@@ -56,7 +56,9 @@ def handle(
                 # We want to receive notifications in case of changes. Log level
                 # is set to warning, so this takes care of that
 
-                if output["changed"]:
+                if any(
+                    output["changed"].values()
+                ):  # If any list in 'changed' is non-empty
                     # Add changed
 
                     message = f"Changed: {output['changed']}\n\n"
