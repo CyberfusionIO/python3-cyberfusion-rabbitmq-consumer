@@ -59,9 +59,7 @@ def handle(
                 if output["changed"]:
                     # Add changed
 
-                    message = "Changed:\n"
-                    message += f"{output['changed']}\n"
-                    message += "\n"
+                    message = f"Changed: {output['changed']}\n\n"
 
                     # Add differences
 
