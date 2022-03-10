@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.6) unstable; urgency=low
+
+  - Rename fx_configuration_manager_present to dx_configuration_manager_present
+  - Turn dx_configuration_manager_present into RPC call
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 10 Mar 2022 11:31:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.5.2) unstable; urgency=low
 
   - Turn dx_service_restart into RPC call
