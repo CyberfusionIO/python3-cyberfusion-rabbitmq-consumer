@@ -91,7 +91,8 @@ def handle(
                 "data": {
                     "document_root_contains_files": document_root_contains_files
                 }
-                if document_root_contains_files  # Don't include if no success
+                if document_root_contains_files
+                is not None  # Don't include if no success
                 else {},
             }
         ),

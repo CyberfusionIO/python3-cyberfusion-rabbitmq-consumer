@@ -94,7 +94,8 @@ def handle(
                 is not None,  # If still None, something went wrong
                 "message": None,
                 "data": {"one_time_login_url": one_time_login_url}
-                if one_time_login_url  # Don't include if no success
+                if one_time_login_url
+                is not None  # Don't include if no success
                 else {},
             }
         ),
