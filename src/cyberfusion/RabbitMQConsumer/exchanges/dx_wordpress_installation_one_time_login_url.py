@@ -30,6 +30,10 @@ def handle(
         public_root = json_body["public_root"]
         virtual_hosts_directory = json_body["virtual_hosts_directory"]
 
+        # Set preliminary result
+
+        one_time_login_url = None
+
         # Get installation object
 
         installation = Installation(
@@ -60,9 +64,7 @@ def handle(
             raise WordPressOneTimeLoginURLError
 
     except WordPressOneTimeLoginURLError as e:
-        # Set result from error and log exception
-
-        one_time_login_url = None
+        # Log exception
 
         logger.exception(_prefix_message(public_root, e.result))
 
