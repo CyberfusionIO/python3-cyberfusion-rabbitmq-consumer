@@ -43,9 +43,17 @@ def handle(
         )
 
         try:
-            document_root_contains_files = bool(
-                Path(document_root).rglob(f"*.{file_suffix}")
-            )
+            for _ in Path(document_root).rglob(f"*.{file_suffix}"):
+                # If this code is reached, the file exists. As we're iterating
+                # over a generator, we can't use 'bool(Path(...).rglob(...))'
+
+                document_root_contains_files = True
+
+            # If the value is unchanged, there are no files
+
+            if document_root_contains_files is None:
+                document_root_contains_files = False
+
         except Exception:
             raise VirtualHostDocumentRootContainsFilesError
 
