@@ -77,7 +77,7 @@ def handle(
             else "An unexpected exception occurred",
         )
 
-        logger.exception(_prefix_message(public_root, result))
+        logger.exception(result)
 
     # Publish message
 
