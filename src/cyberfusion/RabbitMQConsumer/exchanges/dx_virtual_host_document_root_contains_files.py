@@ -49,6 +49,8 @@ def handle(
 
                 document_root_contains_files = True
 
+                break
+
             # If the value is unchanged, there are no files
 
             if document_root_contains_files is None:
