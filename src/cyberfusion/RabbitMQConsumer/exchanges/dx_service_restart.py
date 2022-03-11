@@ -49,11 +49,16 @@ def handle(
         except Exception:
             raise ServiceRestartError
 
-    except ServiceRestartError as e:
+    except Exception as e:
         # Set result from error and log exception
 
         success = False
-        result = _prefix_message(unit_name, e.result)
+        result = _prefix_message(
+            unit_name,
+            e.result
+            if isinstance(e, ServiceRestartError)
+            else "An unexpected exception occurred",
+        )
 
         logger.exception(result)
 

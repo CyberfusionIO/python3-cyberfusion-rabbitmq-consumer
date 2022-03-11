@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.8.1) unstable; urgency=low
+
+  - Catch all exceptions to ensure messages are always replied to
+  - Don't include None result in data
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 11 Mar 2022 18:51:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.8) unstable; urgency=low
 
   - Add and honour RPC response contract
