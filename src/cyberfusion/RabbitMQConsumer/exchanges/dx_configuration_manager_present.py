@@ -29,7 +29,8 @@ def handle(
         # output), rather than being hardcoded here.
         #
         # Every command has to return JSON. This JSON must contain the objects
-        # 'changed' and 'unchanged'.
+        # 'changed', 'unchanged' and 'differences'. These objects must contain dicts with an
+        # action as key and a list with objects as value.
 
         commands = [
             command.split(" ")
