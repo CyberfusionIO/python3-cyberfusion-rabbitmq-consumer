@@ -85,6 +85,7 @@ def handle(
             {
                 "success": one_time_login_url
                 is not None,  # If still None, something went wrong
+                "message": None,
                 "data": {"one_time_login_url": one_time_login_url},
             }
         ),

@@ -80,6 +80,7 @@ def handle(
             {
                 "success": document_root_contains_files
                 is not None,  # If still None, something went wrong
+                "message": None,
                 "data": {
                     "document_root_contains_files": document_root_contains_files
                 },
