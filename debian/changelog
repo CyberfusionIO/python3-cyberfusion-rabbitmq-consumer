@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.5.8) unstable; urgency=low
+
+  - Add and honour RPC response contract
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 11 Mar 2022 17:39:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.5.7) unstable; urgency=low
 
   - Use new-style logging and exceptions for
