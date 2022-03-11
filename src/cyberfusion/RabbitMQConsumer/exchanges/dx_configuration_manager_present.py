@@ -88,11 +88,16 @@ def handle(
             except Exception:
                 raise ConfigurationManagerPresentError
 
-    except ConfigurationManagerPresentError as e:
+    except Exception as e:
         # Set result from error and log exception
 
         success = False
-        result = _prefix_message(None, e.result)
+        result = _prefix_message(
+            None,
+            e.result
+            if isinstance(e, ConfigurationManagerPresentError)
+            else "An unexpected exception occurred",
+        )
 
         logger.exception(result)
 

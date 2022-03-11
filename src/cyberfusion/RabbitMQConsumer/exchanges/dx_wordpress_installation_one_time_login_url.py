@@ -26,7 +26,7 @@ def handle(
     """Handle message.
 
     data contains:
-        - one_time_login_url (string)
+        - one_time_login_url (string). Omitted when 'success' is false.
     """
     try:
         # Set variables
@@ -67,10 +67,17 @@ def handle(
         except Exception:
             raise WordPressOneTimeLoginURLError
 
-    except WordPressOneTimeLoginURLError as e:
+    except Exception as e:
         # Log exception
 
-        logger.exception(_prefix_message(public_root, e.result))
+        result = _prefix_message(
+            public_root,
+            e.result
+            if isinstance(e, WordPressOneTimeLoginURLError)
+            else "An unexpected exception occurred",
+        )
+
+        logger.exception(_prefix_message(public_root, result))
 
     # Publish message
 
@@ -86,7 +93,9 @@ def handle(
                 "success": one_time_login_url
                 is not None,  # If still None, something went wrong
                 "message": None,
-                "data": {"one_time_login_url": one_time_login_url},
+                "data": {"one_time_login_url": one_time_login_url}
+                if one_time_login_url  # Don't include if no success
+                else {},
             }
         ),
     )

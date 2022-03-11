@@ -25,7 +25,7 @@ def handle(
     """Handle message.
 
     data contains:
-        - document_root_contains_files (bool)
+        - document_root_contains_files (bool). Omitted when 'success' is false.
     """
     try:
         # Set variables
@@ -63,10 +63,17 @@ def handle(
         except Exception:
             raise VirtualHostDocumentRootContainsFilesError
 
-    except VirtualHostDocumentRootContainsFilesError as e:
+    except Exception as e:
         # Log exception
 
-        logger.exception(_prefix_message(document_root, e.result))
+        result = _prefix_message(
+            document_root,
+            e.result
+            if isinstance(e, VirtualHostDocumentRootContainsFilesError)
+            else "An unexpected exception occurred",
+        )
+
+        logger.exception(_prefix_message(document_root, result))
 
     # Publish message
 
@@ -83,7 +90,9 @@ def handle(
                 "message": None,
                 "data": {
                     "document_root_contains_files": document_root_contains_files
-                },
+                }
+                if document_root_contains_files  # Don't include if no success
+                else {},
             }
         ),
     )

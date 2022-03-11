@@ -106,11 +106,16 @@ def handle(
         except Exception:
             raise WordPressCoreInstallError
 
-    except CMSInstallError as e:
+    except Exception as e:
         # Set result from error and log exception
 
         success = False
-        result = _prefix_message(public_root, e.result)
+        result = _prefix_message(
+            public_root,
+            e.result
+            if isinstance(e, CMSInstallError)
+            else "An unexpected exception occurred",
+        )
 
         logger.exception(result)
 

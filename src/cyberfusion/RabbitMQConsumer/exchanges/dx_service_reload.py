@@ -49,11 +49,16 @@ def handle(
         except Exception:
             raise ServiceReloadError
 
-    except ServiceReloadError as e:
+    except Exception as e:
         # Set result from error and log exception
 
         success = False
-        result = _prefix_message(unit_name, e.result)
+        result = _prefix_message(
+            unit_name,
+            e.result
+            if isinstance(e, ServiceReloadError)
+            else "An unexpected exception occurred",
+        )
 
         logger.exception(result)
 
