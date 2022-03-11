@@ -5,7 +5,11 @@ import logging
 
 import pika
 
+from cyberfusion.RabbitMQConsumer.exceptions.dx_wordpress_installation_one_time_login_url import (
+    WordPressOneTimeLoginURLError,
+)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 from cyberfusion.WordPressSupport import Installation
 from cyberfusion.WordPressSupport.users import User, Users
 
@@ -20,45 +24,49 @@ def handle(
     json_body: dict,
 ) -> None:
     """Handle message."""
-
-    # Set variables
-
-    public_root = json_body["public_root"]
-    virtual_hosts_directory = json_body["virtual_hosts_directory"]
-
-    # Get Installation object
-
-    installation = Installation(
-        public_root,
-        virtual_hosts_directory,
-    )
-
-    # Get administrator users
-
-    users = Users(installation).get(role=User.NAME_ROLE_ADMINISTRATOR)
-
-    # Pick first user
-
-    user = users[0]
-
-    # Get one time login URL
-
-    logger.info(
-        f"Getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
-    )
-
     try:
-        one_time_login_url = user.get_one_time_login_url()
+        # Set variables
+
+        public_root = json_body["public_root"]
+        virtual_hosts_directory = json_body["virtual_hosts_directory"]
+
+        # Set preliminary result
+
+        one_time_login_url = None
+
+        # Get installation object
+
+        installation = Installation(
+            public_root,
+            virtual_hosts_directory,
+        )
+
+        # Get administrator users
+
+        users = Users(installation).get(role=User.NAME_ROLE_ADMINISTRATOR)
+
+        # Pick first user
+
+        user = users[0]
+
+        # Get one time login URL
 
         logger.info(
-            f"Success getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
-        )
-    except Exception:
-        logger.exception(
-            f"Error getting one time login URL for CMS on Virtual Host with public root '{public_root}', user with ID '{user.id}'"
+            _prefix_message(
+                public_root,
+                _prefix_message(user.id, "Getting one time login URL"),
+            )
         )
 
-        return
+        try:
+            one_time_login_url = user.get_one_time_login_url()
+        except Exception:
+            raise WordPressOneTimeLoginURLError
+
+    except WordPressOneTimeLoginURLError as e:
+        # Log exception
+
+        logger.exception(_prefix_message(public_root, e.result))
 
     # Publish message
 

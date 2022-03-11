@@ -6,10 +6,11 @@ from pathlib import Path
 
 import pika
 
+from cyberfusion.RabbitMQConsumer.exceptions.dx_virtual_host_document_root_contains_files import (
+    VirtualHostDocumentRootContainsFilesError,
+)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-
-SUFFIX_FILE_PHP = "php"
-SUFFIXES_FILE = [SUFFIX_FILE_PHP]
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
@@ -22,51 +23,46 @@ def handle(
     json_body: dict,
 ) -> None:
     """Handle message."""
-
-    # Set variables
-
-    document_root = json_body["document_root"]
-    file_suffix = json_body["file_suffix"]
-
-    # Get document root contains files
-
-    logger.info(
-        f"Getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"
-    )
-
-    # Check file suffix allowed. We have this to discourage
-    # using this a lot because of possible blocking I/O
-
-    if file_suffix not in SUFFIXES_FILE:
-        logger.info(
-            f"Not getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'): file suffix not allowed"
-        )
-
-        return
-
     try:
-        # Assume document root does not contain files, let loop prove otherwise
+        # Set variables
 
-        document_root_contains_files = False
+        document_root = json_body["document_root"]
+        file_suffix = json_body["file_suffix"]
 
-        # Loop through files in document root
+        # Set preliminary result
 
-        for _path in Path(document_root).rglob(f"*.{file_suffix}"):
-            # If we reach this code, we found file. Set to true and stop loop
+        document_root_contains_files = None
 
-            document_root_contains_files = True
-
-            break
+        # Get document root contains files
 
         logger.info(
-            f"Success getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}'). Result: {document_root_contains_files}"
-        )
-    except Exception:
-        logger.exception(
-            f"Error getting document root contains files with suffix '{file_suffix}' for virtual host (document root: '{document_root}')"
+            _prefix_message(
+                document_root,
+                "Getting virtual host document root contains files",
+            )
         )
 
-        return
+        try:
+            for _ in Path(document_root).rglob(f"*.{file_suffix}"):
+                # If this code is reached, the file exists. As we're iterating
+                # over a generator, we can't use 'bool(Path(...).rglob(...))'
+
+                document_root_contains_files = True
+
+                break
+
+            # If the value is unchanged, there are no files
+
+            if document_root_contains_files is None:
+                document_root_contains_files = False
+
+        except Exception:
+            raise VirtualHostDocumentRootContainsFilesError
+
+    except VirtualHostDocumentRootContainsFilesError as e:
+        # Log exception
+
+        logger.exception(_prefix_message(document_root, e.result))
 
     # Publish message
 
