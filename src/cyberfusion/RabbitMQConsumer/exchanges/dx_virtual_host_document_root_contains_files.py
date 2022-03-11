@@ -78,9 +78,11 @@ def handle(
         ),
         body=json.dumps(
             {
+                "success": document_root_contains_files
+                is not None,  # If still None, something went wrong
                 "data": {
                     "document_root_contains_files": document_root_contains_files
-                }
+                },
             }
         ),
     )

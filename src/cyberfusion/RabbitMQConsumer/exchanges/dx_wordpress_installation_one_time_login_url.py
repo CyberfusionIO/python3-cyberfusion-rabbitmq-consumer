@@ -81,5 +81,11 @@ def handle(
             correlation_id=properties.correlation_id,
             content_type="application/json",
         ),
-        body=json.dumps({"data": {"one_time_login_url": one_time_login_url}}),
+        body=json.dumps(
+            {
+                "success": one_time_login_url
+                is not None,  # If still None, something went wrong
+                "data": {"one_time_login_url": one_time_login_url},
+            }
+        ),
     )
