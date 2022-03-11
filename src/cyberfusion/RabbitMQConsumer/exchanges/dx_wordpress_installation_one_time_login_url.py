@@ -23,7 +23,11 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""
+    """Handle message.
+
+    data contains:
+        - one_time_login_url (string)
+    """
     try:
         # Set variables
 
@@ -77,5 +81,12 @@ def handle(
             correlation_id=properties.correlation_id,
             content_type="application/json",
         ),
-        body=json.dumps({"one_time_login_url": one_time_login_url}),
+        body=json.dumps(
+            {
+                "success": one_time_login_url
+                is not None,  # If still None, something went wrong
+                "message": None,
+                "data": {"one_time_login_url": one_time_login_url},
+            }
+        ),
     )

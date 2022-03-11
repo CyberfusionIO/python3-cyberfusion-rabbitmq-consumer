@@ -22,7 +22,10 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""
+    """Handle message.
+
+    data contains: nothing
+    """
     try:
         # Set commands. We decide the commands in the config, so that the commands
         # can be determined by any data source (e.g. Ansible based on Cluster API
@@ -102,5 +105,5 @@ def handle(
             correlation_id=properties.correlation_id,
             content_type="application/json",
         ),
-        body=json.dumps({"success": success, "message": result}),
+        body=json.dumps({"success": success, "message": result, "data": {}}),
     )

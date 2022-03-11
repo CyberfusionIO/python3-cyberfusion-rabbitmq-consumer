@@ -28,7 +28,10 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""
+    """Handle message.
+
+    data contains: nothing
+    """
     try:
         # Set variables
 
@@ -120,5 +123,5 @@ def handle(
             correlation_id=properties.correlation_id,
             content_type="application/json",
         ),
-        body=json.dumps({"success": success, "message": result}),
+        body=json.dumps({"success": success, "message": result, "data": {}}),
     )

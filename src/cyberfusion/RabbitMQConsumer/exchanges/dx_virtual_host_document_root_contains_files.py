@@ -22,7 +22,11 @@ def handle(
     properties: pika.spec.BasicProperties,
     json_body: dict,
 ) -> None:
-    """Handle message."""
+    """Handle message.
+
+    data contains:
+        - document_root_contains_files (bool)
+    """
     try:
         # Set variables
 
@@ -73,6 +77,13 @@ def handle(
             correlation_id=properties.correlation_id,
         ),
         body=json.dumps(
-            {"document_root_contains_files": document_root_contains_files}
+            {
+                "success": document_root_contains_files
+                is not None,  # If still None, something went wrong
+                "message": None,
+                "data": {
+                    "document_root_contains_files": document_root_contains_files
+                },
+            }
         ),
     )
