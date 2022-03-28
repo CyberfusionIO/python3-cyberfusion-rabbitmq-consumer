@@ -6,11 +6,11 @@ import logging
 import pika
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
-from cyberfusion.RabbitMQConsumer.exceptions.dx_service_reload import (
-    ServiceReloadError,
-)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
+from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
+    ServiceReloadError,
+)
 
 logger = logging.getLogger(__name__)
 
