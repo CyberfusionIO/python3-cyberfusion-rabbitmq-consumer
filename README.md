@@ -13,3 +13,7 @@ Every RPC response contains a JSON document, which contains the following object
 * `success` (boolean, non-nullable). Indicates whether the server-side actions succeeded.
 * `data` (free-form dict with key-value pairs with a value of any type, non-nullable). Contains exchange-specific data that is relevant for the client. The key-value pairs in the dict may be found in the docstring of the applicable handle method. When `success` is `false`, keys that are normally included in this dict may be omitted. In general, you should not assume that the data dict contains anything when `success` is `false`.
 * `message` (string, nullable). Human-readable free-form message related to the response. This may be `null` when there is nothing to report.
+
+# Handling messages
+
+When receing a message, the consumer calls the `handle` method on `cyberfusion.RabbitMQHandlers.$exchange_name`. In order to avoid putting logic for **all** exchanges in this package, specific packages should add modules for each exchange using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).

@@ -166,7 +166,7 @@ def callback(
     # Import exchange module
 
     exchange_obj = importlib.import_module(
-        f"cyberfusion.RabbitMQConsumer.exchanges.{method.exchange}"
+        f"cyberfusion.RabbitMQHandlers.exchanges.{method.exchange}"
     )
 
     # Call exchange module handle method
