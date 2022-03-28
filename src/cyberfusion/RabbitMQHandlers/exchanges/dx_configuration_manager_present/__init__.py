@@ -6,11 +6,11 @@ import logging
 import pika
 
 from cyberfusion.Common.Command import CyberfusionCommand
-from cyberfusion.RabbitMQConsumer.exceptions.dx_configuration_manager_present import (
-    ConfigurationManagerPresentError,
-)
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
+from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
+    ConfigurationManagerPresentError,
+)
 
 logger = logging.getLogger(__name__)
 
