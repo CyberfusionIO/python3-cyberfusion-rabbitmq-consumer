@@ -17,3 +17,5 @@ Every RPC response contains a JSON document, which contains the following object
 # Handling messages
 
 When receing a message, the consumer calls the `handle` method on `cyberfusion.RabbitMQHandlers.$exchange_name`. In order to avoid putting logic for **all** exchanges in this package, specific packages should add modules for each exchange using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
+
+**EVERY HANDLE METHOD MUST BE IDEMPOTENT.** Messages **WILL** be retried, and thus handled again, if the consumer dies before fully processing the message (i.e. not acknowledging it).
