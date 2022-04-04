@@ -15,5 +15,11 @@ RestartSec=120
 # When the parent process receives SIGKILL, it doesn't get a chance to run the 'finally' block. We assume the consumer reconnects quickly, so we don't see that as much of a problem.
 KillMode=mixed
 
+# Limit the amount of tasks (AFAIK, tasks are threads + processes). We already limit the amount of threads in the code, so this is extra safety for not running out of OS threads.
+# rabbitmq_consume creates 1 thread per message (max RabbitMQ.RabbitMQ.HANDLE_SIMULTANEOUS_MAX threads). Each exchange handle method may run 1 command (process). This comes to a total of:
+# HANDLE_SIMULTANEOUS_MAX threads + 1 main thread + HANDLE_SIMULTANEOUS_MAX processes (for 1 command per exchange handle method) = 5 + 1 + 5 = 11. As this is just a failsafe, the value doesn't
+# have to be completely accurate, and we want to take unforeseen circumstances that would spawn more threads than expected into account.
+TasksMax=15
+
 [Install]
 WantedBy=rabbitmq-consume.target
