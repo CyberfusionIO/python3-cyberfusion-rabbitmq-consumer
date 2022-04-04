@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.7.1) unstable; urgency=low
+
+  - Add TasksMax to systemd unit, as failsafe for not running out of threads
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 4 Apr 2022 16:31:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.7) unstable; urgency=low
 
   - Implement multithreading
