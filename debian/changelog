@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.7) unstable; urgency=low
+
+  - Implement multithreading
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 4 Apr 2022 13:43:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.6) unstable; urgency=low
 
   - Remove non-generic exchange modules in favour of namespace packages

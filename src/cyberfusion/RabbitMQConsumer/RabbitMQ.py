@@ -3,7 +3,7 @@
 import logging
 import os
 import ssl
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 import pika
 import yaml
@@ -13,6 +13,10 @@ logger = logging.getLogger(__name__)
 NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
     "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
 )
+
+# Every message is handled in its own thread, so this is the max amount of threads
+
+HANDLE_SIMULTANEOUS_MAX = 5
 
 
 def get_config_file_path() -> str:
@@ -34,6 +38,7 @@ class RabbitMQ:
         self.declare_queue()
         self.declare_exchanges()
         self.bind_queue()
+        self.set_basic_qos()
 
     def set_config(self) -> None:
         """Set config from YAML file."""
@@ -77,20 +82,23 @@ class RabbitMQ:
             durable=True,
         )
 
+    @property
+    def exchanges(self) -> Dict[str, Dict[str, Union[str, List[str]]]]:
+        """Get exchanges from config."""
+        return self.config["virtual_hosts"][self.virtual_host_name][
+            "exchanges"
+        ]
+
     def declare_exchanges(self) -> None:
         """Declare RabbitMQ exchanges."""
-        for exchange_name, exchange_values in self.config["virtual_hosts"][
-            self.virtual_host_name
-        ]["exchanges"].items():
+        for exchange_name, exchange_values in self.exchanges.items():
             self.channel.exchange_declare(
                 exchange=exchange_name, exchange_type=exchange_values["type"]
             )
 
     def bind_queue(self) -> None:
         """Bind to RabbitMQ queue at each exchange."""
-        for exchange_name, _exchange_values in self.config["virtual_hosts"][
-            self.virtual_host_name
-        ]["exchanges"].items():
+        for exchange_name, _exchange_values in self.exchanges.items():
             queue = self.config["virtual_hosts"][self.virtual_host_name][
                 "queue"
             ]
@@ -100,3 +108,7 @@ class RabbitMQ:
             )
 
             self.channel.queue_bind(exchange=exchange_name, queue=queue)
+
+    def set_basic_qos(self) -> None:
+        """Set basic QoS for channel."""
+        self.channel.basic_qos(prefetch_count=HANDLE_SIMULTANEOUS_MAX)
