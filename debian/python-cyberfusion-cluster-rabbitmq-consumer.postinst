@@ -23,6 +23,13 @@ case "$1" in
         pip3 install pika==1.2.0
     ;;
 
+    triggered)
+        if [ -d /run/systemd/system ]; then
+            systemctl --system daemon-reload >/dev/null || true
+            deb-systemd-invoke restart 'rabbitmq-consume.target' >/dev/null || true
+        fi
+    ;;
+
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
 
