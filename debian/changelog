@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.7.2) unstable; urgency=low
+
+  - Add dpkg-trigger to restart on RabbitMQHandlers update
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 9 May 2022 11:09:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.7.1) unstable; urgency=low
 
   - Add TasksMax to systemd unit, as failsafe for not running out of threads

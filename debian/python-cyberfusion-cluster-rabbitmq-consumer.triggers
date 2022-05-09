@@ -1,0 +1,3 @@
+# Activate trigger only once by using await. Otherwise, when using noawait, trigger is activated for
+# each package that modifies the specified directory. This would cause many unnecessary activations.
+interest-await /usr/lib/python3/dist-packages/cyberfusion/RabbitMQHandlers
