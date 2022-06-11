@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.7.2.1) unstable; urgency=low
+
+  - Add python3-pip to Depends
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sat, 11 Jun 2022 17:32:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.7.2) unstable; urgency=low
 
   - Add dpkg-trigger to restart on RabbitMQHandlers update

@@ -1,4 +1,4 @@
-image: debian:buster
+image: debian:bullseye
 
 stages:
   - test
@@ -6,7 +6,7 @@ stages:
 
 styling test:
   stage: test
-  image: python:3.7
+  image: python:3.9
   script:
     - pip install --no-cache-dir -r requirements/dev.txt
     - mypy . --junit-xml report-mypy.xml
@@ -20,7 +20,7 @@ styling test:
 
 unit test:
   stage: test
-  image: python:3.7
+  image: python:3.9
   services:
     # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3163#note_63471739
     - name: rabbitmq:3.9.13-management
@@ -52,7 +52,7 @@ build test:
     - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
     - dpkg-buildpackage -us -uc
     - dpkg-genchanges > ../pkg.changes
-    - lintian --dont-check-part=manpages ../pkg.changes
+    - lintian ../pkg.changes
 
 build:
   stage: build
