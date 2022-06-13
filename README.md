@@ -26,3 +26,35 @@ When writing handle methods, please keep the following in mind:
 
 * Every handle method MUST BE IDEMPOTENT. Messages WILL be retried, and thus handled again, if the consumer dies before fully processing the message (i.e. not acknowledging it).
 * Every exchange module must have a constant called `KEY_IDENTIFIER_EXCLUSIVE`. See the comment in `rabbitmq_consume.callback` for an explanation.
+
+# Setup locally
+
+## Docker Compose
+
+The project contains a `stack.yml` that `docker-compose` can use to start RabbitMQ.
+
+Starting:
+
+```bash
+docker-compose -f stack.yml up
+```
+
+Stopping:
+
+```bash
+docker-compose -f stack.yml down
+```
+
+## Environment variables for tests
+
+The following environment variables may be passed to the `pytest` command. The variables have sensible defaults, i.e. the ones used by the Docker Compose file and CI.
+
+A config file will be automatically generated based on the values of these environment variables, so do not set `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` manually.
+
+* `RABBITMQ_VIRTUAL_HOST_NAME`. The virtual host will be created by the tests, so it should not exist before running the tests.
+* `RABBITMQ_HOST`
+* `RABBITMQ_USERNAME`. The user must have the administrator tag in order to create virtual hosts. If the user does not have this tag already, you should assign this tag to the user manually.
+* `RABBITMQ_PASSWORD`
+* `RABBITMQ_AMQP_PORT`
+* `RABBITMQ_MANAGEMENT_PORT`
+* `RABBITMQ_SSL`
