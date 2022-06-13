@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.7.3) unstable; urgency=low
+
+  - Add RabbitMQConsumer.tests module
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 13 Jun 2022 13:12:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.7.2.1) unstable; urgency=low
 
   - Add python3-pip to Depends
