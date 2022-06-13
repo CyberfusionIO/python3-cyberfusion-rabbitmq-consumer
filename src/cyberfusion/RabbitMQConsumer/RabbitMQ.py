@@ -32,7 +32,6 @@ class RabbitMQ:
         self.virtual_host_name = virtual_host_name
 
         self.set_config()
-        self.set_ssl_options()
         self.set_connection()
         self.set_channel()
         self.declare_queue()
@@ -45,14 +44,15 @@ class RabbitMQ:
         with open(get_config_file_path(), "rb") as fh:
             self.config = yaml.load(fh.read(), Loader=yaml.SafeLoader)
 
-    def set_ssl_options(self) -> None:
+    @property
+    def ssl_options(self) -> Optional[pika.SSLOptions]:
         """Set SSL options."""
-        self.ssl_options: Optional[pika.SSLOptions] = None
+        if not self.config["server"]["ssl"]:
+            return None
 
-        if self.config["server"]["ssl"]:
-            self.ssl_options = pika.SSLOptions(
-                ssl.create_default_context(), self.config["server"]["host"]
-            )
+        return pika.SSLOptions(
+            ssl.create_default_context(), self.config["server"]["host"]
+        )
 
     def set_connection(self) -> None:
         """Set RabbitMQ connection."""
