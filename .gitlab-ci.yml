@@ -35,7 +35,7 @@ unit test:
     - apt update
     - apt -y install python-cyberfusion-common python3-sdnotify python3-yaml python3-systemd
     - pip install --no-cache-dir -r requirements/test.txt
-    - RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=10 --junitxml=report-pytest.xml
+    - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=10 --junitxml=report-pytest.xml
   artifacts:
     reports:
       junit: report-*.xml

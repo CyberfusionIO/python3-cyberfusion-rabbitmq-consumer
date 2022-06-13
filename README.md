@@ -51,9 +51,9 @@ The following environment variables may be passed to the `pytest` command. The v
 
 A config file will be automatically generated based on the values of these environment variables, so do not set `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` manually.
 
-* `RABBITMQ_VIRTUAL_HOST_NAME`. The virtual host will be created by the tests, so it should not exist before running the tests.
+* `RABBITMQ_VIRTUAL_HOST_NAME`. The virtual host will be created by the tests if it does not exist.
 * `RABBITMQ_HOST`
-* `RABBITMQ_USERNAME`. The user must have the administrator tag in order to create virtual hosts. If the user does not have this tag already, you should assign this tag to the user manually.
+* `RABBITMQ_USERNAME`. If the virtual host does not exist, the user must have the administrator tag in order to create it.
 * `RABBITMQ_PASSWORD`
 * `RABBITMQ_AMQP_PORT`
 * `RABBITMQ_MANAGEMENT_PORT`

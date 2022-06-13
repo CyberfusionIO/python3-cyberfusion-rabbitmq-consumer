@@ -173,6 +173,23 @@ def bindings(
     return r.json()
 
 
+@pytest.fixture
+def virtual_hosts(
+    rabbitmq: Generator[RabbitMQ, None, None],
+    rabbitmq_management_url: str,
+    rabbitmq_username: str,
+    rabbitmq_password: str,
+) -> dict:
+    r = requests.get(
+        f"{rabbitmq_management_url}/vhosts",
+        auth=(rabbitmq_username, rabbitmq_password),
+    )
+
+    r.raise_for_status()
+
+    return r.json()
+
+
 # @pytest.fixture
 # def channels(
 #     rabbitmq: Generator[RabbitMQ, None, None],
@@ -198,13 +215,29 @@ def rabbitmq(
     rabbitmq_management_url: str,
     rabbitmq_virtual_host_name: str,
 ) -> Generator[RabbitMQ, None, None]:
-    # Create virtual host
+    # Create virtual host if it doesn't exist yet. When running in CI, the virtual
+    # host should already exist, and the user has no permissions to create it,
+    # so we don't want to create it then. When running locally, the virtual host
+    # may or may not exist, and the user should have permissions to create it.
 
-    requests.put(
-        f"{rabbitmq_management_url}/vhosts/{rabbitmq_virtual_host_name}",
+    _virtual_hosts = requests.get(
+        f"{rabbitmq_management_url}/vhosts",
         auth=(rabbitmq_username, rabbitmq_password),
-    ).raise_for_status()
-    # requests.put(  # Do not need to set permissions, as user should already have administrator tag
+    )
+
+    _virtual_hosts.raise_for_status()
+
+    virtual_hosts = _virtual_hosts.json()
+
+    if not any(
+        virtual_host["name"] == rabbitmq_virtual_host_name
+        for virtual_host in virtual_hosts
+    ):
+        requests.put(
+            f"{rabbitmq_management_url}/vhosts/{rabbitmq_virtual_host_name}",
+            auth=(rabbitmq_username, rabbitmq_password),
+        ).raise_for_status()
+    # requests.put(  # Do not need to set permissions, as user should already have administrator tag (local) or permissions (CI)
     #         f"{rabbitmq_management_url}/permissions/{rabbitmq_virtual_host_name}/{rabbitmq_username}",data={"configure":".*","write":".*","read":".*"},
     #         auth=(rabbitmq_username, rabbitmq_password),
     #     ).raise_for_status()
