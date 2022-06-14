@@ -15,7 +15,6 @@ setup(
         "cyberfusion.RabbitMQHandlers.exchanges.dx_configuration_manager_present",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_service_reload",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_service_restart",
-        "cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer",
     ],
     package_dir={"": "src"},
     platforms=["linux"],

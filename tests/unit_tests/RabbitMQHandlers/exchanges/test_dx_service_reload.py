@@ -14,9 +14,6 @@ from cyberfusion.RabbitMQConsumer.tests import (
     Properties,
     RabbitMQ,
 )
-from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
-    ServiceReloadError,
-)
 from cyberfusion.RabbitMQHandlers.exchanges import dx_service_reload
 
 PARAMETERS_HANDLE = (
@@ -77,33 +74,7 @@ def test_dx_service_reload_handle_result_success(
     [PARAMETERS_HANDLE],
     indirect=True,
 )
-def test_dx_service_reload_handle_result_caught_failure(
-    mocker: MockerFixture, handle_parameters: dict
-):
-    mocker.patch(
-        "cyberfusion.Common.Systemd.CyberfusionUnit.reload",
-        return_value=None,
-    )
-
-    with mock.patch(
-        "cyberfusion.Common.Systemd.CyberfusionUnit.reload",
-        side_effect=ServiceReloadError,
-    ):
-        result = dx_service_reload.handle(**handle_parameters)
-
-    assert result == {
-        "success": False,
-        "message": "[test.service] Service could not be reloaded due to error",
-        "data": {},
-    }
-
-
-@pytest.mark.parametrize(
-    "handle_parameters",
-    [PARAMETERS_HANDLE],
-    indirect=True,
-)
-def test_dx_service_reload_handle_result_uncaught_failure(
+def test_dx_service_reload_handle_result_failure(
     mocker: MockerFixture, handle_parameters: dict
 ):
     mocker.patch(

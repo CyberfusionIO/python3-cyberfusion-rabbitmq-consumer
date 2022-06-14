@@ -5,9 +5,6 @@ from typing import Optional
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
-from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
-    ServiceReloadError,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -43,20 +40,13 @@ def handle(
 
         logger.info(_prefix_message(unit_name, "Reloading service"))
 
-        try:
-            unit.reload()
-        except Exception:
-            raise ServiceReloadError
+        unit.reload()
 
-    except Exception as e:
-        # Set result from error and log exception
-
+    except Exception:
         success = False
         result = _prefix_message(
             unit_name,
-            e.result
-            if isinstance(e, ServiceReloadError)
-            else "An unexpected exception occurred",
+            "An unexpected exception occurred",
         )
 
         logger.exception(result)

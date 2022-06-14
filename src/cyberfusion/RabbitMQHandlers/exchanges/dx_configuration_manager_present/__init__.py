@@ -5,9 +5,6 @@ import logging
 
 from cyberfusion.Common.Command import CyberfusionCommand
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
-from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
-    ConfigurationManagerPresentError,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -53,49 +50,39 @@ def handle(
 
             logger.info(_prefix_message(split_command, "Running..."))
 
-            try:
-                # Run command, should return JSON (see comment above)
+            # Run command, should return JSON (see comment above)
 
-                output = json.loads(CyberfusionCommand(command).stdout)
+            output = json.loads(CyberfusionCommand(command).stdout)
 
-                # We want to receive notifications in case of changes. Log level
-                # is set to warning, so this takes care of that
+            # We want to receive notifications in case of changes. Log level
+            # is set to warning, so this takes care of that
 
-                if any(
-                    output["changed"].values()
-                ):  # If any list in 'changed' is non-empty
-                    # Add changed
+            if any(
+                output["changed"].values()
+            ):  # If any list in 'changed' is non-empty
+                # Add changed
 
-                    message = f"Changed: {output['changed']}\n"
+                message = f"Changed: {output['changed']}\n"
 
-                    # Add differences
+                # Add differences
 
-                    for key, differences in output["differences"].items():
-                        message += _prefix_message(key, "Differences:\n")
+                for key, differences in output["differences"].items():
+                    message += _prefix_message(key, "Differences:\n")
 
-                        for difference in differences:
-                            message += _prefix_message(
-                                key, f"\t{difference}\n"
-                            )
+                    for difference in differences:
+                        message += _prefix_message(key, f"\t{difference}\n")
 
-                    # Log message
+                # Log message
 
-                    logger.warning(_prefix_message(split_command, message))
-                else:
-                    logger.info(_prefix_message(split_command, "No changes"))
+                logger.warning(_prefix_message(split_command, message))
+            else:
+                logger.info(_prefix_message(split_command, "No changes"))
 
-            except Exception:
-                raise ConfigurationManagerPresentError
-
-    except Exception as e:
-        # Set result from error and log exception
-
+    except Exception:
         success = False
         result = _prefix_message(
             None,
-            e.result
-            if isinstance(e, ConfigurationManagerPresentError)
-            else "An unexpected exception occurred",
+            "An unexpected exception occurred",
         )
 
         logger.exception(result)
