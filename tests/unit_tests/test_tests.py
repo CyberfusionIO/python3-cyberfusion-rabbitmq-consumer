@@ -9,9 +9,16 @@ from cyberfusion.RabbitMQConsumer.tests import (
 )
 
 
-def test_rabbitmq_test_class():
-    rabbitmq = RabbitMQ()
+def test_rabbitmq_test_class(
+    rabbitmq_virtual_host_name: str, rabbitmq_consumer_config_file_path: str
+):
+    rabbitmq = RabbitMQ(
+        virtual_host_name=rabbitmq_virtual_host_name,
+        config_file_path=rabbitmq_consumer_config_file_path,
+    )
 
+    assert rabbitmq.virtual_host_name == rabbitmq_virtual_host_name
+    assert isinstance(rabbitmq.config, dict)
     assert isinstance(rabbitmq.connection, Connection)
 
 
@@ -57,15 +64,23 @@ def test_properties_test_class(rabbitmq_exchange_name: str):
     assert properties.correlation_id == "fake"
 
 
-def test_get_handle_parameters(rabbitmq_exchange_name: str):
-    handle_parameters = get_handle_parameters(
-        exchange_name=rabbitmq_exchange_name, json_body={"a": "b"}
+def test_get_handle_parameters(
+    rabbitmq_exchange_name: str,
+    rabbitmq_virtual_host_name: str,
+    rabbitmq_consumer_config_file_path: str,
+):
+    rabbitmq = RabbitMQ(
+        virtual_host_name=rabbitmq_virtual_host_name,
+        config_file_path=rabbitmq_consumer_config_file_path,
     )
 
-    assert isinstance(handle_parameters["rabbitmq"], RabbitMQ)
-    assert isinstance(handle_parameters["channel"], Channel)
-    assert isinstance(handle_parameters["method"], Method)
-    assert handle_parameters["method"].exchange == rabbitmq_exchange_name
-    assert isinstance(handle_parameters["properties"], Properties)
-    assert isinstance(handle_parameters["lock"], Lock)
+    handle_parameters = get_handle_parameters(
+        exchange_name=rabbitmq_exchange_name,
+        rabbitmq=rabbitmq,
+        json_body={"a": "b"},
+    )
+
+    assert handle_parameters["exchange_name"] == rabbitmq_exchange_name
+    assert handle_parameters["virtual_host_name"] == rabbitmq_virtual_host_name
+    assert isinstance(handle_parameters["rabbitmq_config"], dict)
     assert handle_parameters["json_body"] == {"a": "b"}

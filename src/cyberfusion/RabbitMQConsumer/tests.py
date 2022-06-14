@@ -6,6 +6,8 @@ mocking for each package.
 
 from typing import Any
 
+import yaml
+
 
 class Connection:
     """Fake implementation of pika.BlockingConnection."""
@@ -22,8 +24,14 @@ class Connection:
 class RabbitMQ:
     """Fake implementation of RabbitMQ.RabbitMQ."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self, *, virtual_host_name: str, config_file_path: str
+    ) -> None:
         """Set attributes."""
+        self.virtual_host_name = virtual_host_name
+        self.config = yaml.load(
+            open(config_file_path, "r").read(), Loader=yaml.SafeLoader
+        )
         self.connection = Connection()
 
 
@@ -75,13 +83,13 @@ class Lock:
         pass
 
 
-def get_handle_parameters(exchange_name: str, *, json_body: dict) -> dict:
+def get_handle_parameters(
+    *, exchange_name: str, rabbitmq: RabbitMQ, json_body: dict
+) -> dict:
     """Get parameters for testing handle() method of exchange module."""
     return {
-        "rabbitmq": RabbitMQ(),
-        "channel": Channel(),
-        "method": Method(exchange_name=exchange_name),
-        "properties": Properties(),
-        "lock": Lock(),
+        "exchange_name": exchange_name,
+        "virtual_host_name": rabbitmq.virtual_host_name,
+        "rabbitmq_config": rabbitmq.config,
         "json_body": json_body,
     }

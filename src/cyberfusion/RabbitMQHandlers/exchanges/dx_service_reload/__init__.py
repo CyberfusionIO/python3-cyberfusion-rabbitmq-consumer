@@ -1,17 +1,9 @@
 """Methods for exchange."""
 
 import logging
-import threading
-
-import pika
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-from cyberfusion.RabbitMQConsumer.utilities import (
-    _prefix_message,
-    finish_handle,
-    prepare_handle,
-)
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
     ServiceReloadError,
 )
@@ -22,23 +14,17 @@ KEY_IDENTIFIER_EXCLUSIVE = "unit_name"
 
 
 def handle(
-    rabbitmq: RabbitMQ,
-    channel: pika.adapters.blocking_connection.BlockingChannel,
-    method: pika.spec.Basic.Deliver,
-    properties: pika.spec.BasicProperties,
-    lock: threading.Lock,
+    *,
+    exchange_name: str,
+    virtual_host_name: str,
+    rabbitmq_config: dict,
     json_body: dict,
-) -> None:
+) -> dict:
     """Handle message.
 
     data contains: nothing
     """
     try:
-        prepare_handle(
-            lock,
-            exchange_name=method.exchange,
-        )
-
         # Set variables
 
         unit_name = json_body["unit_name"]
@@ -74,15 +60,4 @@ def handle(
 
         logger.exception(result)
 
-    try:
-        finish_handle(
-            rabbitmq,
-            channel,
-            method,
-            properties,
-            lock,
-            body={"success": success, "message": result, "data": {}},
-            exchange_name=method.exchange,
-        )
-    except Exception:
-        logger.exception("Finish routine failed")
+    return {"success": success, "message": result, "data": {}}

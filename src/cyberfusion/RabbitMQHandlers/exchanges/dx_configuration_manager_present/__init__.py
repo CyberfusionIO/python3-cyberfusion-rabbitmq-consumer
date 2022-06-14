@@ -2,17 +2,9 @@
 
 import json
 import logging
-import threading
-
-import pika
 
 from cyberfusion.Common.Command import CyberfusionCommand
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-from cyberfusion.RabbitMQConsumer.utilities import (
-    _prefix_message,
-    finish_handle,
-    prepare_handle,
-)
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
     ConfigurationManagerPresentError,
 )
@@ -23,23 +15,17 @@ KEY_IDENTIFIER_EXCLUSIVE = None
 
 
 def handle(
-    rabbitmq: RabbitMQ,
-    channel: pika.adapters.blocking_connection.BlockingChannel,
-    method: pika.spec.Basic.Deliver,
-    properties: pika.spec.BasicProperties,
-    lock: threading.Lock,
+    *,
+    virtual_host_name: str,
+    rabbitmq_config: dict,
+    exchange_name: str,
     json_body: dict,
-) -> None:
+) -> dict:
     """Handle message.
 
     data contains: nothing
     """
     try:
-        prepare_handle(
-            lock,
-            exchange_name=method.exchange,
-        )
-
         # Set commands. We decide the commands in the config, so that the commands
         # can be determined by any data source (e.g. Ansible based on Cluster API
         # output), rather than being hardcoded here.
@@ -50,9 +36,9 @@ def handle(
 
         commands = [
             command.split(" ")
-            for command in rabbitmq.config["virtual_hosts"][
-                rabbitmq.virtual_host_name
-            ]["exchanges"][method.exchange]["commands"]
+            for command in rabbitmq_config[virtual_host_name]["exchanges"][
+                exchange_name
+            ]["commands"]
         ]
 
         # Set preliminary result
@@ -114,15 +100,4 @@ def handle(
 
         logger.exception(result)
 
-    try:
-        finish_handle(
-            rabbitmq,
-            channel,
-            method,
-            properties,
-            lock,
-            body={"success": success, "message": result, "data": {}},
-            exchange_name=method.exchange,
-        )
-    except Exception:
-        logger.exception("Finish routine failed")
+    return {"success": success, "message": result, "data": {}}
