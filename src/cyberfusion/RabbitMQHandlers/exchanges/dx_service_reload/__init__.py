@@ -1,6 +1,7 @@
 """Methods for exchange."""
 
 import logging
+from typing import Optional
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
@@ -17,7 +18,7 @@ def handle(
     *,
     exchange_name: str,
     virtual_host_name: str,
-    rabbitmq_config: dict,
+    rabbitmq_config: Optional[dict],
     json_body: dict,
 ) -> dict:
     """Handle message.

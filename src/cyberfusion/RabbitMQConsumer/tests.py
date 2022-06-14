@@ -4,7 +4,7 @@ This allows users of these classes to test without repeating stub classes for
 mocking for each package.
 """
 
-from typing import Any
+from typing import Any, Optional
 
 import yaml
 
@@ -25,13 +25,18 @@ class RabbitMQ:
     """Fake implementation of RabbitMQ.RabbitMQ."""
 
     def __init__(
-        self, *, virtual_host_name: str, config_file_path: str
+        self, *, virtual_host_name: str, config_file_path: Optional[str]
     ) -> None:
         """Set attributes."""
         self.virtual_host_name = virtual_host_name
-        self.config = yaml.load(
-            open(config_file_path, "r").read(), Loader=yaml.SafeLoader
-        )
+
+        if config_file_path:
+            self.config = yaml.load(
+                open(config_file_path, "r").read(), Loader=yaml.SafeLoader
+            )
+        else:
+            self.config = None
+
         self.connection = Connection()
 
 
@@ -84,9 +89,18 @@ class Lock:
 
 
 def get_handle_parameters(
-    *, exchange_name: str, rabbitmq: RabbitMQ, json_body: dict
+    *,
+    exchange_name: str,
+    virtual_host_name: str,
+    config_file_path: Optional[str],
+    json_body: dict,
 ) -> dict:
     """Get parameters for testing handle() method of exchange module."""
+    rabbitmq = RabbitMQ(
+        virtual_host_name=virtual_host_name,
+        config_file_path=config_file_path,
+    )
+
     return {
         "exchange_name": exchange_name,
         "virtual_host_name": rabbitmq.virtual_host_name,
