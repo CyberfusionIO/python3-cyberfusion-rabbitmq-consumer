@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.8) unstable; urgency=low
+
+  - Add and use Handler class
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 15 Jun 2022 12:59:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.7.3) unstable; urgency=low
 
   - Add RabbitMQConsumer.tests module

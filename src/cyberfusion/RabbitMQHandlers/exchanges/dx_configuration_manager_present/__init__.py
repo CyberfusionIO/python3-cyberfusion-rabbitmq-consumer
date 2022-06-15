@@ -2,20 +2,9 @@
 
 import json
 import logging
-import threading
-
-import pika
 
 from cyberfusion.Common.Command import CyberfusionCommand
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-from cyberfusion.RabbitMQConsumer.utilities import (
-    _prefix_message,
-    finish_handle,
-    prepare_handle,
-)
-from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
-    ConfigurationManagerPresentError,
-)
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
@@ -23,23 +12,17 @@ KEY_IDENTIFIER_EXCLUSIVE = None
 
 
 def handle(
-    rabbitmq: RabbitMQ,
-    channel: pika.adapters.blocking_connection.BlockingChannel,
-    method: pika.spec.Basic.Deliver,
-    properties: pika.spec.BasicProperties,
-    lock: threading.Lock,
+    *,
+    virtual_host_name: str,
+    rabbitmq_config: dict,
+    exchange_name: str,
     json_body: dict,
-) -> None:
+) -> dict:
     """Handle message.
 
     data contains: nothing
     """
     try:
-        prepare_handle(
-            lock,
-            exchange_name=method.exchange,
-        )
-
         # Set commands. We decide the commands in the config, so that the commands
         # can be determined by any data source (e.g. Ansible based on Cluster API
         # output), rather than being hardcoded here.
@@ -50,9 +33,9 @@ def handle(
 
         commands = [
             command.split(" ")
-            for command in rabbitmq.config["virtual_hosts"][
-                rabbitmq.virtual_host_name
-            ]["exchanges"][method.exchange]["commands"]
+            for command in rabbitmq_config[virtual_host_name]["exchanges"][
+                exchange_name
+            ]["commands"]
         ]
 
         # Set preliminary result
@@ -67,62 +50,41 @@ def handle(
 
             logger.info(_prefix_message(split_command, "Running..."))
 
-            try:
-                # Run command, should return JSON (see comment above)
+            # Run command, should return JSON (see comment above)
 
-                output = json.loads(CyberfusionCommand(command).stdout)
+            output = json.loads(CyberfusionCommand(command).stdout)
 
-                # We want to receive notifications in case of changes. Log level
-                # is set to warning, so this takes care of that
+            # We want to receive notifications in case of changes. Log level
+            # is set to warning, so this takes care of that
 
-                if any(
-                    output["changed"].values()
-                ):  # If any list in 'changed' is non-empty
-                    # Add changed
+            if any(
+                output["changed"].values()
+            ):  # If any list in 'changed' is non-empty
+                # Add changed
 
-                    message = f"Changed: {output['changed']}\n"
+                message = f"Changed: {output['changed']}\n"
 
-                    # Add differences
+                # Add differences
 
-                    for key, differences in output["differences"].items():
-                        message += _prefix_message(key, "Differences:\n")
+                for key, differences in output["differences"].items():
+                    message += _prefix_message(key, "Differences:\n")
 
-                        for difference in differences:
-                            message += _prefix_message(
-                                key, f"\t{difference}\n"
-                            )
+                    for difference in differences:
+                        message += _prefix_message(key, f"\t{difference}\n")
 
-                    # Log message
+                # Log message
 
-                    logger.warning(_prefix_message(split_command, message))
-                else:
-                    logger.info(_prefix_message(split_command, "No changes"))
+                logger.warning(_prefix_message(split_command, message))
+            else:
+                logger.info(_prefix_message(split_command, "No changes"))
 
-            except Exception:
-                raise ConfigurationManagerPresentError
-
-    except Exception as e:
-        # Set result from error and log exception
-
+    except Exception:
         success = False
         result = _prefix_message(
             None,
-            e.result
-            if isinstance(e, ConfigurationManagerPresentError)
-            else "An unexpected exception occurred",
+            "An unexpected exception occurred",
         )
 
         logger.exception(result)
 
-    try:
-        finish_handle(
-            rabbitmq,
-            channel,
-            method,
-            properties,
-            lock,
-            body={"success": success, "message": result, "data": {}},
-            exchange_name=method.exchange,
-        )
-    except Exception:
-        logger.exception("Finish routine failed")
+    return {"success": success, "message": result, "data": {}}

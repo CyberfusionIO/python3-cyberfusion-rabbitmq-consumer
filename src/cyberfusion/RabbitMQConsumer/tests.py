@@ -4,7 +4,9 @@ This allows users of these classes to test without repeating stub classes for
 mocking for each package.
 """
 
-from typing import Any
+from typing import Any, Optional
+
+import yaml
 
 
 class Connection:
@@ -22,8 +24,19 @@ class Connection:
 class RabbitMQ:
     """Fake implementation of RabbitMQ.RabbitMQ."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self, *, virtual_host_name: str, config_file_path: Optional[str]
+    ) -> None:
         """Set attributes."""
+        self.virtual_host_name = virtual_host_name
+
+        if config_file_path:
+            self.config = yaml.load(
+                open(config_file_path, "r").read(), Loader=yaml.SafeLoader
+            )
+        else:
+            self.config = None
+
         self.connection = Connection()
 
 
@@ -75,13 +88,22 @@ class Lock:
         pass
 
 
-def get_handle_parameters(exchange_name: str, *, json_body: dict) -> dict:
+def get_handle_parameters(
+    *,
+    exchange_name: str,
+    virtual_host_name: str,
+    config_file_path: Optional[str],
+    json_body: dict,
+) -> dict:
     """Get parameters for testing handle() method of exchange module."""
+    rabbitmq = RabbitMQ(
+        virtual_host_name=virtual_host_name,
+        config_file_path=config_file_path,
+    )
+
     return {
-        "rabbitmq": RabbitMQ(),
-        "channel": Channel(),
-        "method": Method(exchange_name=exchange_name),
-        "properties": Properties(),
-        "lock": Lock(),
+        "exchange_name": exchange_name,
+        "virtual_host_name": rabbitmq.virtual_host_name,
+        "rabbitmq_config": rabbitmq.config,
         "json_body": json_body,
     }

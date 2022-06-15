@@ -1,20 +1,10 @@
 """Methods for exchange."""
 
 import logging
-import threading
-
-import pika
+from typing import Optional
 
 from cyberfusion.Common.Systemd import CyberfusionUnit
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
-from cyberfusion.RabbitMQConsumer.utilities import (
-    _prefix_message,
-    finish_handle,
-    prepare_handle,
-)
-from cyberfusion.RabbitMQHandlers.exceptions.rabbitmq_consumer import (
-    ServiceRestartError,
-)
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
@@ -22,23 +12,17 @@ KEY_IDENTIFIER_EXCLUSIVE = "unit_name"
 
 
 def handle(
-    rabbitmq: RabbitMQ,
-    channel: pika.adapters.blocking_connection.BlockingChannel,
-    method: pika.spec.Basic.Deliver,
-    properties: pika.spec.BasicProperties,
-    lock: threading.Lock,
+    *,
+    exchange_name: str,
+    virtual_host_name: str,
+    rabbitmq_config: Optional[dict],
     json_body: dict,
-) -> None:
+) -> dict:
     """Handle message.
 
     data contains: nothing
     """
     try:
-        prepare_handle(
-            lock,
-            exchange_name=method.exchange,
-        )
-
         # Set variables
 
         unit_name = json_body["unit_name"]
@@ -56,33 +40,15 @@ def handle(
 
         logger.info(_prefix_message(unit_name, "Restarting service"))
 
-        try:
-            unit.restart()
-        except Exception:
-            raise ServiceRestartError
+        unit.restart()
 
-    except Exception as e:
-        # Set result from error and log exception
-
+    except Exception:
         success = False
         result = _prefix_message(
             unit_name,
-            e.result
-            if isinstance(e, ServiceRestartError)
-            else "An unexpected exception occurred",
+            "An unexpected exception occurred",
         )
 
         logger.exception(result)
 
-    try:
-        finish_handle(
-            rabbitmq,
-            channel,
-            method,
-            properties,
-            lock,
-            body={"success": success, "message": result, "data": {}},
-            exchange_name=method.exchange,
-        )
-    except Exception:
-        logger.exception("Finish routine failed")
+    return {"success": success, "message": result, "data": {}}

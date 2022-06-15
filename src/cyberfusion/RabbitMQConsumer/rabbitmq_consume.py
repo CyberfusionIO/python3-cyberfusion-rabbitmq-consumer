@@ -14,6 +14,7 @@ import sdnotify
 from systemd.journal import JournalHandler
 
 from cyberfusion.Common import EmailAddresses, get_hostname
+from cyberfusion.RabbitMQConsumer.handler import Handler
 from cyberfusion.RabbitMQConsumer.RabbitMQ import (
     RabbitMQ,
     get_config_file_path,
@@ -192,10 +193,6 @@ def callback(
     # If the exclusive key identifier is None, the handle() method for the exchange
     # may not run simultaneously in any case, regardless of the object it operates
     # on.
-    #
-    # Make sure to release the lock before acknowledgement in handle() methods,
-    # so if acknowledgement fails and the message is redelivered, the lock is
-    # already released, preventing race conditions.
 
     global locks
 
@@ -214,21 +211,19 @@ def callback(
     lock = locks[method.exchange][lock_value]
 
     # Create thread for exchange module handle method
-    #
-    # Ensure exceptions are caught where needed inside the module, as exceptions
-    # raised in threads are not propagated, and will therefore not be visible to
-    # the main thread.
+
+    handler = Handler(
+        module=modules[method.exchange],
+        rabbitmq=rabbitmq,
+        channel=channel,
+        method=method,
+        properties=properties,
+        lock=lock,
+        json_body=json_body,
+    )
 
     thread = threading.Thread(
-        target=modules[method.exchange].handle,
-        args=(
-            rabbitmq,
-            channel,
-            method,
-            properties,
-            lock,
-            json_body,
-        ),
+        target=handler,
     )
 
     thread.start()
