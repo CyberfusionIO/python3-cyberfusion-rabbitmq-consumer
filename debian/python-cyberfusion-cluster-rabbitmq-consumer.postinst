@@ -18,9 +18,6 @@ set -e
 
 case "$1" in
     configure)
-        # Install required pip packages
-        echo "Installing all pip dependencies"
-        pip3 install pika==1.2.0
     ;;
 
     triggered)
