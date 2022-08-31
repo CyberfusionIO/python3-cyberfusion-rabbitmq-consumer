@@ -1,3 +1,10 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.8.1) unstable; urgency=low
+
+  - Use new GitLab CI template
+  - Depend on new Debian packages rather than running 'pip3 install'
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 31 Aug 2022 10:07:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.8) unstable; urgency=low
 
   - Add and use Handler class

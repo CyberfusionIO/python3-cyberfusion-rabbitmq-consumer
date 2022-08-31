@@ -1,22 +1,18 @@
-image: debian:bullseye
+include:
+  - project: 'cyberfusion/gitlab-ci-includes'
+    ref: main
+    file:
+      - '/base.yml'
+      - '/debian-packages.yml'
+      - '/python.yml'
+
+variables:
+  APTLY_BASE_REPOSITORY: cluster
 
 stages:
   - test
   - build
-
-styling test:
-  stage: test
-  image: python:3.9
-  script:
-    - pip install --no-cache-dir -r requirements/dev.txt
-    - mypy . --junit-xml report-mypy.xml
-    - flake8 . --tee --output-file flake8.txt; exit_code=$?; flake8_junit flake8.txt report-flake8.xml
-    - if [ $exit_code -ne 0 ]; then exit 1; fi;
-    - isort -c .
-    - black --check .
-  artifacts:
-    reports:
-      junit: report-*.xml
+  - publish
 
 unit test:
   stage: test
@@ -30,45 +26,11 @@ unit test:
     RABBITMQ_DEFAULT_PASS: 'knvPSBPLkJSwTdMn6F4kkQkB'
     RABBITMQ_DEFAULT_VHOST: ci-test
   script:
-    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cyberfusion-packages.list
-    - apt-key adv --fetch-keys https://deb.cyberfusion.nl/cfpkg.gpg
-    - apt update
-    - apt -y install python-cyberfusion-common python3-sdnotify python3-yaml python3-systemd python-cyberfusion-cluster-rabbitmq-consumer
+    - !reference [.add repositories, script]
+    - apt -y install python-cyberfusion-common python3-sdnotify python3-yaml python3-systemd python-cyberfusion-cluster-rabbitmq-consumer python3-pika
     - pip install --no-cache-dir -r requirements/test.txt
     - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/unit_tests/RabbitMQConsumer/ -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=10 --junitxml=report-pytest.xml
     - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/unit_tests/RabbitMQHandlers/ -vvv --cov-branch --cov=cyberfusion.RabbitMQHandlers --cov-config=.coveragerc --cov-fail-under=100 --junitxml=report-pytest.xml
   artifacts:
     reports:
       junit: report-*.xml
-
-build test:
-  stage: test
-  script:
-    - apt update
-    - apt --no-install-recommends -y install apt-transport-https ca-certificates build-essential devscripts equivs gnupg lintian
-    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cyberfusion-packages.list
-    - apt-key adv --fetch-keys https://deb.cyberfusion.nl/cfpkg.gpg
-    - apt update
-    - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
-    - dpkg-buildpackage -us -uc
-    - dpkg-genchanges > ../pkg.changes
-    - lintian ../pkg.changes
-
-build:
-  stage: build
-  only:
-    - master
-  script:
-    - apt update
-    - apt --no-install-recommends -y install apt-transport-https ca-certificates build-essential devscripts equivs gnupg
-    - echo 'deb https://deb.cyberfusion.nl/ stable main' > /etc/apt/sources.list.d/cyberfusion-packages.list
-    - apt-key adv --fetch-keys https://deb.cyberfusion.nl/cfpkg.gpg
-    - apt update
-    - mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
-    - dpkg-buildpackage -us -uc
-    - mkdir publish
-    - cp ../*.deb publish/
-  artifacts:
-    paths:
-      - publish/*.deb
-    expire_in: 1 week
