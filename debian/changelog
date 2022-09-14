@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.8.2) unstable; urgency=low
+
+  - Add rabbitmq-consumer-status
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 14 Sep 2022 16:22:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.8.1.1) unstable; urgency=low
 
   - Remove python3-pip dependency
