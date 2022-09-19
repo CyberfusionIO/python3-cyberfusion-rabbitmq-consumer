@@ -1,3 +1,9 @@
+python-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1) unstable; urgency=low
+
+  - Fix unused f-string
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 14 Sep 2022 18:16:00 +0200
+
 python-cyberfusion-cluster-rabbitmq-consumer (1.8.2) unstable; urgency=low
 
   - Add rabbitmq-consumer-status
