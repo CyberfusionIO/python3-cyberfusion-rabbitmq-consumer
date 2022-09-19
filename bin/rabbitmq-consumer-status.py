@@ -34,13 +34,15 @@ def main() -> None:
     if inactive_units:
         inactive_units_names = ", ".join(inactive_units)
 
-        print(f"CRITICAL: Inactive units: {inactive_units_names}")  # noqa: T001
+        print(
+            f"CRITICAL: Inactive units: {inactive_units_names}"
+        )  # noqa: T001
 
         sys.exit(2)
 
     # Print OK and exit if active
 
-    print(f"OK: No inactive units")
+    print("OK: No inactive units")
 
     sys.exit(0)
 
