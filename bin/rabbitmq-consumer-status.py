@@ -22,7 +22,7 @@ def main() -> None:
     for unit in CyberfusionUnits().search(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
         # If active, skip
 
-        if unit.get_is_active():
+        if unit.is_active:
             continue
 
         # If not active, add to list
