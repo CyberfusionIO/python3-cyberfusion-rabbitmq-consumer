@@ -3,12 +3,12 @@
 from setuptools import setup
 
 setup(
-    name="python-cyberfusion-cluster-rabbitmq-consumer",
-    version="1.8.2.1.1",
+    name="python3-cyberfusion-cluster-rabbitmq-consumer",
+    version="1.8.2.1.2",
     description="RabbitMQConsumer Python library/tools",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
-    url="https://vcs.cyberfusion.nl/cyberfusion/python-cyberfusion-cluster-rabbitmq-consumer",
+    url="https://vcs.cyberfusion.nl/cyberfusion/python3-cyberfusion-cluster-rabbitmq-consumer",
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",

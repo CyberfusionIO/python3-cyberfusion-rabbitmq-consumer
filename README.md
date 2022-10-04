@@ -1,4 +1,4 @@
-# python-cyberfusion-cluster-rabbitmq-consumer
+# python3-cyberfusion-cluster-rabbitmq-consumer
 
 This package provides a RabbitMQ consumer that runs on cluster nodes. The RabbitMQ consumer has methods for messages sent to several exchanges, which allows for implementing RPC.
 
