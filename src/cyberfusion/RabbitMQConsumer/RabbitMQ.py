@@ -54,6 +54,26 @@ class RabbitMQ:
             ssl.create_default_context(), self.config["server"]["host"]
         )
 
+    @property
+    def username(self) -> None:
+        """Set username."""
+        if "username" in self.config["virtual_hosts"][self.virtual_host_name]:
+            return self.config["virtual_hosts"][self.virtual_host_name][
+                "username"
+            ]
+
+        return self.config["server"]["username"]
+
+    @property
+    def password(self) -> None:
+        """Set password."""
+        if "password" in self.config["virtual_hosts"][self.virtual_host_name]:
+            return self.config["virtual_hosts"][self.virtual_host_name][
+                "password"
+            ]
+
+        return self.config["server"]["password"]
+
     def set_connection(self) -> None:
         """Set RabbitMQ connection."""
         self.connection = pika.BlockingConnection(
@@ -62,8 +82,7 @@ class RabbitMQ:
                 port=self.config["server"]["port"],
                 virtual_host=self.virtual_host_name,
                 credentials=pika.credentials.PlainCredentials(
-                    self.config["server"]["username"],
-                    self.config["server"]["password"],
+                    self.username, self.password
                 ),
                 ssl_options=self.ssl_options,
             )

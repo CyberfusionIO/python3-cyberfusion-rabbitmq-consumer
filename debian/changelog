@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.2) unstable; urgency=low
+
+  - Add username + password override per virtual host
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 31 Oct 2022 11:00:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1.2.2) unstable; urgency=low
 
   - Update dependencies

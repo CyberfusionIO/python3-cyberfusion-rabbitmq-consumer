@@ -9,6 +9,11 @@ server:
 virtual_hosts:
   test:
     queue: test
+    # If 'username' and/or 'password' are set for a specific virtual host, they
+    # take precedence over those set in the 'server' block.
+    #
+    # username: alfred
+    # password: 7qUhNEhz4ug6pr9MmGUKghPd
     exchanges:
       dx_service_reload:
         type: direct
