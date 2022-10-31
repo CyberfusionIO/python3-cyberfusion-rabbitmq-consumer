@@ -50,6 +50,56 @@ def test_rabbitmq_config(
     }
 
 
+def test_rabbitmq_username_server(
+    rabbitmq: Generator[RabbitMQ, None, None],
+    rabbitmq_virtual_host_name: str,
+) -> None:
+    assert (
+        "username"
+        not in rabbitmq.config["virtual_hosts"][rabbitmq_virtual_host_name]
+    )
+
+    assert rabbitmq.username == rabbitmq.config["server"]["username"]
+
+
+def test_rabbitmq_password_server(
+    rabbitmq: Generator[RabbitMQ, None, None],
+    rabbitmq_virtual_host_name: str,
+) -> None:
+    assert (
+        "password"
+        not in rabbitmq.config["virtual_hosts"][rabbitmq_virtual_host_name]
+    )
+
+    assert rabbitmq.password == rabbitmq.config["server"]["password"]
+
+
+def test_rabbitmq_username_virtual_host_precedence(
+    mocker: MockerFixture,
+    rabbitmq: Generator[RabbitMQ, None, None],
+    rabbitmq_virtual_host_name: str,
+) -> None:
+    mocker.patch.dict(
+        rabbitmq.config["virtual_hosts"][rabbitmq_virtual_host_name],
+        {"username": "username_takes_precedence"},
+    )
+
+    assert rabbitmq.username == "username_takes_precedence"
+
+
+def test_rabbitmq_password_virtual_host_precedence(
+    mocker: MockerFixture,
+    rabbitmq: Generator[RabbitMQ, None, None],
+    rabbitmq_virtual_host_name: str,
+) -> None:
+    mocker.patch.dict(
+        rabbitmq.config["virtual_hosts"][rabbitmq_virtual_host_name],
+        {"password": "password_takes_precedence"},
+    )
+
+    assert rabbitmq.password == "password_takes_precedence"
+
+
 def test_rabbitmq_ssl_options_without_ssl(
     rabbitmq: Generator[RabbitMQ, None, None]
 ) -> None:
