@@ -1,6 +1,5 @@
 import os
 import pwd
-from unittest import mock
 
 import pytest
 from pytest_mock import MockerFixture  # type: ignore[attr-defined]
@@ -81,12 +80,12 @@ def test_dx_service_reload_handle_result_failure(
         "cyberfusion.Common.Systemd.CyberfusionUnit.reload",
         return_value=None,
     )
-
-    with mock.patch(
+    mocker.patch(
         "cyberfusion.Common.Systemd.CyberfusionUnit.__init__",
         side_effect=Exception,
-    ):
-        result = dx_service_reload.handle(**handle_parameters)
+    )
+
+    result = dx_service_reload.handle(**handle_parameters)
 
     assert result == {
         "success": False,

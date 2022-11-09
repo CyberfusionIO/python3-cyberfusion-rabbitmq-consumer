@@ -31,6 +31,13 @@ def rabbitmq_host() -> str:
 
 
 @pytest.fixture(scope="session")
+def rabbitmq_fernet_key() -> str:
+    return os.environ.get(
+        "RABBITMQ_FERNET_KEY", "ZEp4ttRkU-IvB6n0yfjW2_uvL4jhgt837o4h-b_HELI="
+    )
+
+
+@pytest.fixture(scope="session")
 def rabbitmq_amqp_port() -> int:
     return int(os.environ.get("RABBITMQ_AMQP_PORT", 5672))
 
@@ -83,6 +90,7 @@ def rabbitmq_consumer_config_file_path(
     rabbitmq_virtual_host_name: str,
     rabbitmq_exchange_name: str,
     rabbitmq_queue_name: str,
+    rabbitmq_fernet_key: str,
 ) -> Generator[str, None, None]:
     path = get_tmp_file()
     config = {
@@ -95,6 +103,7 @@ def rabbitmq_consumer_config_file_path(
         },
         "virtual_hosts": {
             rabbitmq_virtual_host_name: {
+                "fernet_key": rabbitmq_fernet_key,
                 "queue": rabbitmq_queue_name,
                 "exchanges": {rabbitmq_exchange_name: {"type": "direct"}},
             }

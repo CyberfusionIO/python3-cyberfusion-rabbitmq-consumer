@@ -14,6 +14,16 @@ NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
     "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
 )
 
+# Keep in sync with Cluster API
+
+FERNET_TOKEN_KEYS = [
+    "secret_values",
+    "passphrase",
+    "password",
+    "admin_password",
+    "database_user_password",
+]
+
 # Every message is handled in its own thread, so this is the max amount of threads
 
 HANDLE_SIMULTANEOUS_MAX = 5
@@ -73,6 +83,19 @@ class RabbitMQ:
             ]
 
         return self.config["server"]["password"]
+
+    @property
+    def fernet_key(self) -> Optional[str]:
+        """Set Fernet key."""
+        if (
+            "fernet_key"
+            in self.config["virtual_hosts"][self.virtual_host_name]
+        ):
+            return self.config["virtual_hosts"][self.virtual_host_name][
+                "fernet_key"
+            ]
+
+        return None
 
     def set_connection(self) -> None:
         """Set RabbitMQ connection."""
