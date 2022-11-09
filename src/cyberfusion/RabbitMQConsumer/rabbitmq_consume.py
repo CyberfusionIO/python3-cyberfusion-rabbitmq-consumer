@@ -16,19 +16,13 @@ from systemd.journal import JournalHandler
 from cyberfusion.Common import EmailAddresses, get_hostname
 from cyberfusion.RabbitMQConsumer.handler import Handler
 from cyberfusion.RabbitMQConsumer.RabbitMQ import (
+    FERNET_TOKEN_KEYS,
     RabbitMQ,
     get_config_file_path,
 )
 
 importlib = __import__("importlib")
 
-VALUES_SKIP_PRINT = [
-    "secret_values",
-    "passphrase",
-    "password",
-    "admin_password",
-    "database_user_password",
-]
 
 NAME_HOST_SMTP = "smtp.prorelay.nl"
 PORT_HOST_SMTP = 587
@@ -160,7 +154,7 @@ def callback(
     print_body = {}
 
     for k, v in json_body.items():
-        if k in VALUES_SKIP_PRINT:
+        if k in FERNET_TOKEN_KEYS:
             continue
 
         print_body[k] = v
