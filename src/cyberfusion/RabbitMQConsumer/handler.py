@@ -51,7 +51,9 @@ class Handler:
                     )
 
                 json_body[k] = (
-                    Fernet(self.rabbitmq.fernet_key).decrypt(v).decode()
+                    Fernet(self.rabbitmq.fernet_key)
+                    .decrypt(v.encode())
+                    .decode()
                 )
             else:
                 json_body[k] = v
