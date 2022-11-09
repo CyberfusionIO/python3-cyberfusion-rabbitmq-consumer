@@ -50,11 +50,11 @@ class Handler:
                         "Fernet encrypted message requires Fernet key"
                     )
 
-                json_body[v] = (
-                    Fernet(self.rabbitmq.fernet_key).decrypt(k).decode()
+                json_body[k] = (
+                    Fernet(self.rabbitmq.fernet_key).decrypt(v).decode()
                 )
             else:
-                json_body[v] = k
+                json_body[k] = v
 
         return json_body
 
