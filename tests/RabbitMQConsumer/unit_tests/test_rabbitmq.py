@@ -31,6 +31,7 @@ def test_rabbitmq_config(
     rabbitmq_password: str,
     rabbitmq_exchange_name: str,
     rabbitmq_queue_name: str,
+    rabbitmq_fernet_key: str,
     rabbitmq: Generator[RabbitMQ, None, None],
 ) -> None:
     assert rabbitmq.config == {
@@ -43,6 +44,7 @@ def test_rabbitmq_config(
         },
         "virtual_hosts": {
             rabbitmq_virtual_host_name: {
+                "fernet_key": rabbitmq_fernet_key,
                 "queue": rabbitmq_queue_name,
                 "exchanges": {rabbitmq_exchange_name: {"type": "direct"}},
             }
@@ -115,6 +117,12 @@ def test_rabbitmq_ssl_options_with_ssl(
 
     assert isinstance(rabbitmq.ssl_options, pika.SSLOptions)
     assert rabbitmq.ssl_options.server_hostname == rabbitmq_host
+
+
+def test_rabbitmq_fernet_key(
+    rabbitmq: Generator[RabbitMQ, None, None], rabbitmq_fernet_key: str
+) -> None:
+    assert rabbitmq.fernet_key == rabbitmq_fernet_key
 
 
 def test_rabbitmq_connection(

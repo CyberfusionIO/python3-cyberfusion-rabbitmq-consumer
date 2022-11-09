@@ -7,8 +7,9 @@ import threading
 from typing import Any
 
 import pika
+from cryptography.fernet import Fernet
 
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,29 @@ class Handler:
         self.method = method
         self.properties = properties
         self.lock = lock
-        self.json_body = json_body
+        self._json_body = json_body
+
+    @property
+    def json_body(self) -> dict:
+        """Get JSON body with decrypted Fernet tokens."""
+        json_body = {}
+
+        for k, v in self._json_body.items():
+            if k in FERNET_TOKEN_KEYS:
+                if not self.rabbitmq.fernet_key:
+                    raise Exception(
+                        "Fernet encrypted message requires Fernet key"
+                    )
+
+                json_body[k] = (
+                    Fernet(self.rabbitmq.fernet_key)
+                    .decrypt(v.encode())
+                    .decode()
+                )
+            else:
+                json_body[k] = v
+
+        return json_body
 
     def __call__(self) -> None:
         """Handle message."""

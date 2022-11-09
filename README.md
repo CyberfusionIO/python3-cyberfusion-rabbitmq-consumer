@@ -58,3 +58,4 @@ A config file will be automatically generated based on the values of these envir
 * `RABBITMQ_AMQP_PORT`
 * `RABBITMQ_MANAGEMENT_PORT`
 * `RABBITMQ_SSL`
+* `RABBITMQ_FERNET_KEY`

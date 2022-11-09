@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.3) unstable; urgency=low
+
+  - Encrypt sensitive fields with Fernet
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 9 Nov 2022 14:27:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.2) unstable; urgency=low
 
   - Add username + password override per virtual host
