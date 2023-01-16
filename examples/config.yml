@@ -10,10 +10,10 @@ virtual_hosts:
   test1:
     queue: test
     exchanges:
-      fx_configuration_manager_present:
-        command: tuxis-cron configuration-manager-present.cron
+      fx_test:
+        command: test
   test2:
     queue: test
     exchanges:
-      fx_configuration_manager_present:
-        command: tuxis-cron configuration-manager-present.cron
+      fx_test:
+        command: test
