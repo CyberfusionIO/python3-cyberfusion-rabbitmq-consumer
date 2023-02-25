@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="python3-cyberfusion-cluster-rabbitmq-consumer",
-    version="1.8.3.1",
+    version="1.8.4",
     description="RabbitMQConsumer Python library/tools",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
@@ -12,7 +12,6 @@ setup(
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",
-        "cyberfusion.RabbitMQHandlers.exchanges.dx_configuration_manager_present",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_service_reload",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_service_restart",
     ],
