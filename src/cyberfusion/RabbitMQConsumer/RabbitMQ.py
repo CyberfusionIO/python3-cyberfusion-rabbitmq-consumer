@@ -127,9 +127,14 @@ class RabbitMQ:
     @property
     def exchanges(self) -> Dict[str, Dict[str, Union[str, List[str]]]]:
         """Get exchanges from config."""
-        return self.config["virtual_hosts"][self.virtual_host_name][
+        exchanges = self.config["virtual_hosts"][self.virtual_host_name][
             "exchanges"
         ]
+
+        if exchanges is None:
+            return {}
+
+        return exchanges
 
     def declare_exchanges(self) -> None:
         """Declare RabbitMQ exchanges."""
