@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.3.1) unstable; urgency=low
+
+  - Default to empty dict when configured exchanges is null
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sat, 25 Feb 2023 13:55:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.3) unstable; urgency=low
 
   - Encrypt sensitive fields with Fernet
