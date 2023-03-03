@@ -31,18 +31,16 @@ When writing handle methods, please keep the following in mind:
 
 ## Docker Compose
 
-The project contains a `stack.yml` that `docker-compose` can use to start RabbitMQ.
-
-Starting:
+Start:
 
 ```bash
-docker-compose -f stack.yml up
+docker-compose up
 ```
 
-Stopping:
+Stop:
 
 ```bash
-docker-compose -f stack.yml down
+docker-compose down
 ```
 
 ## Environment variables for tests
