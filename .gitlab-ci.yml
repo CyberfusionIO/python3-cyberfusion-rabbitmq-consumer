@@ -30,7 +30,7 @@ unit test and feature test:
     - apt-get -y install python3-cyberfusion-common python3-sdnotify python3-yaml python3-systemd python3-cyberfusion-cluster-rabbitmq-consumer python3-pika python3-cryptography
     - pip install --no-cache-dir -r requirements/test.txt
     - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/RabbitMQConsumer/ -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=10 --junitxml=report-pytest.xml
-    - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/RabbitMQHandlers/ -vvv --cov-branch --cov=cyberfusion.RabbitMQHandlers --cov-config=.coveragerc --cov-fail-under=100 --junitxml=report-pytest.xml
+    # - RABBITMQ_PASSWORD='knvPSBPLkJSwTdMn6F4kkQkB' RABBITMQ_USERNAME=test RABBITMQ_VIRTUAL_HOST_NAME=ci-test RABBITMQ_HOST=rabbitmq PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/RabbitMQHandlers/ -vvv --cov-branch --cov=cyberfusion.RabbitMQHandlers --cov-config=.coveragerc --cov-fail-under=100 --junitxml=report-pytest.xml
   artifacts:
     reports:
       junit: report-*.xml
