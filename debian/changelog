@@ -1,3 +1,10 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5) unstable; urgency=low
+
+  - Remove dx_service_restart
+  - Remove dx_service_reload
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 20 Apr 2023 15:39:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.4) unstable; urgency=low
 
   - Remove dx_configuration_manager_present
