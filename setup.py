@@ -12,8 +12,6 @@ setup(
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",
-        "cyberfusion.RabbitMQHandlers.exchanges.dx_service_reload",
-        "cyberfusion.RabbitMQHandlers.exchanges.dx_service_restart",
     ],
     package_dir={"": "src"},
     platforms=["linux"],
