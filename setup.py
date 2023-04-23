@@ -8,7 +8,7 @@ setup(
     description="RabbitMQConsumer Python library/tools",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
-    url="https://vcs.cyberfusion.nl/cyberfusion/python3-cyberfusion-cluster-rabbitmq-consumer",
+    url="https://vcs.cyberfusion.nl/core/python3-cyberfusion-cluster-rabbitmq-consumer",
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",
