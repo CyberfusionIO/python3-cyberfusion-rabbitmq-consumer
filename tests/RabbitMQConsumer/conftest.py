@@ -12,22 +12,22 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 
 @pytest.fixture(scope="session")
 def rabbitmq_virtual_host_name() -> str:
-    return os.environ.get("RABBITMQ_VIRTUAL_HOST_NAME", "ci-test")
+    return os.environ["RABBITMQ_VIRTUAL_HOST_NAME"]
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_username() -> str:
-    return os.environ.get("RABBITMQ_USERNAME", "test")
+    return os.environ["RABBITMQ_USERNAME"]
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_password() -> str:
-    return os.environ.get("RABBITMQ_PASSWORD", "C4P4BZFcaBUYk2PvVyZU7CV3")
+    return os.environ["RABBITMQ_PASSWORD"]
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_host() -> str:
-    return os.environ.get("RABBITMQ_HOST", "127.0.0.1")
+    return os.environ["RABBITMQ_HOST"]
 
 
 @pytest.fixture(scope="session")
@@ -39,27 +39,27 @@ def rabbitmq_fernet_key() -> str:
 
 @pytest.fixture(scope="session")
 def rabbitmq_amqp_port() -> int:
-    return int(os.environ.get("RABBITMQ_AMQP_PORT", 5672))
+    return int(os.environ["RABBITMQ_AMQP_PORT"])
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_management_port() -> int:
-    return int(os.environ.get("RABBITMQ_MANAGEMENT_PORT", 15672))
+    return int(os.environ["RABBITMQ_MANAGEMENT_PORT"])
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_ssl() -> bool:
-    return bool(os.environ.get("RABBITMQ_SSL", False))
+    return os.environ["RABBITMQ_SSL"] == "true"
 
 
 @pytest.fixture(scope="session")
 def rabbitmq_exchange_name() -> str:
-    return "dx_ci"
+    return "dx_test"
 
 
 @pytest.fixture(scope="session")
-def rabbitmq_queue_name() -> str:
-    return "ci-test"
+def rabbitmq_queue_name(rabbitmq_virtual_host_name: str) -> str:
+    return rabbitmq_virtual_host_name
 
 
 @pytest.fixture(scope="session")
