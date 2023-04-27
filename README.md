@@ -1,35 +1,16 @@
 # python3-cyberfusion-cluster-rabbitmq-consumer
 
-This package provides a RabbitMQ consumer that runs on cluster nodes. The RabbitMQ consumer has methods for messages sent to several exchanges, which allows for implementing RPC.
+RabbitMQ consumer for clusters.
 
-# Run
+# Install
 
-The consumer is run by calling `rabbitmq_consume.main`. The environment variable `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` must be set. The config is read from this file. An example config may be found in the `rabbitmq.yml` file in the project root.
+## Generic
 
-# systemd
+Run the following command to create a source distribution:
 
-The package contains a systemd target that allows you to easily run a separate process per virtual host. The virtual host name is set as the first argument to the installed command.
+    python3 setup.py sdist
 
-# RPC response contract
-
-Every RPC response contains a JSON document, which contains the following objects. Developers of this package should make sure their handle methods return data as specified here. Clients of the RabbitMQ consumer are guaranteed the response matches this format.
-
-* `success` (boolean, non-nullable). Indicates whether the server-side actions succeeded.
-* `data` (free-form dict with key-value pairs with a value of any type, non-nullable). Contains exchange-specific data that is relevant for the client. The key-value pairs in the dict may be found in the docstring of the applicable handle method. When `success` is `false`, keys that are normally included in this dict may be omitted. In general, you should not assume that the data dict contains anything when `success` is `false`.
-* `message` (string, nullable). Human-readable free-form message related to the response. This may be `null` when there is nothing to report.
-
-# Handling messages
-
-When receing a message, the consumer calls the `handle` method on `cyberfusion.RabbitMQHandlers.$exchange_name`. In order to avoid putting logic for **all** exchanges in this package, specific packages should add modules for each exchange using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
-
-When writing handle methods, please keep the following in mind:
-
-* Every handle method MUST BE IDEMPOTENT. Messages WILL be retried, and thus handled again, if the consumer dies before fully processing the message (i.e. not acknowledging it).
-* Every exchange module must have a constant called `KEY_IDENTIFIER_EXCLUSIVE`. See the comment in `rabbitmq_consume.callback` for an explanation.
-
-# Setup locally
-
-## Docker Compose
+## Start/stop services with Docker Compose
 
 Start:
 
@@ -43,17 +24,77 @@ Stop:
 docker-compose down
 ```
 
-## Environment variables for tests
+The following services are started:
 
-The following environment variables may be passed to the `pytest` command. The variables have sensible defaults, i.e. the ones used by the Docker Compose file and CI.
+* RabbitMQ: `localhost:5672`, `localhost:15672`
 
-A config file will be automatically generated based on the values of these environment variables, so do not set `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` manually.
+## Debian
 
-* `RABBITMQ_VIRTUAL_HOST_NAME`. The virtual host will be created by the tests if it does not exist.
+Run the following commands to build a Debian package:
+
+    mk-build-deps -i -t 'apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
+    dpkg-buildpackage -us -uc
+
+# Configure
+
+Find an example configs in `rabbitmq.yml`.
+
+# Usage
+
+## Run
+
+    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/cf-cluster-rabbitmq-consume $VIRTUAL_HOST_NAME
+
+## systemd
+
+The package ships a systemd target. Specify the virtual host name as the parameter (after `@`). It is passed to the command above.
+
+## Developing handle methods
+
+When receiving a message, the consumer calls `cyberfusion.RabbitMQHandlers.$exchange_name.handle`.
+
+### Python namespaces
+
+Multiple packages place exchange-specific modules under `cyberfusion.RabbitMQHandlers` using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
+
+### RPC response contract
+
+Return JSON with the following objects:
+
+* `success` (boolean, non-nullable)
+* `data` (free-form dict with key-value pairs with value of any type, non-nullable)
+* - Mention key-value pairs in this object in the docstring.
+* - When `success` is `false`, this should be an empty dict.
+* `message` (human-readable free-form string, nullable)
+
+### Rules
+
+* Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.
+* Exchange modules have a constant called `KEY_IDENTIFIER_EXCLUSIVE`. See the comment in `rabbitmq_consume.callback` for an explanation.
+
+# Tests
+
+## Manually
+
+Run tests with pytest:
+
+    pytest tests/
+
+Pass the following environment variables:
+
+* `RABBITMQ_VIRTUAL_HOST_NAME`. Created if it doesn't exist.
 * `RABBITMQ_HOST`
-* `RABBITMQ_USERNAME`. If the virtual host does not exist, the user must have the administrator tag in order to create it.
+* `RABBITMQ_USERNAME`. Must have 'administrator' tag.
 * `RABBITMQ_PASSWORD`
 * `RABBITMQ_AMQP_PORT`
 * `RABBITMQ_MANAGEMENT_PORT`
 * `RABBITMQ_SSL`
-* `RABBITMQ_FERNET_KEY`
+* `RABBITMQ_FERNET_KEY` (optional)
+
+Note:
+
+- The `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` environment variable is ignored.
+
+## With services running with Docker Compose
+
+    RABBITMQ_SSL=false RABBITMQ_VIRTUAL_HOST_NAME=test RABBITMQ_HOST=127.0.0.1 RABBITMQ_USERNAME=test RABBITMQ_PASSWORD='C4P4BZFcaBUYk2PvVyZU7CV3' RABBITMQ_AMQP_PORT=5672 RABBITMQ_MANAGEMENT_PORT=15672 PYTHONPATH=/opt/homebrew/lib/python3.11/site-packages:src/:../python3-cyberfusion-common/python3-cyberfusion-common/src/ pytest
