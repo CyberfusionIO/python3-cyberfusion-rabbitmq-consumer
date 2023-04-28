@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.1) unstable; urgency=low
+
+  - Use SystemdSupport
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 28 Apr 2023 14:41:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5) unstable; urgency=low
 
   - Remove dx_service_restart
