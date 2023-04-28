@@ -5,7 +5,7 @@
 import sys
 from typing import List
 
-from cyberfusion.Common.Systemd import CyberfusionUnits
+from cyberfusion.SystemdSupport import Systemd
 
 PATTERN_NAME_UNIT_RABBITMQ_CONSUME = "rabbitmq-consume@*.service"
 
@@ -19,7 +19,7 @@ def main() -> None:
 
     # Loop through found units
 
-    for unit in CyberfusionUnits().search(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
+    for unit in Systemd().search_units(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
         # If active, skip
 
         if unit.is_active:
