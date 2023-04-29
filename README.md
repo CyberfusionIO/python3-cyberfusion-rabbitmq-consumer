@@ -37,7 +37,7 @@ Run the following commands to build a Debian package:
 
 # Configure
 
-Find an example configs in `rabbitmq.yml`.
+Find an example config in `rabbitmq.yml`.
 
 # Usage
 
