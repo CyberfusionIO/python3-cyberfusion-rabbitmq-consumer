@@ -18,7 +18,7 @@ setup(
     data_files=[],
     entry_points={
         "console_scripts": [
-            "cf-cluster-rabbitmq-consume=cyberfusion.RabbitMQConsumer.rabbitmq_consume:main",
+            "cluster-rabbitmq-consume=cyberfusion.RabbitMQConsumer.rabbitmq_consume:main",
         ]
     },
 )
