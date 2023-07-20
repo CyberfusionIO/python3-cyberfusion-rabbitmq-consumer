@@ -43,7 +43,7 @@ Find an example config in `rabbitmq.yml`.
 
 ## Run
 
-    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/cf-cluster-rabbitmq-consume $VIRTUAL_HOST_NAME
+    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/cluster-rabbitmq-consume $VIRTUAL_HOST_NAME
 
 ## systemd
 
