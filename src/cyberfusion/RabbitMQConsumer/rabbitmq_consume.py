@@ -5,7 +5,6 @@ import logging
 import signal
 import sys
 import threading
-from logging.handlers import SMTPHandler
 from types import ModuleType
 from typing import Dict, List, Optional
 
@@ -13,19 +12,11 @@ import pika
 import sdnotify
 from systemd.journal import JournalHandler
 
-from cyberfusion.Common import EmailAddresses, get_hostname
+from cyberfusion.Common import get_hostname
 from cyberfusion.RabbitMQConsumer.handler import Handler
-from cyberfusion.RabbitMQConsumer.RabbitMQ import (
-    FERNET_TOKEN_KEYS,
-    RabbitMQ,
-    get_config_file_path,
-)
+from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
 
 importlib = __import__("importlib")
-
-
-NAME_HOST_SMTP = "smtp.prorelay.nl"
-PORT_HOST_SMTP = 587
 
 # Create root logger
 
@@ -44,41 +35,17 @@ hostname: str = get_hostname()
 systemd_handler = JournalHandler()
 systemd_handler.setLevel(logging.INFO)
 
-smtp_handler = SMTPHandler(
-    (NAME_HOST_SMTP, PORT_HOST_SMTP),
-    EmailAddresses.ENGINEERING,
-    [EmailAddresses.ENGINEERING],
-    f"[{hostname}] Logging notification from RabbitMQ Consumer",
-    credentials=None,
-    secure=None,
-)
-smtp_handler.setLevel(logging.WARNING)
-
-handlers = [systemd_handler, smtp_handler]
-
-# Set email message
-
-email_message = "Dear reader,\n\n"
-email_message += "This is process %(process)d (thread %(threadName)s) reporting %(levelname)s message from the '%(name)s' logger.\n\n"
-email_message += "Used config file path:\n\n"
-email_message += get_config_file_path() + "\n\n"
-email_message += "Message:\n\n"
-email_message += "%(message)s\n\n"
-email_message += "--\n"
-email_message += "With kind regards,\n"
-email_message += hostname + "\n\n"
+handlers = [systemd_handler]
 
 # Create formatters
 
 systemd_formatter = logging.Formatter(
     "[%(threadName)s] [%(levelname)s] %(name)s: %(message)s"
 )
-smtp_formatter = logging.Formatter(email_message)
 
 # Set handlers formatters
 
 systemd_handler.setFormatter(systemd_formatter)
-smtp_handler.setFormatter(smtp_formatter)
 
 # Add handlers to root logger
 
