@@ -151,7 +151,10 @@ class RabbitMQ:
             ]
 
             logger.info(
-                f"Binding: exchange '{exchange_name}', queue '{queue}', virtual host '{self.virtual_host_name}'"
+                "Binding: exchange '%s', queue '%s', virtual host '%s'",
+                exchange_name,
+                queue,
+                self.virtual_host_name,
             )
 
             self.channel.queue_bind(exchange=exchange_name, queue=queue)
