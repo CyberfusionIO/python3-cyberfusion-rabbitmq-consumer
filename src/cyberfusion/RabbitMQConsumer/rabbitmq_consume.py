@@ -90,7 +90,7 @@ def handle_sigterm(  # type: ignore[no-untyped-def]
             continue
 
         logger.info(
-            f"Waiting for thread '{thread.name}' to finish before exiting..."
+            "Waiting for thread '%s' to finish before exiting...", thread.name
         )
 
         thread.join()
@@ -128,7 +128,7 @@ def callback(
 
     # Print message
 
-    logger.info("Received message. Body: '{!r}'".format(print_body))
+    logger.info("Received message. Body: '%s'", print_body)
 
     # Add value of exclusive key identifier to locks
     #
