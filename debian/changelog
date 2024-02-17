@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.1) unstable; urgency=low
+
+  - Remove redundant `--with systemd` from d/rules
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sat, 17 Feb 2024 21:26:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3) unstable; urgency=low
 
   - Remove SMTP logging
