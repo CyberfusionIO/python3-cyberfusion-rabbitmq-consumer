@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.2) unstable; urgency=low
+
+  - Skip non-existent exchanges instead of crashing
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 02 Jul 2024 16:56:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.1) unstable; urgency=low
 
   - Remove redundant `--with systemd` from d/rules
