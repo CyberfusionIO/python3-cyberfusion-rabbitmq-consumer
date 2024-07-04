@@ -142,15 +142,20 @@ def callback(
 
     # Run processor
 
-    processor = Processor(
-        module=modules[method.exchange],
-        rabbitmq=rabbitmq,
-        channel=channel,
-        method=method,
-        properties=properties,
-        locks=locks,
-        payload=payload,
-    )
+    try:
+        processor = Processor(
+            module=modules[method.exchange],
+            rabbitmq=rabbitmq,
+            channel=channel,
+            method=method,
+            properties=properties,
+            locks=locks,
+            payload=payload,
+        )
+    except Exception:
+        logger.exception("Exception initialising processor")
+
+        return
 
     thread = threading.Thread(
         target=processor,

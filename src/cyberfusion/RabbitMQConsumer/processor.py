@@ -7,6 +7,7 @@ import threading
 from typing import Any
 
 import pika
+from pydantic import ValidationError
 
 from cyberfusion.RabbitMQConsumer.contracts import (
     RPCRequestBase,
@@ -75,7 +76,18 @@ class Processor:
             .annotation
         )
 
-        return request_class(**self.payload)
+        try:
+            return request_class(**self.payload)
+        except ValidationError:
+            self._publish(
+                body=RPCResponseBase(
+                    success=False,
+                    message="An unexpected error occurred",
+                    data=None,
+                )
+            )
+
+            raise
 
     def __call__(self) -> None:
         """Process message."""
