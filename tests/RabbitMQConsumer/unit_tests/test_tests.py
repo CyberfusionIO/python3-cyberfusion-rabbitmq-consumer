@@ -5,7 +5,6 @@ from cyberfusion.RabbitMQConsumer.tests import (
     Method,
     Properties,
     RabbitMQ,
-    get_handle_parameters,
 )
 
 
@@ -69,45 +68,9 @@ def test_method_test_class(rabbitmq_exchange_name: str):
     assert method.delivery_tag == "fake"
 
 
-def test_properties_test_class(rabbitmq_exchange_name: str):
+def test_properties_test_class():
     properties = Properties()
 
     assert isinstance(properties, Properties)
     assert properties.reply_to == "fake"
     assert properties.correlation_id == "fake"
-
-
-def test_get_handle_parameters_with_config_file_path(
-    rabbitmq_exchange_name: str,
-    rabbitmq_virtual_host_name: str,
-    rabbitmq_consumer_config_file_path: str,
-):
-    handle_parameters = get_handle_parameters(
-        exchange_name=rabbitmq_exchange_name,
-        virtual_host_name=rabbitmq_virtual_host_name,
-        config_file_path=rabbitmq_consumer_config_file_path,
-        json_body={"a": "b"},
-    )
-
-    assert handle_parameters["exchange_name"] == rabbitmq_exchange_name
-    assert handle_parameters["virtual_host_name"] == rabbitmq_virtual_host_name
-    assert isinstance(handle_parameters["rabbitmq_config"], dict)
-    assert handle_parameters["json_body"] == {"a": "b"}
-
-
-def test_get_handle_parameters_without_config_file_path(
-    rabbitmq_exchange_name: str,
-    rabbitmq_virtual_host_name: str,
-    rabbitmq_consumer_config_file_path: str,
-):
-    handle_parameters = get_handle_parameters(
-        exchange_name=rabbitmq_exchange_name,
-        virtual_host_name=rabbitmq_virtual_host_name,
-        config_file_path=None,
-        json_body={"a": "b"},
-    )
-
-    assert handle_parameters["exchange_name"] == rabbitmq_exchange_name
-    assert handle_parameters["virtual_host_name"] == rabbitmq_virtual_host_name
-    assert handle_parameters["rabbitmq_config"] is None
-    assert handle_parameters["json_body"] == {"a": "b"}

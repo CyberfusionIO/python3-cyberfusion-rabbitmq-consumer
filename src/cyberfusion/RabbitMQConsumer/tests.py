@@ -86,24 +86,3 @@ class Lock:
     def release(self) -> None:
         """Do nothing."""
         pass
-
-
-def get_handle_parameters(
-    *,
-    exchange_name: str,
-    virtual_host_name: str,
-    config_file_path: Optional[str],
-    json_body: dict,
-) -> dict:
-    """Get parameters for testing handle() method of exchange module."""
-    rabbitmq = RabbitMQ(
-        virtual_host_name=virtual_host_name,
-        config_file_path=config_file_path,
-    )
-
-    return {
-        "exchange_name": exchange_name,
-        "virtual_host_name": rabbitmq.virtual_host_name,
-        "rabbitmq_config": rabbitmq.config,
-        "json_body": json_body,
-    }

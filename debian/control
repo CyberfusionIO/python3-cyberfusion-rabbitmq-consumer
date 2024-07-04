@@ -7,6 +7,15 @@ Standards-Version: 4.3.0
 
 Package: python3-cyberfusion-cluster-rabbitmq-consumer
 Architecture: all
-Depends: python3, python3-cyberfusion-common (>= 2.10.1.2), python3-sdnotify, python3-yaml, python3-systemd, python3-pika (>= 1.2.0), python3-cryptography, python3-cyberfusion-systemd-support, ${misc:Depends}
+Depends: python3,
+ python3-cyberfusion-common (>= 2.10.1.2),
+ python3-sdnotify,
+ python3-yaml,
+ python3-systemd,
+ python3-pika (>= 1.2.0),
+ python3-cryptography,
+ python3-cyberfusion-systemd-support,
+ python3-pydantic,
+ ${misc:Depends}
 Description: RabbitMQ consumer for clusters.
  RabbitMQ consumer for clusters.

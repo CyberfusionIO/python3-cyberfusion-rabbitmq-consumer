@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (2.0) unstable; urgency=low
+
+  - Implement RPC request-response contract
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 04 Jul 2024 10:37:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.2) unstable; urgency=low
 
   - Skip non-existent exchanges instead of crashing

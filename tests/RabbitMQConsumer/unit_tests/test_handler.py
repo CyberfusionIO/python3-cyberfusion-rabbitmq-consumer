@@ -6,6 +6,11 @@ import pika
 from _pytest.logging import LogCaptureFixture
 from pytest_mock import MockerFixture  # type: ignore[attr-defined]
 
+from cyberfusion.RabbitMQConsumer.contracts import (
+    RPCRequestBase,
+    RPCResponseBase,
+    RPCResponseData,
+)
 from cyberfusion.RabbitMQConsumer.handler import Handler
 from cyberfusion.RabbitMQConsumer.tests import (
     Channel,
@@ -19,25 +24,21 @@ logger = logging.getLogger(__name__)
 
 
 class TestHandleModuleSuccess:
-    def handle(
-        *,
-        exchange_name: str,
-        virtual_host_name: str,
-        rabbitmq_config: dict,
-        json_body: dict,
-    ) -> dict:
-        return {"success": True, "message": "Did it!", "data": {}}
+    class Handler:
+        def __call__(
+            request: RPCRequestBase,
+        ) -> RPCResponseBase:
+            return RPCResponseBase(
+                success=True, message="Did it!", data=RPCResponseData()
+            )
 
 
 class TestHandleModuleException:
-    def handle(
-        *,
-        exchange_name: str,
-        virtual_host_name: str,
-        rabbitmq_config: dict,
-        json_body: dict,
-    ) -> dict:
-        raise Exception
+    class Handler:
+        def __call__(
+            request: RPCRequestBase,
+        ) -> dict:
+            raise Exception
 
 
 def test_handler_calls(
@@ -68,7 +69,7 @@ def test_handler_calls(
         method=method,
         properties=properties,
         lock=lock,
-        json_body={},
+        request=RPCRequestBase(),
     )()
 
     spy_acquire.assert_called_once_with(mocker.ANY)
@@ -113,7 +114,7 @@ def test_handler_uncaught_exception(
             method=method,
             properties=properties,
             lock=lock,
-            json_body={},
+            request=RPCRequestBase(),
         )()
 
     assert "Unhandled exception occurred" in caplog.text

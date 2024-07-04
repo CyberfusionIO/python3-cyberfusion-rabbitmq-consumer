@@ -7,9 +7,12 @@ import threading
 from typing import Any
 
 import pika
-from cryptography.fernet import Fernet
 
-from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
+from cyberfusion.RabbitMQConsumer.contracts import (
+    RPCRequestBase,
+    RPCResponseBase,
+)
+from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
@@ -27,7 +30,7 @@ class Handler:
         method: pika.spec.Basic.Deliver,
         properties: pika.spec.BasicProperties,
         lock: threading.Lock,
-        json_body: dict,
+        request: RPCRequestBase,
     ):
         """Set attributes."""
         self.module = module
@@ -36,56 +39,52 @@ class Handler:
         self.method = method
         self.properties = properties
         self.lock = lock
-        self._json_body = json_body
-
-    @property
-    def json_body(self) -> dict:
-        """Get JSON body with decrypted Fernet tokens."""
-        json_body = {}
-
-        for k, v in self._json_body.items():
-            if k in FERNET_TOKEN_KEYS:
-                if not self.rabbitmq.fernet_key:
-                    raise Exception(
-                        "Fernet encrypted message requires Fernet key"
-                    )
-
-                json_body[k] = (
-                    Fernet(self.rabbitmq.fernet_key)
-                    .decrypt(v.encode())
-                    .decode()
-                )
-            else:
-                json_body[k] = v
-
-        return json_body
+        self.request = request
 
     def __call__(self) -> None:
         """Handle message."""
-        try:
-            self._acquire_lock()
+        self._acquire_lock()
 
-            result = self.module.handle(
-                exchange_name=self.method.exchange,
-                virtual_host_name=self.rabbitmq.virtual_host_name,
-                rabbitmq_config=self.rabbitmq.config["virtual_hosts"],
-                json_body=self.json_body,
+        try:
+            result = self.module.Handler()(self.request)
+
+            if not isinstance(result, RPCResponseBase):
+                raise ValueError("RPC response must be of type RPCResponse")
+
+            dict_ = result.dict()
+
+            logger.info(
+                _prefix_message(
+                    self.method.exchange,
+                    "Sending RPC response. Body: '%s'",
+                ),
+                dict_,
             )
 
-            self._publish(body=result)
-
-            # Release the lock before acknowledgement. If acknowledgement fails and
-            # the message is redelivered, the lock is already released, preventing
-            # race conditions.
-
-            self._release_lock()
-            self._acknowledge()
+            self._publish(body=dict_)
         except Exception:
             # Uncaught exceptions raised in threads are not propagated, so they
             # are not visible to the main thread. Therefore, any unhandled exception
             # is logged here.
 
             logger.exception("Unhandled exception occurred")
+
+            # Send RPC response
+
+            self._publish(
+                body=RPCResponseBase(
+                    success=False,
+                    message="An unexpected error occurred",
+                    data=None,
+                ).dict()
+            )
+        finally:
+            # Release the lock before acknowledgement. If acknowledgement fails and
+            # the message is redelivered, the lock is already released, preventing
+            # race conditions.
+
+            self._release_lock()
+            self._acknowledge()
 
     def _acquire_lock(self) -> None:
         """Acquire lock."""
