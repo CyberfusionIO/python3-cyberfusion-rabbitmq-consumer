@@ -151,6 +151,7 @@ def callback(
 
     # Cast JSON body to Pydantic model
 
+    # TODO handle errors without crashing
     request: RPCRequestBase = request_class(**payload)
 
     # Add value of lock attribute to locks

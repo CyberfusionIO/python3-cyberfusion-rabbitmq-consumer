@@ -49,10 +49,6 @@ Find an example config in `rabbitmq.yml`.
 
 The package ships a systemd target. Specify the virtual host name as the parameter (after `@`). It is passed to the command above.
 
-## Developing handle methods
-
-When receiving a message, the consumer calls `cyberfusion.RabbitMQHandlers.$exchange_name.handle`.
-
 ### Python namespaces
 
 Multiple packages place exchange-specific modules under `cyberfusion.RabbitMQHandlers` using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
@@ -60,7 +56,6 @@ Multiple packages place exchange-specific modules under `cyberfusion.RabbitMQHan
 ### Rules
 
 * Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.
-* Exchange modules have a constant called `KEY_IDENTIFIER_EXCLUSIVE`. See the comment in `rabbitmq_consume.callback` for an explanation.
 
 # Tests
 

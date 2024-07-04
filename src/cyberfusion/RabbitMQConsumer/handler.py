@@ -1,7 +1,6 @@
 """Classes for handling RabbitMQ messages."""
 
 import functools
-import json
 import logging
 import threading
 from typing import Any
@@ -51,17 +50,7 @@ class Handler:
             if not isinstance(result, RPCResponseBase):
                 raise ValueError("RPC response must be of type RPCResponse")
 
-            dict_ = result.dict()
-
-            logger.info(
-                _prefix_message(
-                    self.method.exchange,
-                    "Sending RPC response. Body: '%s'",
-                ),
-                dict_,
-            )
-
-            self._publish(body=dict_)
+            self._publish(body=result)
         except Exception:
             # Uncaught exceptions raised in threads are not propagated, so they
             # are not visible to the main thread. Therefore, any unhandled exception
@@ -76,7 +65,7 @@ class Handler:
                     success=False,
                     message="An unexpected error occurred",
                     data=None,
-                ).dict()
+                )
             )
         finally:
             # Release the lock before acknowledgement. If acknowledgement fails and
@@ -102,8 +91,18 @@ class Handler:
 
         logger.info(_prefix_message(self.method.exchange, "Released lock"))
 
-    def _publish(self, *, body: dict) -> None:
+    def _publish(self, *, body: RPCResponseBase) -> None:
         """Publish result."""
+        json_body = body.json()
+
+        logger.info(
+            _prefix_message(
+                self.method.exchange,
+                "Sending RPC response. Body: '%s'",
+            ),
+            json_body,
+        )
+
         self.rabbitmq.connection.add_callback_threadsafe(
             functools.partial(
                 self.channel.basic_publish,
@@ -113,7 +112,7 @@ class Handler:
                     correlation_id=self.properties.correlation_id,
                     content_type="application/json",
                 ),
-                body=json.dumps(body),
+                body=json_body,
             )
         )
 
