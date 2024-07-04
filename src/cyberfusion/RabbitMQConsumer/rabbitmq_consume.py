@@ -217,9 +217,17 @@ def main() -> None:
         modules = {}
 
         for exchange_name in rabbitmq.exchanges:
-            modules[exchange_name] = importlib.import_module(
-                f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
-            )
+            try:
+                modules[exchange_name] = importlib.import_module(
+                    f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
+                )
+            except ModuleNotFoundError:
+                logger.warning(
+                    "Module for exchange '%s' could not be found, skipping...",
+                    exchange_name,
+                )
+
+                continue
 
         # Set empty lock list for each exchange
 
