@@ -57,16 +57,6 @@ When receiving a message, the consumer calls `cyberfusion.RabbitMQHandlers.$exch
 
 Multiple packages place exchange-specific modules under `cyberfusion.RabbitMQHandlers` using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
 
-### RPC response contract
-
-Return JSON with the following objects:
-
-* `success` (boolean, non-nullable)
-* `data` (free-form dict with key-value pairs with value of any type, non-nullable)
-* - Mention key-value pairs in this object in the docstring.
-* - When `success` is `false`, this should be an empty dict.
-* `message` (human-readable free-form string, nullable)
-
 ### Rules
 
 * Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.

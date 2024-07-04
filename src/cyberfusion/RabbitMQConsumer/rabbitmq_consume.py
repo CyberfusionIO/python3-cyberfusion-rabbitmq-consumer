@@ -1,5 +1,6 @@
 """Program to consume RabbitMQ messages."""
 
+import inspect
 import json
 import logging
 import signal
@@ -10,11 +11,14 @@ from typing import Dict, List, Optional
 
 import pika
 import sdnotify
+from cryptography.fernet import Fernet
 from systemd.journal import JournalHandler
 
 from cyberfusion.Common import get_hostname
+from cyberfusion.RabbitMQConsumer.contracts import RPCRequestBase
 from cyberfusion.RabbitMQConsumer.handler import Handler
 from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
+from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 importlib = __import__("importlib")
 
@@ -112,55 +116,58 @@ def callback(
 ) -> None:
     """Handle RabbitMQ message."""
 
-    # Cast body
+    # Log message
 
-    json_body = json.loads(body)
+    logger.info(
+        _prefix_message(
+            method.exchange,
+            "Received RPC request. Body: '%s'",
+        ),
+        body,
+    )
 
-    # Remove values from body to print
+    # Decrypt message
 
-    print_body = {}
+    payload = {}
 
-    for k, v in json_body.items():
-        if k in FERNET_TOKEN_KEYS:
+    for k, v in json.loads(body).items():
+        if k not in FERNET_TOKEN_KEYS:
+            payload[k] = v
+
             continue
 
-        print_body[k] = v
+        if not rabbitmq.fernet_key:
+            raise Exception("Fernet encrypted message requires Fernet key")
 
-    # Print message
+        payload[k] = Fernet(rabbitmq.fernet_key).decrypt(v.encode()).decode()
 
-    logger.info("Received message. Body: '%s'", print_body)
+    # Get Pydantic request model based on handler type annotation
 
-    # Add value of exclusive key identifier to locks
+    request_class = (
+        inspect.signature(modules[method.exchange].Handler.__call__)
+        .parameters["request"]
+        .annotation
+    )
+
+    # Cast JSON body to Pydantic model
+
+    request: RPCRequestBase = request_class(**payload)
+
+    # Add value of lock attribute to locks
     #
-    # For some exchanges, the handle() method may only run simultaneously when
-    # operating on a different object. For example:
+    # This prevents conflicts. I.e. the same handler operating on the same object
+    # (identified by the lock attribute) simultaneously.
     #
-    #   >>> dx_service_restart.handle(json_body={"unit_name": "a"})
-    #
-    # ... may run while:
-    #
-    #   >>> dx_service_restart.handle(json_body={"unit_name": "b"})
-    #
-    # is running, but not while another instance with the same signature, i.e.
-    #
-    #   >>> dx_service_restart.handle(json_body={"unit_name": "a"})
-    #
-    # is running, as it operates on the same object, and would therefore cause
-    # race conditions. The exclusive key identifier is the name of an attribute
-    # that identifies the object on which the handle() method operates. A lock
-    # is created for the value of each exclusive key identifier that the consumer
-    # has come across during runtime.
-    #
-    # If the exclusive key identifier is None, the handle() method for the exchange
-    # may not run simultaneously in any case, regardless of the object it operates
+    # If the lock attribute is None, the handle() method for the exchange may
+    # not run simultaneously in any case, regardless of the object it operates
     # on.
 
     global locks
 
-    lock_key = modules[method.exchange].KEY_IDENTIFIER_EXCLUSIVE
+    lock_key = modules[method.exchange].Handler().lock_attribute
 
     if lock_key is not None:
-        lock_value = json_body[lock_key]
+        lock_value = getattr(request, lock_key)
     else:
         # If value is None, use a dummy value so the logic still works
 
@@ -171,7 +178,7 @@ def callback(
 
     lock = locks[method.exchange][lock_value]
 
-    # Create thread for exchange module handle method
+    # Run handler
 
     handler = Handler(
         module=modules[method.exchange],
@@ -180,7 +187,7 @@ def callback(
         method=method,
         properties=properties,
         lock=lock,
-        json_body=json_body,
+        request=request,
     )
 
     thread = threading.Thread(
