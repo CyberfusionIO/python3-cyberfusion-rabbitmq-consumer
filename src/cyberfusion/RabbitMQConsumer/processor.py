@@ -1,6 +1,7 @@
-"""Classes for handling RabbitMQ messages."""
+"""Classes for processing RPC requests."""
 
 import functools
+import inspect
 import logging
 import threading
 from typing import Any
@@ -12,13 +13,14 @@ from cyberfusion.RabbitMQConsumer.contracts import (
     RPCResponseBase,
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
 
-class Handler:
-    """Class to handle RPC calls."""
+class Processor:
+    """Class to process RPC requests, by passing to handler."""
 
     def __init__(
         self,
@@ -28,8 +30,8 @@ class Handler:
         channel: pika.adapters.blocking_connection.BlockingChannel,
         method: pika.spec.Basic.Deliver,
         properties: pika.spec.BasicProperties,
-        lock: threading.Lock,
-        request: RPCRequestBase,
+        locks: Locks,
+        payload: dict,
     ):
         """Set attributes."""
         self.module = module
@@ -37,15 +39,50 @@ class Handler:
         self.channel = channel
         self.method = method
         self.properties = properties
-        self.lock = lock
-        self.request = request
+        self.payload = payload
+        self.handler = module.Handler()
+
+        # Add value of lock attribute to locks
+        #
+        # This prevents conflicts. I.e. the same handler operating on the same object
+        # (identified by the lock attribute) simultaneously.
+        #
+        # If the lock attribute is None, the handler for the exchange not run
+        # simultaneously in any case, regardless of the object it operates on
+        # (by using the key 'dummy', which would apply to all messages).
+
+        lock_key = self.handler.lock_attribute
+
+        if lock_key is not None:
+            lock_value = getattr(self.request, lock_key)
+        else:
+            lock_value = "dummy"
+
+        if method.exchange not in locks:
+            locks[method.exchange] = {}
+
+        if lock_value not in locks[method.exchange]:
+            locks[method.exchange][lock_value] = threading.Lock()
+
+        self.lock = locks[method.exchange][lock_value]
+
+    @property
+    def request(self) -> RPCRequestBase:
+        """Cast JSON body to Pydantic model."""
+        request_class = (
+            inspect.signature(self.handler.__call__)
+            .parameters["request"]
+            .annotation
+        )
+
+        return request_class(**self.payload)
 
     def __call__(self) -> None:
-        """Handle message."""
+        """Process message."""
         self._acquire_lock()
 
         try:
-            result = self.module.Handler()(self.request)
+            result = self.handler(self.request)
 
             if not isinstance(result, RPCResponseBase):
                 raise ValueError("RPC response must be of type RPCResponse")

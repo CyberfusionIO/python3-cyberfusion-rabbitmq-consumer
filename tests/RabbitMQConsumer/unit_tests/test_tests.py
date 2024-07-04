@@ -1,7 +1,6 @@
 from cyberfusion.RabbitMQConsumer.tests import (
     Channel,
     Connection,
-    Lock,
     Method,
     Properties,
     RabbitMQ,
@@ -40,15 +39,6 @@ def test_connection_test_class():
     assert isinstance(connection, Connection)
 
     connection.add_callback_threadsafe()
-
-
-def test_lock_test_class():
-    lock = Lock()
-
-    assert isinstance(lock, Lock)
-
-    lock.acquire()
-    lock.release()
 
 
 def test_channel_test_class():

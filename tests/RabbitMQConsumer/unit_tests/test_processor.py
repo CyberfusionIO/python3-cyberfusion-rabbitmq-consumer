@@ -1,5 +1,6 @@
 import functools
 import logging
+from threading import Lock
 from typing import Generator
 
 import pika
@@ -7,24 +8,25 @@ from _pytest.logging import LogCaptureFixture
 from pytest_mock import MockerFixture  # type: ignore[attr-defined]
 
 from cyberfusion.RabbitMQConsumer.contracts import (
+    HandlerBase,
     RPCRequestBase,
     RPCResponseBase,
     RPCResponseData,
 )
-from cyberfusion.RabbitMQConsumer.handler import Handler
+from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.tests import (
     Channel,
-    Lock,
     Method,
     Properties,
     RabbitMQ,
 )
+from cyberfusion.RabbitMQConsumer.types import Locks
 
 logger = logging.getLogger(__name__)
 
 
 class TestHandleModuleSuccess:
-    class Handler:
+    class Handler(HandlerBase):
         def __call__(
             request: RPCRequestBase,
         ) -> RPCResponseBase:
@@ -34,7 +36,7 @@ class TestHandleModuleSuccess:
 
 
 class TestHandleModuleException:
-    class Handler:
+    class Handler(HandlerBase):
         def __call__(
             request: RPCRequestBase,
         ) -> dict:
@@ -47,33 +49,32 @@ def test_handler_calls(
     rabbitmq_virtual_host_name: str,
     rabbitmq_consumer_config_file_path: Generator[str, None, None],
 ) -> None:
+    locks = Locks({})
+
     rabbitmq = RabbitMQ(
         virtual_host_name=rabbitmq_virtual_host_name,
         config_file_path=rabbitmq_consumer_config_file_path,
     )
     channel = Channel()
     properties = Properties()
-    lock = Lock()
     method = Method(exchange_name=rabbitmq_exchange_name)
 
-    spy_acquire = mocker.spy(Lock, "acquire")
-    spy_release = mocker.spy(Lock, "release")
     spy_add_callback_threadsafe = mocker.spy(
         rabbitmq.connection, "add_callback_threadsafe"
     )
 
-    Handler(
+    processor = Processor(
         module=TestHandleModuleSuccess,
         rabbitmq=rabbitmq,
         channel=channel,
         method=method,
         properties=properties,
-        lock=lock,
-        request=RPCRequestBase(),
-    )()
+        locks=locks,
+        payload={},
+    )
 
-    spy_acquire.assert_called_once_with(mocker.ANY)
-    spy_release.assert_called_once_with(mocker.ANY)
+    processor()
+
     spy_add_callback_threadsafe.call_args_list[0] == functools.partial(
         channel.basic_publish,
         exchange=rabbitmq_exchange_name,
@@ -97,24 +98,25 @@ def test_handler_uncaught_exception(
     rabbitmq_virtual_host_name: str,
     rabbitmq_consumer_config_file_path: Generator[str, None, None],
 ) -> None:
+    locks = Locks({})
+
     rabbitmq = RabbitMQ(
         virtual_host_name=rabbitmq_virtual_host_name,
         config_file_path=rabbitmq_consumer_config_file_path,
     )
     channel = Channel()
     properties = Properties()
-    lock = Lock()
     method = Method(exchange_name=rabbitmq_exchange_name)
 
     with caplog.at_level(logging.ERROR):
-        Handler(
+        Processor(
             module=TestHandleModuleException,
             rabbitmq=rabbitmq,
             channel=channel,
             method=method,
             properties=properties,
-            lock=lock,
-            request=RPCRequestBase(),
+            locks=locks,
+            payload={},
         )()
 
     assert "Unhandled exception occurred" in caplog.text

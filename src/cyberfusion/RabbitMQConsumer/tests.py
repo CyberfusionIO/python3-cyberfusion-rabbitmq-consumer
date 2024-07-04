@@ -70,19 +70,3 @@ class Properties:
 
     reply_to = "fake"
     correlation_id = "fake"
-
-
-class Lock:
-    """Fake implementation of threading.Lock."""
-
-    def __init__(self) -> None:
-        """Do nothing."""
-        pass
-
-    def acquire(self) -> None:
-        """Do nothing."""
-        pass
-
-    def release(self) -> None:
-        """Do nothing."""
-        pass
