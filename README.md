@@ -67,7 +67,7 @@ To ship (exchange-specific) handler modules in multiple packages, you can use [n
 
 ### Idempotency
 
-* Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.
+Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.
 
 # Tests
 
