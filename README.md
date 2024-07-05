@@ -1,6 +1,8 @@
 # python3-cyberfusion-cluster-rabbitmq-consumer
 
-RabbitMQ consumer for clusters.
+RabbitMQ consumer.
+
+This RabbitMQ consumer receives RPC requests, delegates message processing to a handler, and sends RPC responses.
 
 # Install
 
@@ -47,13 +49,23 @@ Find an example config in `rabbitmq.yml`.
 
 ## systemd
 
-The package ships a systemd target. Specify the virtual host name as the parameter (after `@`). It is passed to the command above.
+The package ships a systemd target. This allows you to run separate RabbitMQ consumer processes for virtual hosts.
 
-### Python namespaces
+Specify the virtual host name as the parameter (after `@`). It is passed to the command above.
 
-Multiple packages place exchange-specific modules under `cyberfusion.RabbitMQHandlers` using [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
+### Handlers
 
-### Rules
+When an RPC request is received, processing is delegated to a handler.
+
+The handler is imported from the module `cyberfusion.RabbitMQHandlers` followed by the exchange name.
+
+A class called `Handler` is then called (and therefore must implement `__call__`). It must be a subclass of `cyberfusion.RabbitMQHandlers.contracts.HandlerBase` (Pydantic model).
+
+The `__call__` method must return a subclass of `cyberfusion.RabbitMQHandlers.contracts.RPCResponseBase` (Pydantic model).
+
+To ship (exchange-specific) handler modules in multiple packages, you can use [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
+
+### Idempotency
 
 * Handle methods are idempotent. Messages will be retried if the consumer dies before fully processing them, as they will not be acknowledged.
 
