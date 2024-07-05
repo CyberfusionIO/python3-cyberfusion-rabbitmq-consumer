@@ -1,6 +1,5 @@
-"""Program to consume RabbitMQ messages."""
+"""Program to consume RPC requests."""
 
-import inspect
 import json
 import logging
 import signal
@@ -15,9 +14,9 @@ from cryptography.fernet import Fernet
 from systemd.journal import JournalHandler
 
 from cyberfusion.Common import get_hostname
-from cyberfusion.RabbitMQConsumer.contracts import RPCRequestBase
-from cyberfusion.RabbitMQConsumer.handler import Handler
+from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
+from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 importlib = __import__("importlib")
@@ -70,7 +69,7 @@ logger = logging.getLogger(__name__)
 
 # Set default variables
 
-locks: Dict[str, Dict[str, threading.Lock]] = {}
+locks = Locks({})
 threads: List[threading.Thread] = []
 
 
@@ -114,7 +113,7 @@ def callback(
     modules: Dict[str, ModuleType],
     body: bytes,
 ) -> None:
-    """Handle RabbitMQ message."""
+    """Pass RabbitMQ message to processor."""
 
     # Log message
 
@@ -126,7 +125,7 @@ def callback(
         body,
     )
 
-    # Decrypt message
+    # Decrypt request
 
     payload = {}
 
@@ -141,57 +140,25 @@ def callback(
 
         payload[k] = Fernet(rabbitmq.fernet_key).decrypt(v.encode()).decode()
 
-    # Get Pydantic request model based on handler type annotation
+    # Run processor
 
-    request_class = (
-        inspect.signature(modules[method.exchange].Handler.__call__)
-        .parameters["request"]
-        .annotation
-    )
+    try:
+        processor = Processor(
+            module=modules[method.exchange],
+            rabbitmq=rabbitmq,
+            channel=channel,
+            method=method,
+            properties=properties,
+            locks=locks,
+            payload=payload,
+        )
+    except Exception:
+        logger.exception("Exception initialising processor")
 
-    # Cast JSON body to Pydantic model
-
-    request: RPCRequestBase = request_class(**payload)
-
-    # Add value of lock attribute to locks
-    #
-    # This prevents conflicts. I.e. the same handler operating on the same object
-    # (identified by the lock attribute) simultaneously.
-    #
-    # If the lock attribute is None, the handle() method for the exchange may
-    # not run simultaneously in any case, regardless of the object it operates
-    # on.
-
-    global locks
-
-    lock_key = modules[method.exchange].Handler().lock_attribute
-
-    if lock_key is not None:
-        lock_value = getattr(request, lock_key)
-    else:
-        # If value is None, use a dummy value so the logic still works
-
-        lock_value = "dummy"
-
-    if lock_value not in locks[method.exchange]:
-        locks[method.exchange][lock_value] = threading.Lock()
-
-    lock = locks[method.exchange][lock_value]
-
-    # Run handler
-
-    handler = Handler(
-        module=modules[method.exchange],
-        rabbitmq=rabbitmq,
-        channel=channel,
-        method=method,
-        properties=properties,
-        lock=lock,
-        request=request,
-    )
+        return
 
     thread = threading.Thread(
-        target=handler,
+        target=processor,
     )
 
     thread.start()
@@ -235,11 +202,6 @@ def main() -> None:
                 )
 
                 continue
-
-        # Set empty lock list for each exchange
-
-        for exchange_name in rabbitmq.exchanges:
-            locks[exchange_name] = {}
 
         # Configure consuming
 
