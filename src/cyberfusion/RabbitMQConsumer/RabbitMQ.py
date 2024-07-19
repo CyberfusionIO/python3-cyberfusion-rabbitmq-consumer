@@ -14,7 +14,7 @@ NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
     "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
 )
 
-# Keep in sync with Cluster API
+# Keep in sync with Core API
 
 FERNET_TOKEN_KEYS = [
     "secret_values",
