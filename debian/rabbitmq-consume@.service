@@ -1,6 +1,6 @@
 [Unit]
 Description=RabbitMQ Consumer for Virtual Host with name %i
-After=network.target
+After=network.target ypconfig.service
 PartOf=rabbitmq-consume.target
 
 [Service]

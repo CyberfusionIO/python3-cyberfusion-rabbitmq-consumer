@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.1) unstable; urgency=low
+
+  - Start after ypconfig
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 21 Jul 2024 12:30:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2) unstable; urgency=low
 
   - Only log error when exchange module could not be imported
