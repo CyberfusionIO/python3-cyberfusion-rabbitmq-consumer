@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="python3-cyberfusion-cluster-rabbitmq-consumer",
-    version="2.0.1",
+    version="2.0.2",
     description="RabbitMQ consumer for clusters.",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
