@@ -191,17 +191,22 @@ def main() -> None:
         modules = {}
 
         for exchange_name in rabbitmq.exchanges:
-            try:
-                modules[exchange_name] = importlib.import_module(
-                    f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
-                )
-            except ModuleNotFoundError:
-                logger.warning(
-                    "Module for exchange '%s' could not be found, skipping...",
-                    exchange_name,
-                )
+            import_module = (
+                f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
+            )
 
-                continue
+            try:
+                modules[exchange_name] = importlib.import_module(import_module)
+            except ModuleNotFoundError as e:
+                if e.name == import_module:
+                    logger.warning(
+                        "Module for exchange '%s' could not be found, skipping...",
+                        exchange_name,
+                    )
+
+                    continue
+
+                raise
 
         # Configure consuming
 
