@@ -1,3 +1,9 @@
+python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.2) unstable; urgency=low
+
+  - Increase TasksMax
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 28 Jul 2024 01:26:00 +0200
+
 python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.1) unstable; urgency=low
 
   - Start after ypconfig
