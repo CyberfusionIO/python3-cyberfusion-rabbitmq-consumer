@@ -15,7 +15,6 @@ from cyberfusion.RabbitMQConsumer.contracts import (
 )
 from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
-from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 logger = logging.getLogger(__name__)
 
@@ -124,29 +123,32 @@ class Processor:
             self._release_lock()
             self._acknowledge()
 
+    def _prefix_message(self, message: str) -> str:
+        """Get prefix for logs about the RPC request being processed."""
+        return f"[{self.method.exchange}] [{self.properties.correlation_id}] {message}"
+
     def _acquire_lock(self) -> None:
         """Acquire lock."""
-        logger.info(_prefix_message(self.method.exchange, "Acquiring lock..."))
+        logger.info(self._prefix_message("Acquiring lock..."))
 
         self.lock.acquire()
 
-        logger.info(_prefix_message(self.method.exchange, "Acquired lock"))
+        logger.info(self._prefix_message("Acquired lock"))
 
     def _release_lock(self) -> None:
         """Release lock."""
-        logger.info(_prefix_message(self.method.exchange, "Releasing lock..."))
+        logger.info(self._prefix_message("Releasing lock..."))
 
         self.lock.release()
 
-        logger.info(_prefix_message(self.method.exchange, "Released lock"))
+        logger.info(self._prefix_message("Released lock"))
 
     def _publish(self, *, body: RPCResponseBase) -> None:
         """Publish result."""
         json_body = body.json()
 
         logger.info(
-            _prefix_message(
-                self.method.exchange,
+            self._prefix_message(
                 "Sending RPC response. Body: '%s'",
             ),
             json_body,
