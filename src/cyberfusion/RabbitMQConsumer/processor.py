@@ -10,6 +10,7 @@ import pika
 from pydantic import ValidationError
 
 from cyberfusion.RabbitMQConsumer.contracts import (
+    HandlerBase,
     RPCRequestBase,
     RPCResponseBase,
 )
@@ -17,6 +18,18 @@ from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 
 logger = logging.getLogger(__name__)
+
+MESSAGE_ERROR = "An unexpected error occurred"
+RESPONSE_ERROR = RPCResponseBase(
+    success=False,
+    message=MESSAGE_ERROR,
+    data=None,
+)
+
+
+def get_request_class(handler: HandlerBase) -> RPCRequestBase:
+    """Get request class by introspection."""
+    return inspect.signature(handler.__call__).parameters["request"].annotation
 
 
 class Processor:
@@ -69,22 +82,12 @@ class Processor:
     @property
     def request(self) -> RPCRequestBase:
         """Cast JSON body to Pydantic model."""
-        request_class = (
-            inspect.signature(self.handler.__call__)
-            .parameters["request"]
-            .annotation
-        )
+        request_class = get_request_class(self.handler)
 
         try:
             return request_class(**self.payload)
         except ValidationError:
-            self._publish(
-                body=RPCResponseBase(
-                    success=False,
-                    message="An unexpected error occurred",
-                    data=None,
-                )
-            )
+            self._publish(body=RESPONSE_ERROR)
 
             raise
 
@@ -108,13 +111,7 @@ class Processor:
 
             # Send RPC response
 
-            self._publish(
-                body=RPCResponseBase(
-                    success=False,
-                    message="An unexpected error occurred",
-                    data=None,
-                )
-            )
+            self._publish(body=RESPONSE_ERROR)
         finally:
             # Release the lock before acknowledgement. If acknowledgement fails and
             # the message is redelivered, the lock is already released, preventing

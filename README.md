@@ -47,6 +47,10 @@ Find an example config in `rabbitmq.yml`.
 
     RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/cluster-rabbitmq-consume $VIRTUAL_HOST_NAME
 
+Note:
+
+- `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` defaults to `rabbitmq.yml` (working directory).
+
 ## systemd
 
 The package ships a systemd target. This allows you to run separate RabbitMQ consumer processes for virtual hosts.
@@ -64,6 +68,8 @@ A class called `Handler` is then called (and therefore must implement `__call__`
 The `__call__` method must return a subclass of `cyberfusion.RabbitMQHandlers.contracts.RPCResponseBase` (Pydantic model).
 
 To ship (exchange-specific) handler modules in multiple packages, you can use [native namespace packages](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
+
+Find an example in `src/cyberfusion/RabbitMQHandlers/exchanges/dx_example`. This demonstrates both an exchange, and namespace packaging.
 
 ### Idempotency
 
@@ -94,4 +100,4 @@ Note:
 
 ## With services running with Docker Compose
 
-    RABBITMQ_SSL=false RABBITMQ_VIRTUAL_HOST_NAME=test RABBITMQ_HOST=127.0.0.1 RABBITMQ_USERNAME=test RABBITMQ_PASSWORD='C4P4BZFcaBUYk2PvVyZU7CV3' RABBITMQ_AMQP_PORT=5672 RABBITMQ_MANAGEMENT_PORT=15672 PYTHONPATH=/opt/homebrew/lib/python3.11/site-packages:src/:../python3-cyberfusion-common/python3-cyberfusion-common/src/ pytest
+    RABBITMQ_SSL=false RABBITMQ_VIRTUAL_HOST_NAME=test RABBITMQ_HOST=127.0.0.1 RABBITMQ_USERNAME=test RABBITMQ_PASSWORD='C4P4BZFcaBUYk2PvVyZU7CV3' RABBITMQ_AMQP_PORT=5672 RABBITMQ_MANAGEMENT_PORT=15672 pytest

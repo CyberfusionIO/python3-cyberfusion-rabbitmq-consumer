@@ -12,6 +12,7 @@ setup(
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",
+        "cyberfusion.RabbitMQHandlers.exchanges.dx_example",
     ],
     package_dir={"": "src"},
     platforms=["linux"],

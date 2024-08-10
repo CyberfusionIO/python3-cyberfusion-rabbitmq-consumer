@@ -40,6 +40,6 @@ class HandlerBase:
         """
         return None
 
-    def __call__(self) -> RPCResponseBase:
+    def __call__(self, request: RPCRequestBase) -> RPCResponseBase:
         """Handle message."""
         raise NotImplementedError
