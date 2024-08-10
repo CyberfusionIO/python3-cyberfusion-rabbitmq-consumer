@@ -3,6 +3,7 @@
 import logging
 from enum import Enum
 from random import random
+from typing import Optional
 
 from pydantic import Field, PositiveInt
 
@@ -24,7 +25,7 @@ class FavouriteFoodEnum(str, Enum):
     BANANA = "banana"
 
 
-class RPCRequestDataExample(RPCRequestBase):
+class RPCRequestExample(RPCRequestBase):
     """Data part of RPC request."""
 
     favourite_food: FavouriteFoodEnum = Field(
@@ -52,6 +53,12 @@ class RPCResponseDataExample(RPCResponseData):
     """Data part of RPC response."""
 
     tolerable: bool
+
+
+class RPCResponseExample(RPCResponseBase):
+    """Base attributes for RPC response."""
+
+    data: Optional[RPCResponseDataExample]
 
     class Config:
         """Config."""
@@ -99,13 +106,13 @@ class Handler(HandlerBase):
         """
         return "favourite_food"
 
-    def __call__(self, request: RPCRequestDataExample) -> RPCResponseBase:
+    def __call__(self, request: RPCRequestExample) -> RPCResponseExample:
         """Handle message."""
         tolerable = determine_toleration(
             request.favourite_food, request.chance_percentage
         )
 
-        return RPCResponseBase(
+        return RPCResponseExample(
             success=True,
             message="Determined toleration",
             data=RPCResponseDataExample(tolerable=tolerable),

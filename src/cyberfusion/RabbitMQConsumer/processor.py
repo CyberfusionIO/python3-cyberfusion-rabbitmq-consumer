@@ -32,6 +32,11 @@ def get_request_class(handler: HandlerBase) -> RPCRequestBase:
     return inspect.signature(handler.__call__).parameters["request"].annotation
 
 
+def get_response_class(handler: HandlerBase) -> RPCResponseBase:
+    """Get response class by introspection."""
+    return inspect.signature(handler.__call__).return_annotation
+
+
 class Processor:
     """Class to process RPC requests, by passing to handler."""
 
