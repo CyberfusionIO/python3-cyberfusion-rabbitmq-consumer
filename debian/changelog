@@ -1,4 +1,4 @@
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.2) unstable; urgency=low
+python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.3) unstable; urgency=low
 
   - Log correlation ID
 
