@@ -12,9 +12,7 @@ from typing import Dict, List, Optional
 import pika
 import sdnotify
 from cryptography.fernet import Fernet
-from systemd.journal import JournalHandler
 
-from cyberfusion.Common import get_hostname
 from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
@@ -22,49 +20,21 @@ from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
 importlib = __import__("importlib")
 
-# Create root logger
-
-print("Configuring root logger...")
+# Configure logging
 
 root_logger = logging.getLogger()
 root_logger.propagate = False
 root_logger.setLevel(logging.DEBUG)
 
-# Set hostname for use in handler and formatter
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.INFO)
 
-hostname: str = get_hostname()
-
-# Create handlers
-
-systemd_handler = JournalHandler()
-systemd_handler.setLevel(logging.INFO)
-
-handlers = [systemd_handler]
-
-# Create formatters
-
-systemd_formatter = logging.Formatter(
+formatter = logging.Formatter(
     "[%(threadName)s] [%(levelname)s] %(name)s: %(message)s"
 )
+handler.setFormatter(formatter)
 
-# Set handlers formatters
-
-systemd_handler.setFormatter(systemd_formatter)
-
-# Add handlers to root logger
-
-for h in handlers:
-    print("Configuring root logger handler...")
-
-    root_logger.addHandler(h)
-
-    print("Configured root logger handler")
-
-# Log end
-
-print("Configured root logger")
-
-# Create module logger
+root_logger.addHandler(handler)
 
 logger = logging.getLogger(__name__)
 
