@@ -5,6 +5,7 @@ import logging
 import signal
 import sys
 import threading
+import types
 from types import ModuleType
 from typing import Dict, List, Optional
 
@@ -71,6 +72,31 @@ logger = logging.getLogger(__name__)
 
 locks = Locks({})
 threads: List[threading.Thread] = []
+
+
+def import_modules(rabbitmq: RabbitMQ) -> Dict[str, types.ModuleType]:
+    """Import exchange handler modules."""
+    modules = {}
+
+    for exchange_name in rabbitmq.exchanges:
+        import_module = (
+            f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
+        )
+
+        try:
+            modules[exchange_name] = importlib.import_module(import_module)
+        except ModuleNotFoundError as e:
+            if e.name == import_module:
+                logger.warning(
+                    "Module for exchange '%s' could not be found, skipping...",
+                    exchange_name,
+                )
+
+                continue
+
+            raise
+
+    return modules
 
 
 def handle_sigterm(  # type: ignore[no-untyped-def]
@@ -189,25 +215,7 @@ def main() -> None:
 
         # Import exchange modules
 
-        modules = {}
-
-        for exchange_name in rabbitmq.exchanges:
-            import_module = (
-                f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
-            )
-
-            try:
-                modules[exchange_name] = importlib.import_module(import_module)
-            except ModuleNotFoundError as e:
-                if e.name == import_module:
-                    logger.warning(
-                        "Module for exchange '%s' could not be found, skipping...",
-                        exchange_name,
-                    )
-
-                    continue
-
-                raise
+        modules = import_modules(rabbitmq)
 
         # Configure consuming
 

@@ -31,7 +31,9 @@ HANDLE_SIMULTANEOUS_MAX = 5
 
 def get_config_file_path() -> str:
     """Get config file path."""
-    return os.environ[NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH]
+    return os.getenv(
+        NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH, "rabbitmq.yml"
+    )
 
 
 class RabbitMQ:
