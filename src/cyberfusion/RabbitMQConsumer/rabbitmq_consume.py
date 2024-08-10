@@ -120,8 +120,9 @@ def callback(
     logger.info(
         _prefix_message(
             method.exchange,
-            "Received RPC request. Body: '%s'",
+            "Received RPC request (%s). Body: '%s'",
         ),
+        properties.correlation_id,
         body,
     )
 
