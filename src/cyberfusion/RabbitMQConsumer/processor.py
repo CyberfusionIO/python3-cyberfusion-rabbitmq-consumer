@@ -14,7 +14,7 @@ from cyberfusion.RabbitMQConsumer.contracts import (
     RPCRequestBase,
     RPCResponseBase,
 )
-from cyberfusion.RabbitMQConsumer.RabbitMQ import RabbitMQ
+from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 
 logger = logging.getLogger(__name__)

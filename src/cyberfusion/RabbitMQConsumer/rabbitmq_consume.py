@@ -26,7 +26,7 @@ from schema import Schema
 
 from cyberfusion.RabbitMQConsumer.config import Config
 from cyberfusion.RabbitMQConsumer.processor import Processor
-from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
+from cyberfusion.RabbitMQConsumer.rabbitmq import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import _prefix_message
 
