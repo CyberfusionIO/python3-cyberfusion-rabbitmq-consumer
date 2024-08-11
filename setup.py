@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="python3-cyberfusion-rabbitmq-consumer",
-    version="2.0.2.3",
+    version="2.1",
     description="RabbitMQ consumer for RPC.",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
