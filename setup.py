@@ -8,7 +8,7 @@ setup(
     description="RabbitMQ consumer for RPC.",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
-    url="https://vcs.cyberfusion.nl/core/python3-cyberfusion-rabbitmq-consumer",
+    url="https://vcs.cyberfusion.nl/shared/python3-cyberfusion-rabbitmq-consumer",
     license="Closed",
     packages=[
         "cyberfusion.RabbitMQConsumer",
