@@ -1,4 +1,13 @@
-"""Program to consume RPC requests."""
+"""Program to consume RPC requests.
+
+Usage:
+  cluster-rabbitmq-consume --virtual-host-name=<virtual-host-name> --config-file-path=<config-file-path>
+
+Options:
+  -h --help                                      Show this screen.
+  --virtual-host-name=<virtual-host-name>        Name of virtual host. Must be in config.
+  --config-file-path=<config-file-path>          Path to config file.
+"""
 
 import json
 import logging
@@ -12,7 +21,10 @@ from typing import Dict, List, Optional
 import pika
 import sdnotify
 from cryptography.fernet import Fernet
+from docopt import docopt
+from schema import Schema
 
+from cyberfusion.RabbitMQConsumer.config import Config
 from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.RabbitMQ import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
@@ -48,18 +60,18 @@ def import_modules(rabbitmq: RabbitMQ) -> Dict[str, types.ModuleType]:
     """Import exchange handler modules."""
     modules = {}
 
-    for exchange_name in rabbitmq.exchanges:
+    for exchange in rabbitmq.virtual_host_config.exchanges:
         import_module = (
-            f"cyberfusion.RabbitMQHandlers.exchanges.{exchange_name}"
+            f"cyberfusion.RabbitMQHandlers.exchanges.{exchange.name}"
         )
 
         try:
-            modules[exchange_name] = importlib.import_module(import_module)
+            modules[exchange.name] = importlib.import_module(import_module)
         except ModuleNotFoundError as e:
             if e.name == import_module:
                 logger.warning(
                     "Module for exchange '%s' could not be found, skipping...",
-                    exchange_name,
+                    exchange.name,
                 )
 
                 continue
@@ -166,22 +178,22 @@ def callback(
 
 
 def main() -> None:
-    """Spawn relevant class for CLI function."""
+    """Start RabbitMQ consumer."""
+    args = docopt(__doc__)
+
+    schema = Schema({"--virtual-host-name": str, "--config-file-path": str})
+
+    args = schema.validate(args)
+
+    # Start RabbitMQ consumer
+
     rabbitmq: Optional[RabbitMQ] = None
 
     try:
-        # Set virtual host name
+        # Get objects
 
-        try:
-            virtual_host_name = sys.argv[1]
-        except IndexError:
-            logger.critical("Specify virtual host as first argument")
-
-            sys.exit(1)
-
-        # Get RabbitMQ object
-
-        rabbitmq = RabbitMQ(virtual_host_name)
+        config = Config(args["--config-file-path"])
+        rabbitmq = RabbitMQ(args["--virtual-host-name"], config)
 
         # Import exchange modules
 
@@ -190,9 +202,7 @@ def main() -> None:
         # Configure consuming
 
         rabbitmq.channel.basic_consume(
-            queue=rabbitmq.config["virtual_hosts"][rabbitmq.virtual_host_name][
-                "queue"
-            ],
+            queue=rabbitmq.virtual_host_config.queue,
             on_message_callback=lambda channel, method, properties, body: callback(
                 rabbitmq,
                 channel,

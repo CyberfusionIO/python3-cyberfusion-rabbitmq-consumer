@@ -1,18 +1,15 @@
 """Program to interact with RabbitMQ."""
 
 import logging
-import os
-import ssl
-from typing import Dict, List, Optional, Union
+from typing import Optional
 
 import pika
-import yaml
+
+from cyberfusion.RabbitMQConsumer.config import Config
+from cyberfusion.RabbitMQConsumer.utilities import get_pika_ssl_options
 
 logger = logging.getLogger(__name__)
 
-NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH = (
-    "RABBITMQ_CONSUMER_CONFIG_FILE_PATH"
-)
 
 # Keep in sync with Core API
 
@@ -29,21 +26,18 @@ FERNET_TOKEN_KEYS = [
 HANDLE_SIMULTANEOUS_MAX = 5
 
 
-def get_config_file_path() -> str:
-    """Get config file path."""
-    return os.getenv(
-        NAME_ENVIRONMENT_VARIABLE_CONFIG_FILE_PATH, "rabbitmq.yml"
-    )
-
-
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
-    def __init__(self, virtual_host_name: str):
+    def __init__(self, virtual_host_name: str, config: Config) -> None:
         """Set attributes and call functions."""
         self.virtual_host_name = virtual_host_name
+        self.config = config
 
-        self.set_config()
+        self.virtual_host_config = self.config.get_virtual_host(
+            self.virtual_host_name
+        )
+
         self.set_connection()
         self.set_channel()
         self.declare_queue()
@@ -51,65 +45,33 @@ class RabbitMQ:
         self.bind_queue()
         self.set_basic_qos()
 
-    def set_config(self) -> None:
-        """Set config from YAML file."""
-        with open(get_config_file_path(), "rb") as fh:
-            self.config = yaml.load(fh.read(), Loader=yaml.SafeLoader)
-
-    @property
-    def ssl_options(self) -> Optional[pika.SSLOptions]:
-        """Set SSL options."""
-        if not self.config["server"]["ssl"]:
-            return None
-
-        return pika.SSLOptions(
-            ssl.create_default_context(), self.config["server"]["host"]
-        )
-
-    @property
-    def username(self) -> None:
-        """Set username."""
-        if "username" in self.config["virtual_hosts"][self.virtual_host_name]:
-            return self.config["virtual_hosts"][self.virtual_host_name][
-                "username"
-            ]
-
-        return self.config["server"]["username"]
-
-    @property
-    def password(self) -> None:
-        """Set password."""
-        if "password" in self.config["virtual_hosts"][self.virtual_host_name]:
-            return self.config["virtual_hosts"][self.virtual_host_name][
-                "password"
-            ]
-
-        return self.config["server"]["password"]
-
     @property
     def fernet_key(self) -> Optional[str]:
         """Set Fernet key."""
-        if (
-            "fernet_key"
-            in self.config["virtual_hosts"][self.virtual_host_name]
-        ):
-            return self.config["virtual_hosts"][self.virtual_host_name][
-                "fernet_key"
-            ]
+        if not self.virtual_host_config.fernet_key:
+            return None
 
-        return None
+        return self.virtual_host_config.fernet_key
 
     def set_connection(self) -> None:
         """Set RabbitMQ connection."""
+        arguments = {
+            "host": self.config.server.host,
+            "port": self.config.server.port,
+            "virtual_host": self.virtual_host_name,
+            "credentials": pika.credentials.PlainCredentials(
+                self.config.server.username, self.config.server.password
+            ),
+        }
+
+        if self.config.server.ssl:
+            arguments["ssl_options"] = get_pika_ssl_options(
+                self.config.server.host
+            )
+
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
-                host=self.config["server"]["host"],
-                port=self.config["server"]["port"],
-                virtual_host=self.virtual_host_name,
-                credentials=pika.credentials.PlainCredentials(
-                    self.username, self.password
-                ),
-                ssl_options=self.ssl_options,
+                **arguments,
             )
         )
 
@@ -120,46 +82,30 @@ class RabbitMQ:
     def declare_queue(self) -> None:
         """Declare RabbitMQ queue."""
         self.channel.queue_declare(
-            queue=self.config["virtual_hosts"][self.virtual_host_name][
-                "queue"
-            ],
+            queue=self.virtual_host_config.queue,
             durable=True,
         )
 
-    @property
-    def exchanges(self) -> Dict[str, Dict[str, Union[str, List[str]]]]:
-        """Get exchanges from config."""
-        exchanges = self.config["virtual_hosts"][self.virtual_host_name][
-            "exchanges"
-        ]
-
-        if exchanges is None:
-            return {}
-
-        return exchanges
-
     def declare_exchanges(self) -> None:
         """Declare RabbitMQ exchanges."""
-        for exchange_name, exchange_values in self.exchanges.items():
+        for exchange in self.virtual_host_config.exchanges:
             self.channel.exchange_declare(
-                exchange=exchange_name, exchange_type=exchange_values["type"]
+                exchange=exchange.name, exchange_type=exchange.type
             )
 
     def bind_queue(self) -> None:
         """Bind to RabbitMQ queue at each exchange."""
-        for exchange_name, _exchange_values in self.exchanges.items():
-            queue = self.config["virtual_hosts"][self.virtual_host_name][
-                "queue"
-            ]
+        for exchange in self.virtual_host_config.exchanges:
+            queue = self.virtual_host_config.queue
 
             logger.info(
                 "Binding: exchange '%s', queue '%s', virtual host '%s'",
-                exchange_name,
+                exchange.name,
                 queue,
                 self.virtual_host_name,
             )
 
-            self.channel.queue_bind(exchange=exchange_name, queue=queue)
+            self.channel.queue_bind(exchange=exchange.name, queue=queue)
 
     def set_basic_qos(self) -> None:
         """Set basic QoS for channel."""
