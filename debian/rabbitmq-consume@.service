@@ -5,7 +5,8 @@ PartOf=rabbitmq-consume.target
 
 [Service]
 Type=notify
-ExecStart=/usr/bin/rabbitmq-consumer --virtual-host-name=%i --config-file-path=/etc/cyberfusion/rabbitmq.yml
+Environment=CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml
+ExecStart=/usr/bin/rabbitmq-consumer --virtual-host-name=%i --config-file-path=$CONFIG_FILE_PATH
 Restart=on-failure
 RestartSec=120
 
