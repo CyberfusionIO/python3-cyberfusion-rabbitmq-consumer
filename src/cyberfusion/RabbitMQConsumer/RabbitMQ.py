@@ -11,8 +11,6 @@ from cyberfusion.RabbitMQConsumer.utilities import get_pika_ssl_options
 logger = logging.getLogger(__name__)
 
 
-# Keep in sync with Core API
-
 FERNET_TOKEN_KEYS = [
     "secret_values",
     "passphrase",

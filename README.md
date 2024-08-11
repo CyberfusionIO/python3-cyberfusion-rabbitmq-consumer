@@ -1,4 +1,4 @@
-# python3-cyberfusion-cluster-rabbitmq-consumer
+# python3-cyberfusion-rabbitmq-consumer
 
 RabbitMQ consumer.
 
@@ -45,7 +45,7 @@ Find an example config in `rabbitmq.yml`.
 
 ## Run
 
-    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/cluster-rabbitmq-consume $VIRTUAL_HOST_NAME
+    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/rabbitmq-consumer $VIRTUAL_HOST_NAME
 
 Note:
 

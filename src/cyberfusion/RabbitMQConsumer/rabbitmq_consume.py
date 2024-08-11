@@ -1,7 +1,7 @@
 """Program to consume RPC requests.
 
 Usage:
-  cluster-rabbitmq-consume --virtual-host-name=<virtual-host-name> --config-file-path=<config-file-path>
+  rabbitmq-consumer --virtual-host-name=<virtual-host-name> --config-file-path=<config-file-path>
 
 Options:
   -h --help                                      Show this screen.
