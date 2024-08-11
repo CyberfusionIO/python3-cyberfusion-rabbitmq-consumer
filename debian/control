@@ -7,9 +7,6 @@ Standards-Version: 4.3.0
 
 Package: python3-cyberfusion-rabbitmq-consumer
 Architecture: all
-Replaces: python3-cyberfusion-cluster-rabbitmq-consumer
-Conflicts: python3-cyberfusion-cluster-rabbitmq-consumer
-Provides: python3-cyberfusion-cluster-rabbitmq-consumer (= 2.0.2.3)
 Depends: python3,
  python3-cyberfusion-common (>= 2.10.1.2),
  python3-sdnotify,
