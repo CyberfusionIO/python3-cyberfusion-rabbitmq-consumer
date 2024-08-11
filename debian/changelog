@@ -1,3 +1,17 @@
+python3-cyberfusion-rabbitmq-consumer (2.1) unstable; urgency=low
+
+  - Add dx_example (RabbitMQHandlers)
+  - Remove journald logging in favour of stdout
+  - Replace RABBITMQ_CONSUMER_CONFIG_FILE_PATH env var
+    by --config-file-path
+  - Replace positional argument by --virtual-host-name=...
+  - Rename /usr/bin/cluster-rabbitmq-consume to /usr/bin/rabbitmq-consumer
+  - Separate RabbitMQ and config classes
+  - Rename package from python3-cyberfusion-cluster-rabbitmq-consumer
+    to python3-cyberfusion-rabbitmq-consumer
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 11 Aug 2024 15:46:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (2.0.2.3) unstable; urgency=low
 
   - Log correlation ID
