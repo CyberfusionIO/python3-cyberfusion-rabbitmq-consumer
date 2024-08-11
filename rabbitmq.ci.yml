@@ -9,11 +9,7 @@ server:
 virtual_hosts:
   test:
     queue: test
-    # If 'username' and/or 'password' are set for a specific virtual host, they
-    # take precedence over those set in the 'server' block.
-    #
-    # username: alfred
-    # password: 7qUhNEhz4ug6pr9MmGUKghPd
+    fernet_key: 'ZycOtLSOfBSztarunksiEdAjYklBvQ82Jgq0_7Vd7jg='
     exchanges:
       dx_example:
         type: direct

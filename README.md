@@ -82,22 +82,3 @@ Handle methods are idempotent. Messages will be retried if the consumer dies bef
 Run tests with pytest:
 
     pytest tests/
-
-Pass the following environment variables:
-
-* `RABBITMQ_VIRTUAL_HOST_NAME`. Created if it doesn't exist.
-* `RABBITMQ_HOST`
-* `RABBITMQ_USERNAME`. Must have 'administrator' tag.
-* `RABBITMQ_PASSWORD`
-* `RABBITMQ_AMQP_PORT`
-* `RABBITMQ_MANAGEMENT_PORT`
-* `RABBITMQ_SSL`
-* `RABBITMQ_FERNET_KEY` (optional)
-
-Note:
-
-- The `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` environment variable is ignored.
-
-## With services running with Docker Compose
-
-    RABBITMQ_SSL=false RABBITMQ_VIRTUAL_HOST_NAME=test RABBITMQ_HOST=127.0.0.1 RABBITMQ_USERNAME=test RABBITMQ_PASSWORD='C4P4BZFcaBUYk2PvVyZU7CV3' RABBITMQ_AMQP_PORT=5672 RABBITMQ_MANAGEMENT_PORT=15672 pytest
