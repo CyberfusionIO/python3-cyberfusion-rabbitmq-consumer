@@ -45,11 +45,7 @@ Find an example config in `rabbitmq.yml`.
 
 ## Run
 
-    RABBITMQ_CONSUMER_CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml /usr/bin/rabbitmq-consumer $VIRTUAL_HOST_NAME
-
-Note:
-
-- `RABBITMQ_CONSUMER_CONFIG_FILE_PATH` defaults to `rabbitmq.yml` (working directory).
+    /usr/bin/rabbitmq-consumer --virtual-host-name=<virtual-host-name> --config-file-path=<config-file-path>
 
 ## systemd
 
