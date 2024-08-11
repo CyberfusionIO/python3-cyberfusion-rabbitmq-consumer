@@ -9,7 +9,7 @@ python3-cyberfusion-rabbitmq-consumer: SDIR		:= python
 python3-cyberfusion-rabbitmq-consumer:
 	rm -rf $(CURDIR)/build
 	python3 setup.py install --force --root=$(PKGPREFIX) --no-compile -O0 --install-layout=deb
-# Directory for alternative configuration files (to specify with RABBITMQ_CONSUMER_CONFIG_FILE_PATH)
+# Directory for configuration files (to specify with --config-file-path=<config-file-path>)
 	mkdir -p $(PKGPREFIX)/etc/cyberfusion/rabbitmq/
 
 clean:
