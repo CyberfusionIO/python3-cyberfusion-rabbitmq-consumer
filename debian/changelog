@@ -1,205 +1,205 @@
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0.2.3) unstable; urgency=low
 
   - Log correlation ID
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 10 Aug 2024 10:25:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0.2.2) unstable; urgency=low
 
   - Increase TasksMax
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 28 Jul 2024 01:26:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0.2.1) unstable; urgency=low
 
   - Start after ypconfig
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 21 Jul 2024 12:30:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0.2) unstable; urgency=low
 
   - Only log error when exchange module could not be imported
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 21 Jul 2024 11:23:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0.1) unstable; urgency=low
 
   - Misc fixes for 2.0
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 05 Jul 2024 15:08:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (2.0) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (2.0) unstable; urgency=low
 
   - Implement RPC request-response contract
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 04 Jul 2024 10:37:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5.3.2) unstable; urgency=low
 
   - Skip non-existent exchanges instead of crashing
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 02 Jul 2024 16:56:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5.3.1) unstable; urgency=low
 
   - Remove redundant `--with systemd` from d/rules
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 17 Feb 2024 21:26:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5.3) unstable; urgency=low
 
   - Remove SMTP logging
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 28 Jul 2023 17:11:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5.2) unstable; urgency=low
 
   - Change cf-cluster prefix to cf-
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 20 Jul 2023 10:39:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5.1) unstable; urgency=low
 
   - Use SystemdSupport
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 28 Apr 2023 14:41:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.5) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.5) unstable; urgency=low
 
   - Remove dx_service_restart
   - Remove dx_service_reload
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 20 Apr 2023 15:39:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.4) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.4) unstable; urgency=low
 
   - Remove dx_configuration_manager_present
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 25 Feb 2023 14:42:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.3.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.3.1) unstable; urgency=low
 
   - Default to empty dict when configured exchanges is null
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 25 Feb 2023 13:55:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.3) unstable; urgency=low
 
   - Encrypt sensitive fields with Fernet
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 9 Nov 2022 14:27:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.2) unstable; urgency=low
 
   - Add username + password override per virtual host
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 31 Oct 2022 11:00:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1.2.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.1.2.2) unstable; urgency=low
 
   - Update dependencies
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 4 Oct 2022 18:40:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.1.2.1) unstable; urgency=low
 
   - Minor fix for 1.8.2.1.2
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 4 Oct 2022 16:31:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.1.2) unstable; urgency=low
 
   - Rename package to include python3
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 4 Oct 2022 16:31:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.1.1) unstable; urgency=low
 
   - Use is_active property instead of get_is_active call
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 2 Oct 2022 14:06:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2.1) unstable; urgency=low
 
   - Fix unused f-string
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 14 Sep 2022 18:16:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.2) unstable; urgency=low
 
   - Add rabbitmq-consumer-status
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 14 Sep 2022 16:22:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.1.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.1.1) unstable; urgency=low
 
   - Remove python3-pip dependency
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 1 Sep 2022 16:01:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8.1) unstable; urgency=low
 
   - Use new GitLab CI template
   - Depend on new Debian packages rather than running 'pip3 install'
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 31 Aug 2022 10:07:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.8) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.8) unstable; urgency=low
 
   - Add and use Handler class
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 15 Jun 2022 12:59:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.7.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.7.3) unstable; urgency=low
 
   - Add RabbitMQConsumer.tests module
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 13 Jun 2022 13:12:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.7.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.7.2.1) unstable; urgency=low
 
   - Add python3-pip to Depends
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 11 Jun 2022 17:32:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.7.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.7.2) unstable; urgency=low
 
   - Add dpkg-trigger to restart on RabbitMQHandlers update
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 9 May 2022 11:09:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.7.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.7.1) unstable; urgency=low
 
   - Add TasksMax to systemd unit, as failsafe for not running out of threads
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 4 Apr 2022 16:31:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.7) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.7) unstable; urgency=low
 
   - Implement multithreading
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 4 Apr 2022 13:43:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.6) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.6) unstable; urgency=low
 
   - Remove non-generic exchange modules in favour of namespace packages
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 28 Mar 2022 18:05:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.8.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.8.1) unstable; urgency=low
 
   - Catch all exceptions to ensure messages are always replied to
   - Don't include None result in data
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 11 Mar 2022 18:51:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.8) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.8) unstable; urgency=low
 
   - Add and honour RPC response contract
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 11 Mar 2022 17:39:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.7) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.7) unstable; urgency=low
 
   - Use new-style logging and exceptions for
     dx_wordpress_installation_one_time_login_url
@@ -208,26 +208,26 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.5.7) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 11 Mar 2022 11:55:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.6.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.6.1) unstable; urgency=low
 
   - Slightly improve dx_configuration_manager_present logging introduced in 1.5.6
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 10 Mar 2022 12:34:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.6) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.6) unstable; urgency=low
 
   - Rename fx_configuration_manager_present to dx_configuration_manager_present
   - Turn dx_configuration_manager_present into RPC call
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 10 Mar 2022 11:31:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.5.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.5.2) unstable; urgency=low
 
   - Turn dx_service_restart into RPC call
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 27 Feb 2022 16:19:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.5.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.5.1) unstable; urgency=low
 
   - Turn dx_service_reload into RPC call
   - Remove dx_borg_repository_archives_list exchange
@@ -235,7 +235,7 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.5.5.1) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 25 Feb 2022 17:46:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.5) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.5) unstable; urgency=low
 
   - Turn dx_cms_install into RPC call
   - Add facilities for new-style RPC exchanges: _prefix_message,
@@ -243,43 +243,43 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.5.5) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 24 Feb 2022 09:36:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.4.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.4.1) unstable; urgency=low
 
   - Remove fx_letsencrypt_create_certificates exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 23 Feb 2022 14:28:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.4) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.4) unstable; urgency=low
 
   - Add dx_service_reload exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 31 Jan 2022 11:03:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.3.1.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.3.1.1) unstable; urgency=low
 
   - Pass correct list elements of command to CyberfusionCommand
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 20 Oct 2021 08:50:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.3.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.3.1) unstable; urgency=low
 
   - Pass command as list to CyberfusionCommand
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 19 Oct 2021 17:55:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.3) unstable; urgency=low
 
   - Add dx_service_restart exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 17 Sep 2021 11:36:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.2.1) unstable; urgency=low
 
   - Remove now ignored flake8 noqa's
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 30 Aug 2021 10:42:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.2) unstable; urgency=low
 
   - Bump debhelper compatibility level to 10
   - Bump Standards-Version to 4.3.0
@@ -289,7 +289,7 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.5.2) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 14 Aug 2021 19:29:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5.1) unstable; urgency=low
 
   - Add package dependency python3-systemd
   - dx_cms_install: Add more verbose info logging
@@ -305,20 +305,20 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.5.1) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 2 Aug 2021 11:57:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.5) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.5) unstable; urgency=low
 
   - Implement logging
   - Use get_hostname from Common
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 6 Jul 2021 16:42:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.9) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.9) unstable; urgency=low
 
   - Add dx_cms_install exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 3 Jul 2021 16:21:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.8) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.8) unstable; urgency=low
 
   - Create /etc/rabbitmq dir
   - Make config path configurable with RABBITMQ_CONSUMER_CONFIG_FILE_PATH environment variable
@@ -328,32 +328,32 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.4.8) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 24 Jun 2021 12:39:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.7) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.7) unstable; urgency=low
 
   - Add fx_letsencrypt_create_certificates exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 17 Jun 2021 10:36:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.6) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.6) unstable; urgency=low
 
   - dx_wordpress_installation_one_time_login_url: Use ClusterSupport to retrieve virtual host information
   - Add dx_virtual_host_document_root_contains_files exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Thu, 20 May 2021 10:08:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.5) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.5) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Use ClusterSupport to retrieve Borg repository information
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 19 May 2021 12:53:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.4) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.4) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Do not use command
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 14 May 2021 22:19:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.3) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Do not unnecessarily cast identity_file_path to str
   - Rename virtual_host to virtual_host_name
@@ -361,53 +361,53 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.4.3) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 14 May 2021 20:13:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.2.4) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.2.4) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Add --identity-file-path
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 3 May 2021 20:05:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.2.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.2.3) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Revert "Pass only --repository-id to command"
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 3 May 2021 16:54:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.2.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.2.2) unstable; urgency=low
 
   - Add 'password' as secret value
   - dx_borg_repository_archives_list: Pass only --repository-id to command
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 3 May 2021 14:05:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.2.1) unstable; urgency=low
 
   - dx_borg_repository_archives_list: Pass passphrase as environment variable
   - Add 'passphrase' as secret value (used for Borg exchange)
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sat, 1 May 2021 16:36:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.2) unstable; urgency=low
 
   - Add dx_borg_repository_archives_list exchange
   - utf-8 encode JSON output in dx_wordpress_installation_one_time_login_url exchange
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 30 Apr 2021 16:26:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4.1) unstable; urgency=low
 
   - Implement semi-graceful shutdown
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 2 Apr 2021 19:00:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.4) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.4) unstable; urgency=low
 
   - Implement secret_values
   - Cast body in callback method
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 8 Mar 2021 10:54:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.3) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.3) unstable; urgency=low
 
   - Add exceptions submodule
   - Add BinaryNotAllowedError exception
@@ -415,7 +415,7 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.3) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 5 Mar 2021 14:26:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.2.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.2.1) unstable; urgency=low
 
   - Specify exchange type in config
   - Rename fx_wordpress_installation_one_time_login_url to dx_wordpress_installation_one_time_login_url
@@ -423,7 +423,7 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.2.1) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 3 Mar 2021 11:46:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.2) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.2) unstable; urgency=low
 
   - Turn body into string
   - Add fx_wordpress_installation_one_time_login_url exchange
@@ -431,13 +431,13 @@ python3-cyberfusion-cluster-rabbitmq-consumer (1.2) unstable; urgency=low
 
  -- William Edwards <wedwards@cyberfusion.nl>  Tue, 2 Mar 2021 14:46:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.1) unstable; urgency=low
 
   - Use separate sub-modules for exchanges
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 1 Mar 2021 14:33:00 +0200
 
-python3-cyberfusion-cluster-rabbitmq-consumer (1.0) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (1.0) unstable; urgency=low
 
   - Initial release
 

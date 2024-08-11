@@ -1,4 +1,4 @@
-# python3-cyberfusion-cluster-rabbitmq-consumer
+# python3-cyberfusion-rabbitmq-consumer
 
 RabbitMQ consumer.
 
