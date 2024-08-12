@@ -24,7 +24,7 @@ from cryptography.fernet import Fernet
 from docopt import docopt
 from schema import Schema
 
-from cyberfusion.RabbitMQConsumer.config import Config
+from cyberfusion.RabbitMQConsumer.config import Config, Exchange
 from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.rabbitmq import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
@@ -56,11 +56,11 @@ locks = Locks({})
 threads: List[threading.Thread] = []
 
 
-def import_modules(rabbitmq: RabbitMQ) -> Dict[str, types.ModuleType]:
+def import_modules(exchanges: List[Exchange]) -> Dict[str, types.ModuleType]:
     """Import exchange handler modules."""
     modules = {}
 
-    for exchange in rabbitmq.virtual_host_config.exchanges:
+    for exchange in exchanges:
         import_module = (
             f"cyberfusion.RabbitMQHandlers.exchanges.{exchange.name}"
         )
@@ -197,7 +197,7 @@ def main() -> None:
 
         # Import exchange modules
 
-        modules = import_modules(rabbitmq)
+        modules = import_modules(rabbitmq.virtual_host_config.exchanges)
 
         # Configure consuming
 
