@@ -35,6 +35,8 @@ Finally, consider how 'simple' many use cases are:
 
 ... and building a new, lean RPC framework becomes obvious.
 
+The RPC framework is based on RabbitMQ, because it provides all primitives needed for stable and scalable inter-systems messaging.
+
 ## RPC vs REST
 
 Traditionally, REST is the go-to framework for strong-contracted data exchange.
@@ -85,11 +87,11 @@ When receiving an RPC request, the exchange-specific *handler* is called, which 
 
 As deleting a server requires different processing than, for example, creating a server, every exchange has its own *handler*.
 
-The handler returns the RPC response, which, in turn, is returned by the RabbitMQ consumer.
+The handler returns the RPC response.
 
 ## Example
 
-Find a handler example in `src/cyberfusion/RabbitMQHandlers/exchanges/dx_example/__init__.py`.
+Find a handler example in [`exchanges/dx_example`](src/cyberfusion/RabbitMQHandlers/exchanges/dx_example/__init__.py).
 
 ## Where handlers come from
 
@@ -101,7 +103,7 @@ A module must exist for every handler. Otherwise, RPC requests for the exchange 
 
 ## Type annotations and Pydantic: how request and response data is validated
 
-Handlers use Python *type annotations* to indicate the request model (that they expect) and response model (that they return).
+Handlers use Python *type annotations* to indicate the request model (that they expect as input) and response model (that they return).
 These models are [Pydantic](https://docs.pydantic.dev/latest/) models, inheriting `RPCRequestBase` and `RPCResponseBase` respectively.
 
 For example:
@@ -124,7 +126,10 @@ class RPCResponseDataExample(RPCResponseData):
 class RPCResponseExample(RPCResponseBase):
     data: Optional[RPCResponseDataExample]
 
-def __call__(self, request: RPCRequestExample) -> RPCResponseExample:  # These type annotations are used
+def __call__(
+        self,
+        request: RPCRequestExample  # Request model
+) -> RPCResponseExample:  # Response model
     ...
 ```
 
@@ -184,11 +189,11 @@ For example, if a single RabbitMQ consumer's config contains the following excha
 * `RabbitMQHandlersTrees` (contains tree exchanges)
 
 You can do this using [namespace packaging](https://packaging.python.org/en/latest/guides/packaging-namespace-packages/#native-namespace-packages).
-This lets you install the exchange modules above, from multiple packages, into a single module (`cyberfusion.RabbitMQHandlers.exchanges` - where all exchange handlers are imported from).
+This lets you install the exchange modules above, from multiple packages, into a single module (`cyberfusion.RabbitMQHandlers.exchanges` - where all exchange handlers are imported from, see '[Where handlers come from](#where-handlers-come-from)').
 
 Using namespace packaging is simple: don't add an `__init__.py` to the `exchanges` directory.
 
-For example, while a 'normal' module tree looks like this:
+To demonstrate, a 'regular' module tree contains `__init__.py` files:
 
     server_handlers/
         src/
@@ -200,7 +205,7 @@ For example, while a 'normal' module tree looks like this:
                         dx_create_server/
                             __init__.py
 
-... a namespace-packaged package's tree looks like this:
+... while a namespace-packaged tree doesn't:
 
     server_handlers/
         src/
@@ -210,9 +215,7 @@ For example, while a 'normal' module tree looks like this:
                         dx_create_server/
                             __init__.py
 
-Note that `__init__.py` is absent from the `cyberfusion.RabbitMQHandlers` and `cyberfusion.RabbitMQHandlers.exchanges` modules.
-
-You can then ship submodules from another package:
+You can then ship submodules from another package, of which the tree may look like this:
 
     tree_handlers/
         src/
@@ -225,16 +228,16 @@ You can then ship submodules from another package:
 ## Locking
 
 To prevent conflicting RPC requests from running simultaneously, use `Handler.lock_attribute`.
-RPC requests for which the value of the specified attribute are identical, are delayed.
+If multiple RPC requests come in, for which the lock attribute's value is identical, only one is processed at a time.
 
 ### Example
 
 Scenario:
 
-* You have an exchange, `dx_delete_server`.
+* You have an exchange, `dx_upgrade_server`. It should not be possible to upgrade a given server multiple times, simultaneously.
 * The exchange's request model has the property `name`.
-* On `dx_delete_server`, an RPC request with `name = example`, and an RPC request with `name = demonstration` may run simultaneously.
-* On `dx_delete_server`, an RPC request with `name = example`, and another RPC request with `name = example` (identical) may NOT run simultaneously.
+* On `dx_upgrade_server`, an RPC request with `name = example`, and an RPC request with `name = demonstration` may run simultaneously (because `example` differs from `demonstration`).
+* On `dx_upgrade_server`, an RPC request with `name = example`, and another RPC request with `name = example` (identical) may NOT run simultaneously (because `example` is the same as `example`).
 
 Code:
 
@@ -284,7 +287,7 @@ Run the following commands to build a Debian package:
 
 # Configure
 
-## Contents
+## Sections
 
 The config file contains:
 
@@ -294,7 +297,7 @@ The config file contains:
 
 ## Example
 
-Find an example config in `rabbitmq.yml`.
+Find an example config in [`rabbitmq.yml`](rabbitmq.yml).
 
 # Run
 
