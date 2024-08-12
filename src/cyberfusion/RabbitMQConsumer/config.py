@@ -102,3 +102,12 @@ class Config:
             return virtual_host
 
         raise VirtualHostNotExistsError
+
+    def get_all_exchanges(self) -> List[Exchange]:
+        """Get exchanges for all virtual hosts."""
+        exchanges = []
+
+        for virtual_host in self.virtual_hosts:
+            exchanges.extend(virtual_host.exchanges)
+
+        return exchanges
