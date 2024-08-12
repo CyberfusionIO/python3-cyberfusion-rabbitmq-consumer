@@ -30,7 +30,7 @@ repos:
           - types-requests==2.31.0.20240106
           - types-PyYAML==6.0.12.12
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+    rev: 7.1.1
     hooks:
       - id: flake8
         # Keep in sync with .flake8. pre-commit does not
