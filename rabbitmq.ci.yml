@@ -1,0 +1,15 @@
+---
+server:
+  host: rabbitmq
+  username: test
+  password: knvPSBPLkJSwTdMn6F4kkQkB
+  port: 5672
+  ssl: false
+
+virtual_hosts:
+  test:
+    queue: test
+    fernet_key: 'ZycOtLSOfBSztarunksiEdAjYklBvQ82Jgq0_7Vd7jg='
+    exchanges:
+      dx_example:
+        type: direct

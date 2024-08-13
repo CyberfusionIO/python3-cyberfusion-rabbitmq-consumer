@@ -1,0 +1,22 @@
+[Unit]
+Description=RabbitMQ Consumer for Virtual Host with name %i
+After=network.target ypconfig.service
+PartOf=rabbitmq-consume.target
+
+[Service]
+Type=notify
+Environment=CONFIG_FILE_PATH=/etc/cyberfusion/rabbitmq.yml
+ExecStart=/usr/bin/rabbitmq-consumer --virtual-host-name %i --config-file-path $CONFIG_FILE_PATH
+Restart=on-failure
+RestartSec=120
+
+# We wait for the child process to exit in the parent when the parent receives SIGTERM. So, we want to wait for the child process to return, and thus not send it SIGTERM as well.
+# With 'mixed', systemd sends SIGTERM only to the parent. If the child process doesn't return before the systemd timeout, then eventually, systemd will send SIGKILL to all processes.
+# When the parent process receives SIGKILL, it doesn't get a chance to run the 'finally' block. We assume the consumer reconnects quickly, so we don't see that as much of a problem.
+KillMode=mixed
+
+# Limit the amount of tasks (AFAIK, tasks are threads + processes). We already limit the amount of threads in the code, so this is extra safety for not running out of OS threads.
+TasksMax=150
+
+[Install]
+WantedBy=rabbitmq-consume.target

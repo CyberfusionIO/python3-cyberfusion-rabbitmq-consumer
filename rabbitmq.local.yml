@@ -1,0 +1,25 @@
+---
+server:
+  host: localhost
+  username: test
+  password: C4P4BZFcaBUYk2PvVyZU7CV3
+  port: 5672
+  ssl: false
+
+virtual_hosts:
+  test:
+    # Free-form. This allows callers (making RPC requests) to route requests to
+    # consumers with the same queue. This option corresponds to RabbitMQ's
+    # `routing_key`.
+    queue: test
+    # Max amount of RPC requests that can be processed simultaneously. Use this
+    # to prevent overloading by many requests. Defaults to 5. This option
+    # corresponds to RabbitMQ's `prefetch_count`.
+    max_simultaneous_requests: 5
+    # Fernet key for encryption. For more information, see README.
+    fernet_key: 'ZycOtLSOfBSztarunksiEdAjYklBvQ82Jgq0_7Vd7jg='
+    exchanges:
+      dx_example:
+        # For more information about exchange types, see:
+        # https://www.rabbitmq.com/tutorials/amqp-concepts#exchanges
+        type: direct

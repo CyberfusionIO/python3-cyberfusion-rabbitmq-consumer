@@ -1,0 +1,2 @@
+#!/usr/bin/dh-exec
+bin/rabbitmq-consumer-status.py => /usr/bin/rabbitmq-consumer-status

@@ -1,0 +1,19 @@
+---
+server:
+  host: rabbitmq.cyberfusion.nl
+  username: test
+  password: C4P4BZFcaBUYk2PvVyZU7CV3
+  port: 5671
+  ssl: true
+
+virtual_hosts:
+  test1:
+    queue: test
+    exchanges:
+      fx_test:
+        command: test
+  test2:
+    queue: test
+    exchanges:
+      fx_test:
+        command: test
