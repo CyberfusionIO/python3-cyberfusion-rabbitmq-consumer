@@ -1,6 +1,6 @@
 # python3-cyberfusion-rabbitmq-consumer
 
-A lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
+Lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 
 # Features
 
@@ -502,6 +502,12 @@ tolerable = response["data"]["tolerable"]
 ```
 
 # Install
+
+## PyPI
+
+Run the following command to install the package from PyPI:
+
+    pip3 install python3-cyberfusion-rabbitmq-consumer
 
 ## Generic
 
