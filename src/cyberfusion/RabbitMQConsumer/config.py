@@ -49,6 +49,12 @@ class VirtualHost:
 class Config:
     """Base config."""
 
+    KEY_NAME = "name"
+    KEY_QUEUE = "queue"
+    KEY_FERNET_KEY = "fernet_key"
+    KEY_EXCHANGES = "exchanges"
+    KEY_MAX_SIMULTANEOUS_REQUESTS = "max_simultaneous_requests"
+
     def __init__(self, path: str) -> None:
         """Path to config file."""
         self.path = path
@@ -72,6 +78,8 @@ class Config:
         for virtual_host_name, virtual_host_properties in self._contents[
             "virtual_hosts"
         ].items():
+            # Get exchanges
+
             exchanges = []
 
             for exchange_name, exchange_properties in virtual_host_properties[
@@ -83,15 +91,27 @@ class Config:
                     )
                 )
 
+            # Get arguments
+
+            arguments = {
+                self.KEY_NAME: virtual_host_name,
+                self.KEY_QUEUE: virtual_host_properties[self.KEY_QUEUE],
+                self.KEY_FERNET_KEY: virtual_host_properties[
+                    self.KEY_FERNET_KEY
+                ],
+                self.KEY_EXCHANGES: exchanges,
+            }
+
+            if self.KEY_MAX_SIMULTANEOUS_REQUESTS in virtual_host_properties:
+                arguments[self.KEY_MAX_SIMULTANEOUS_REQUESTS] = (
+                    virtual_host_properties[self.KEY_MAX_SIMULTANEOUS_REQUESTS]
+                )
+
+            # Add virtual host
+
             virtual_hosts.append(
                 VirtualHost(
-                    name=virtual_host_name,
-                    queue=virtual_host_properties["queue"],
-                    fernet_key=virtual_host_properties["fernet_key"],
-                    max_simultaneous_requests=virtual_host_properties[
-                        "max_simultaneous_requests"
-                    ],
-                    exchanges=exchanges,
+                    **arguments,
                 )
             )
 
