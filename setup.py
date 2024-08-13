@@ -14,7 +14,7 @@ setup(
     python_requires=">=3.11",
     author="William Edwards",
     author_email="wedwards@cyberfusion.nl",
-    url="https://vcs.cyberfusion.nl/shared/python3-cyberfusion-rabbitmq-consumer",
+    url="https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer",
     packages=[
         "cyberfusion.RabbitMQConsumer",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_example",
