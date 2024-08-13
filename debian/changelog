@@ -1,6 +1,7 @@
 python3-cyberfusion-rabbitmq-consumer (TBD) unstable; urgency=low
 
   - Make max_simultaneous_requests configurable
+  - Add utilities.import_installed_handler_modules
 
  -- William Edwards <wedwards@cyberfusion.nl>  Mon, 12 Aug 2024 16:13:00 +0200
 
