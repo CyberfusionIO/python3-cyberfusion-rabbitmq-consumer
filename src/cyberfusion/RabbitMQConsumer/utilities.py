@@ -1,7 +1,9 @@
 """Generic utilities."""
 
+import importlib.util
 import inspect
 import logging
+import pkgutil
 import ssl
 import types
 from typing import Dict, List, Optional
@@ -14,10 +16,11 @@ from cyberfusion.RabbitMQConsumer.contracts import (
     RPCRequestBase,
     RPCResponseBase,
 )
+from cyberfusion.RabbitMQHandlers import exchanges
 
 logger = logging.getLogger(__name__)
 
-importlib = __import__("importlib")
+importlib_ = __import__("importlib")
 
 
 def _prefix_message(prefix: Optional[str], result: str) -> str:
@@ -39,7 +42,7 @@ def get_pika_ssl_options(host: str) -> pika.SSLOptions:
 def import_exchange_handler_modules(
     exchanges: List[Exchange],
 ) -> Dict[str, types.ModuleType]:
-    """Import exchange handler modules."""
+    """Import exchange handler modules specified in config."""
     modules = {}
 
     for exchange in exchanges:
@@ -48,7 +51,7 @@ def import_exchange_handler_modules(
         )
 
         try:
-            modules[exchange.name] = importlib.import_module(import_module)
+            modules[exchange.name] = importlib_.import_module(import_module)
         except ModuleNotFoundError as e:
             if e.name == import_module:
                 logger.warning(
@@ -59,6 +62,37 @@ def import_exchange_handler_modules(
                 continue
 
             raise
+
+    return modules
+
+
+def import_installed_handler_modules() -> List[types.ModuleType]:
+    """Import all exchange handler modules installed on system."""
+    modules = []
+
+    modules_infos = pkgutil.iter_modules(exchanges.__path__)
+
+    for module_info in modules_infos:
+        # Use FileFinder (`module_info.module_finder.find_spec`) instead of
+        # `importlib.util.find_spec`, as `path` is already set correctly
+
+        spec = module_info.module_finder.find_spec(module_info.name)  # type: ignore[call-arg]
+
+        # Ignore this module if no spec could be found. AFAIK, this should not
+        # be able to happen in normal circumstances, as we're iterating over
+        # modules which we know exist (as they were found).
+
+        if not spec:
+            continue
+
+        module = importlib.util.module_from_spec(spec)
+
+        if not spec.loader:
+            continue
+
+        spec.loader.exec_module(module)
+
+        modules.append(module)
 
     return modules
 
