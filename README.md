@@ -7,6 +7,7 @@ A lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 * Strong request-response contract.
 * Request and response validation (using [Pydantic](https://docs.pydantic.dev/latest/)).
 * Auto-generated documentation (using the standalone [documentation server](#)).
+* Process multiple RPC requests simultaneously (using threading).
 * Encryption (using [Fernet](https://cryptography.io/en/latest/fernet/)).
 * Dynamic structure using namespace packaging (see '[Namespace packaging: shipping handlers from multiple packages](#namespace-packaging-shipping-handlers-from-multiple-packages)'.
 * Locking.
