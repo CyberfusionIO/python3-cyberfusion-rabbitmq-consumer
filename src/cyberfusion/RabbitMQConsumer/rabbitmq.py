@@ -19,10 +19,6 @@ FERNET_TOKEN_KEYS = [
     "database_user_password",
 ]
 
-# Every message is handled in its own thread, so this is the max amount of threads
-
-HANDLE_SIMULTANEOUS_MAX = 5
-
 
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
@@ -107,4 +103,6 @@ class RabbitMQ:
 
     def set_basic_qos(self) -> None:
         """Set basic QoS for channel."""
-        self.channel.basic_qos(prefetch_count=HANDLE_SIMULTANEOUS_MAX)
+        self.channel.basic_qos(
+            prefetch_count=self.virtual_host_config.max_simultaneous_requests
+        )

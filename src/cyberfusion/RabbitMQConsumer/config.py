@@ -43,6 +43,7 @@ class VirtualHost:
     exchanges: List[Exchange]
     queue: str
     fernet_key: Optional[str] = None
+    max_simultaneous_requests: int = 5
 
 
 class Config:
@@ -87,6 +88,9 @@ class Config:
                     name=virtual_host_name,
                     queue=virtual_host_properties["queue"],
                     fernet_key=virtual_host_properties["fernet_key"],
+                    max_simultaneous_requests=virtual_host_properties[
+                        "max_simultaneous_requests"
+                    ],
                     exchanges=exchanges,
                 )
             )

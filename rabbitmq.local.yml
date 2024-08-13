@@ -9,7 +9,13 @@ server:
 virtual_hosts:
   test:
     queue: test
+    # Max amount of RPC requests that can be processed simultaneously. Use this
+    # to prevent overloading by many requests. Defaults to 5.
+    max_simultaneous_requests: 5
+    # Fernet key for encryption. For more information, see README.
     fernet_key: 'ZycOtLSOfBSztarunksiEdAjYklBvQ82Jgq0_7Vd7jg='
     exchanges:
       dx_example:
+        # For more information about exchange types, see:
+        # https://www.rabbitmq.com/tutorials/amqp-concepts#exchanges
         type: direct
