@@ -4,9 +4,9 @@ A lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 
 # Features
 
-* Strong request-response contract.
 * Request and response validation (using [Pydantic](https://docs.pydantic.dev/latest/)).
-* Auto-generated documentation (using the standalone [documentation server](#)).
+* Auto-generated documentation (using the standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server)).
+* Strong request-response contract (see '[documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server/tree/main?tab=readme-ov-file#pydantic-model-generation)').
 * Process multiple RPC requests simultaneously (using threading).
 * Encryption (using [Fernet](https://cryptography.io/en/latest/fernet/)).
 * Dynamic structure using namespace packaging (see '[Namespace packaging: shipping handlers from multiple packages](#namespace-packaging-shipping-handlers-from-multiple-packages)'.
@@ -133,6 +133,15 @@ def __call__(
 ) -> RPCResponseExample:  # Response model
     ...
 ```
+
+## Strong-contracted (definitions)
+
+A common concept in RPC is 'definitions': using the same response/request models on the client *and* server sides.
+As opposed to 'dumb' JSON, using models guarantees that requests and responses are syntactically correct.
+This brings many advantages of local calls, such as type validation, to RPC (remote calls).
+
+The RabbitMQ standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server) can generate Pydantic models for exchange request/request models, which you can use on the client.
+See its README for more information.
 
 ## Encryption using Fernet
 
