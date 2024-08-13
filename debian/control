@@ -19,5 +19,5 @@ Depends: python3,
  python3-docopt,
  python3-schema,
  ${misc:Depends}
-Description: RabbitMQ consumer for RPC.
- RabbitMQ consumer for RPC.
+Description: Lean RPC framework based on RabbitMQ.
+ Lean RPC framework based on RabbitMQ.
