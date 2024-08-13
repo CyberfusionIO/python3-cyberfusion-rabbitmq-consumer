@@ -1,7 +1,6 @@
 """Classes for processing RPC requests."""
 
 import functools
-import inspect
 import logging
 import threading
 from typing import Any
@@ -10,12 +9,14 @@ import pika
 from pydantic import ValidationError
 
 from cyberfusion.RabbitMQConsumer.contracts import (
-    HandlerBase,
     RPCRequestBase,
     RPCResponseBase,
 )
 from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
+from cyberfusion.RabbitMQConsumer.utilities import (
+    get_exchange_handler_class_request_model,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -25,16 +26,6 @@ RESPONSE_ERROR = RPCResponseBase(
     message=MESSAGE_ERROR,
     data=None,
 )
-
-
-def get_request_class(handler: HandlerBase) -> RPCRequestBase:
-    """Get request class by introspection."""
-    return inspect.signature(handler.__call__).parameters["request"].annotation
-
-
-def get_response_class(handler: HandlerBase) -> RPCResponseBase:
-    """Get response class by introspection."""
-    return inspect.signature(handler.__call__).return_annotation
 
 
 class Processor:
@@ -87,7 +78,7 @@ class Processor:
     @property
     def request(self) -> RPCRequestBase:
         """Cast JSON body to Pydantic model."""
-        request_class = get_request_class(self.handler)
+        request_class = get_exchange_handler_class_request_model(self.handler)
 
         try:
             return request_class(**self.payload)
