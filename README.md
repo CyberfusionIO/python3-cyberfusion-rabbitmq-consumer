@@ -6,7 +6,7 @@ Lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 
 * Request and response validation (using [Pydantic](https://docs.pydantic.dev/latest/)).
 * Auto-generated documentation (using the standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server)).
-* Strong request-response contract (see '[documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server/tree/main?tab=readme-ov-file#pydantic-model-generation)').
+* Strong request-response contract (see '[Pydantic model generation](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server/tree/main?tab=readme-ov-file#pydantic-model-generation)').
 * Process multiple RPC requests simultaneously (using threading).
 * Encryption (using [Fernet](https://cryptography.io/en/latest/fernet/)).
 * Dynamic structure using namespace packaging (see '[Namespace packaging: shipping handlers from multiple packages](#namespace-packaging-shipping-handlers-from-multiple-packages)'.
@@ -141,7 +141,7 @@ As opposed to 'dumb' JSON, using models guarantees that requests and responses a
 This brings many advantages of local calls, such as type validation, to RPC (remote calls).
 
 The RabbitMQ standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server) can generate Pydantic models for exchange request/request models, which you can use on the client.
-See its README for more information.
+For more information, see '[Pydantic model generation](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server?tab=readme-ov-file#pydantic-model-generation)' in its README.
 
 ## Encryption using Fernet
 
@@ -272,8 +272,8 @@ See supported client libraries in the [RabbitMQ documentation](https://www.rabbi
 
 For Python, Pika is the go-to RabbitMQ/AMQP library.
 
-Below is an example implementation to execute RPC calls. The example corresponds to the config example [`rabbitmq.yml`](rabbitmq.yml).
-(As opposed to [RabbitMQ's own example](https://github.com/rabbitmq/rabbitmq-tutorials/blob/main/python/rpc_client.py), the example below implements exception handling, timeouts and SSL.
+Below is an example implementation to execute RPC calls (to [`dx_example`](src/cyberfusion/RabbitMQHandlers/exchanges/dx_example/__init__.py). The example corresponds to the config example [`rabbitmq.yml`](rabbitmq.yml).
+(As opposed to [RabbitMQ's own example](https://github.com/rabbitmq/rabbitmq-tutorials/blob/main/python/rpc_client.py), the example below implements exception handling, timeouts and SSL.)
 
 ```python
 import json
@@ -515,7 +515,7 @@ Run the following command to create a source distribution:
 
     python3 setup.py sdist
 
-## Start/stop services with Docker Compose
+## Start/stop services with Docker Compose (development)
 
 Start:
 
