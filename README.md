@@ -253,6 +253,245 @@ class Handler(HandlerBase):
         return "name"
 ```
 
+# Executing RPC requests
+
+RPC requests can be made by any caller that speaks AMQP.
+
+See supported client libraries in the [RabbitMQ documentation](https://www.rabbitmq.com/client-libraries).
+
+## Python example with Pika
+
+For Python, Pika is the go-to RabbitMQ/AMQP library.
+
+Below is an example implementation to execute RPC calls. The example corresponds to the config example [`rabbitmq.yml`](rabbitmq.yml).
+(As opposed to [RabbitMQ's own example](https://github.com/rabbitmq/rabbitmq-tutorials/blob/main/python/rpc_client.py), the example below implements exception handling, timeouts and SSL.
+
+```python
+import json
+import ssl
+import uuid
+from typing import Any
+
+import pika
+
+from cryptography.fernet import Fernet
+
+
+class AMQP:
+    """A class that allows us to interact with AMQP, usable as a context manager."""
+
+    def __init__(
+        self,
+        ssl_enabled: bool,
+        port: int,
+        host: str,
+        username: str,
+        password: str,
+        virtual_host_name: str,
+    ) -> None:
+        self.ssl_enabled = ssl_enabled
+        self.port = port
+        self.host = host
+        self.username = username
+        self.password = password
+        self.virtual_host_name = virtual_host_name
+
+        self.set_ssl_options()
+        self.set_connection()
+        self.set_channel()
+
+    def set_ssl_options(self) -> None:
+        self.ssl_options: pika.SSLOptions | None = None
+
+        if self.ssl_enabled:
+            self.ssl_options = pika.SSLOptions(
+                ssl.create_default_context(), self.host
+            )
+
+    def get_credentials(self) -> pika.credentials.PlainCredentials:
+        return pika.credentials.PlainCredentials(self.username, self.password)
+
+    def set_connection(self) -> None:
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(
+                host=self.host,
+                port=self.port,
+                virtual_host=self.virtual_host_name,
+                credentials=self.get_credentials(),
+                ssl_options=self.ssl_options,
+            )
+        )
+
+    def set_channel(self) -> None:
+        self.channel = self.connection.channel()
+
+    def publish(
+        self,
+        exchange_name: str,
+        exchange_type: str,
+        routing_key: str,
+        *,
+        body: dict[str, Any],
+    ) -> None:
+        self.channel.exchange_declare(
+            exchange=exchange_name, exchange_type=exchange_type
+        )
+
+        self.channel.basic_publish(
+            exchange=exchange_name,
+            body=json.dumps(body),
+            properties=pika.BasicProperties(
+                content_type="application/json",
+                # Persistency, so messages don't get lost. For more information, see:
+                # https://www.rabbitmq.com/docs/persistence-conf
+                delivery_mode=2,
+            ),
+            routing_key=routing_key,
+        )
+
+    def __enter__(self) -> pika.adapters.blocking_connection.BlockingChannel:
+        """Return AMQP channel."""
+        return self.channel
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore[no-untyped-def]
+        """Close AMQP connection."""
+        self.connection.close()
+
+
+class RPC:
+    """AMQP RPC client."""
+
+    DEFAULT_TIMEOUT = 5 * 60
+
+    def __init__(
+        self,
+        pika: AMQP,
+        queue: str,
+        exchange: str,
+        timeout: int = DEFAULT_TIMEOUT,
+    ) -> None:
+        self.pika = pika
+        self.routing_key = queue
+        self.exchange = exchange
+        self.timeout = timeout
+
+        # Set channel, queue, and bind
+
+        self.channel = self.pika.connection.channel()
+
+        self.callback_queue = self.channel.queue_declare(
+            queue="", exclusive=True
+        ).method.queue
+
+        self.channel.queue_bind(exchange=exchange, queue=self.callback_queue)
+
+        # Set timeout
+
+        self.pika.connection.call_later(timeout, self.timeout_routine)
+
+        # Start consuming
+
+        self.channel.basic_consume(
+            queue=self.callback_queue,
+            on_message_callback=self.callback,
+            auto_ack=True,
+        )
+
+    def timeout_routine(self) -> None:
+        raise Exception(f"RPC call timed out on exchange '{self.exchange}'")
+
+    def publish(self, *, body: dict[str, Any]) -> bytes:
+        """Publish message and wait for response."""
+        self.response: str | bytes | None = None
+        self.correlation_id: str = str(uuid.uuid4())
+
+        self.channel.basic_publish(
+            exchange=self.exchange,
+            body=json.dumps(body),
+            properties=pika.BasicProperties(
+                content_type="application/json",
+                reply_to=self.callback_queue,
+                correlation_id=self.correlation_id,
+                #
+                # $TIMEOUT can be reached in two cases:
+                #
+                # - When the message isn't acked in $TIMEOUT, e.g. because the
+                #   consumer is offline
+                # - When the message processing takes $TIMEOUT
+                #
+                # In either case, an exception is raised in the 'timeout' method.
+                # When this happens because of case #1 (message not acked), we want
+                # to ensure that the RPC message does not start processing when the
+                # consumer is able to process the message. Therefore, the RPC message
+                # should expire after $TIMEOUT; this ensures that, once we've returned
+                # the definitive state by raising an exception in the 'timeout' method,
+                # the RPC call will not process in the background anyway.
+                #
+                expiration=str(self.timeout * 1000),
+            ),
+            routing_key=self.routing_key,
+        )
+
+        while self.response is None:
+            self.pika.connection.process_data_events()
+
+        # Exception handling and return response
+
+        response = json.loads(self.response)
+
+        if not response["success"]:  # Always present, see `cyberfusion.RabbitMQConsumer.contracts.RPCResponseBase`
+            raise Exception("RPC call failed: " + response["message"])
+
+        return self.response
+
+    def callback(
+        self,
+        channel: pika.adapters.blocking_connection.BlockingChannel,
+        method: pika.spec.Basic.Deliver,
+        properties: pika.spec.BasicProperties,
+        body: bytes,
+    ) -> None:
+        """Handle response."""
+        if self.correlation_id == properties.correlation_id:
+            self.response = body
+
+
+with AMQP(
+    virtual_host_name="test",
+    password="password",
+    username="username",
+    host="host",
+    port=5671,
+    ssl_enabled=True
+) as amqp:
+    EXCHANGE = "dx_example"
+
+    amqp.exchange_declare(
+        exchange=EXCHANGE,
+        exchange_type="direct",
+    )
+
+    rpc_client = RPC(
+        amqp,
+        queue="test",
+        exchange=EXCHANGE
+    )
+
+    key = Fernet.generate_key().decode()
+
+    response = json.loads(
+        rpc_client.publish(
+            body={
+                "favourite_food": "onion",
+                "chance_percentage": Fernet(key).encrypt(b"secret").decode(),
+            }
+        )
+    )
+
+
+tolerable = response["data"]["tolerable"]
+```
+
 # Install
 
 ## Generic
