@@ -14,12 +14,12 @@ setup(
     author="Cyberfusion",
     author_email="support@cyberfusion.io",
     url="https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer",
+    platforms=["linux"],
     packages=[
         "cyberfusion.RabbitMQConsumer",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_example",
     ],
     package_dir={"": "src"},
-    platforms=["linux"],
     data_files=[],
     install_requires=[
         "cached_property==1.5.2",
