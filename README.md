@@ -598,9 +598,3 @@ Non-default configs can be stored in `/etc/cyberfusion/rabbitmq`. This directory
     /usr/bin/rabbitmq-consumer --virtual-host-name=<virtual-host-name> --config-file-path=<config-file-path>
 
 The given virtual host must be present in the config.
-
-# Tests
-
-Run tests with pytest:
-
-    pytest tests/
