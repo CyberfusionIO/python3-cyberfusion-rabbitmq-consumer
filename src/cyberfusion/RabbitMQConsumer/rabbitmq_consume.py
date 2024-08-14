@@ -11,6 +11,7 @@ Options:
 
 import json
 import logging
+import os
 import signal
 import sys
 import threading
@@ -21,7 +22,7 @@ import pika
 import sdnotify
 from cryptography.fernet import Fernet
 from docopt import docopt
-from schema import Schema
+from schema import And, Schema
 
 from cyberfusion.RabbitMQConsumer.config import Config
 from cyberfusion.RabbitMQConsumer.processor import Processor
@@ -156,7 +157,14 @@ def main() -> None:
     """Start RabbitMQ consumer."""
     args = docopt(__doc__)
 
-    schema = Schema({"--virtual-host-name": str, "--config-file-path": str})
+    schema = Schema(
+        {
+            "--virtual-host-name": str,
+            "--config-file-path": And(
+                os.path.exists, error="Config file doesn't exist"
+            ),
+        }
+    )
 
     args = schema.validate(args)
 

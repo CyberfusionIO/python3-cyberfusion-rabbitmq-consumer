@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="python3-cyberfusion-rabbitmq-consumer",
-    version="2.1.1.5",
+    version="2.1.1.5.1",
     description="Lean RPC framework based on RabbitMQ.",
     long_description=long_description,
     long_description_content_type="text/markdown",
