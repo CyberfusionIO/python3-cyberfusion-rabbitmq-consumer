@@ -11,16 +11,15 @@ setup(
     description="Lean RPC framework based on RabbitMQ.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    python_requires=">=3.11",
-    author="William Edwards",
-    author_email="wedwards@cyberfusion.nl",
+    author="Cyberfusion",
+    author_email="support@cyberfusion.io",
     url="https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer",
+    platforms=["linux"],
     packages=[
         "cyberfusion.RabbitMQConsumer",
         "cyberfusion.RabbitMQHandlers.exchanges.dx_example",
     ],
     package_dir={"": "src"},
-    platforms=["linux"],
     data_files=[],
     install_requires=[
         "cached_property==1.5.2",
@@ -37,11 +36,4 @@ setup(
             "rabbitmq-consumer=cyberfusion.RabbitMQConsumer.rabbitmq_consume:main",
         ]
     },
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    keywords=["cyberfusion", "rabbitmq", "amqp", "rpc"],
-    license="MIT",
 )
