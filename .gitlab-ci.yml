@@ -32,7 +32,7 @@ unit test and feature test:
     - pip install --no-cache-dir -r requirements/test.txt
     - unlink rabbitmq.yml
     - ln -s rabbitmq.ci.yml rabbitmq.yml
-    - PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest tests/RabbitMQConsumer/ -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=1 --junitxml=report-pytest.xml
+    - PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -n 10 tests/RabbitMQConsumer/ -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=1 --junitxml=report-pytest.xml
   artifacts:
     reports:
       junit: report-*.xml
