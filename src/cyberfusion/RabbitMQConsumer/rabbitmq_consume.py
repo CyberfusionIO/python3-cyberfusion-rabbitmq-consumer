@@ -25,6 +25,7 @@ from docopt import docopt
 from schema import And, Schema
 
 from cyberfusion.RabbitMQConsumer.config import Config
+from cyberfusion.RabbitMQConsumer.exceptions import FernetKeyMissingError
 from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.rabbitmq import FERNET_TOKEN_KEYS, RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
@@ -121,7 +122,7 @@ def callback(
             continue
 
         if not rabbitmq.fernet_key:
-            raise Exception("Fernet encrypted message requires Fernet key")
+            raise FernetKeyMissingError
 
         payload[k] = Fernet(rabbitmq.fernet_key).decrypt(v.encode()).decode()
 
