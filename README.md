@@ -531,7 +531,7 @@ docker-compose down
 
 The following services are started:
 
-* RabbitMQ: `localhost:5672`, `localhost:15672`
+* RabbitMQ: `localhost:5812`, `localhost:15324`
 
 ## Debian
 
