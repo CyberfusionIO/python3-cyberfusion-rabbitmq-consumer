@@ -515,24 +515,6 @@ Run the following command to create a source distribution:
 
     python3 setup.py sdist
 
-## Start/stop services with Docker Compose (development)
-
-Start:
-
-```bash
-docker-compose up
-```
-
-Stop:
-
-```bash
-docker-compose down
-```
-
-The following services are started:
-
-* RabbitMQ: `localhost:5812`, `localhost:15324`
-
 ## Debian
 
 Run the following commands to build a Debian package:
