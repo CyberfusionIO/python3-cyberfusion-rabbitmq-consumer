@@ -6,8 +6,8 @@ services:
     hostname: rabbitmq
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5812:5672"
+      - "15324:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=test
       - RABBITMQ_DEFAULT_PASS=C4P4BZFcaBUYk2PvVyZU7CV3

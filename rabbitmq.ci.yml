@@ -3,7 +3,7 @@ server:
   host: rabbitmq
   username: test
   password: knvPSBPLkJSwTdMn6F4kkQkB
-  port: 5672
+  port: 5812
   ssl: false
 
 virtual_hosts:
