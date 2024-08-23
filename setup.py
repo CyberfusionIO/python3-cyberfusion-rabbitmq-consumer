@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="python3-cyberfusion-rabbitmq-consumer",
-    version="2.1.1.5.1",
+    version="2.1.1.6",
     description="Lean RPC framework based on RabbitMQ.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -30,6 +30,8 @@ setup(
         "PyYAML==6.0",
         "schema==0.7.5",
         "sdnotify==0.3.1",
+        "python3-cyberfusion-common~=2.10",
+        "python3-cyberfusion-systemd-support~=1.0",
     ],
     entry_points={
         "console_scripts": [
