@@ -28,10 +28,10 @@ unit test and feature test:
     RABBITMQ_DEFAULT_VHOST: ci-test
   script:
     - !reference [.add repositories, script]
-    - apt-get -y install python3-cyberfusion-common python3-sdnotify python3-yaml python3-systemd python3-pika python3-cryptography python3-pydantic python3-cached-property python3-docopt python3-schema
     - pip install --no-cache-dir -r requirements/test.txt
     - unlink rabbitmq.yml
     - ln -s rabbitmq.ci.yml rabbitmq.yml
+    - pip install .
     - PYTHONPATH=$CI_PROJECT_DIR/src:/usr/lib/python3/dist-packages pytest -n 10 tests/RabbitMQConsumer/ -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumer --cov-config=.coveragerc --cov-fail-under=1 --junitxml=report-pytest.xml
   artifacts:
     reports:
