@@ -46,9 +46,7 @@ def import_exchange_handler_modules(
     modules = {}
 
     for exchange in exchanges:
-        import_module = (
-            f"cyberfusion.RabbitMQHandlers.exchanges.{exchange.name}"
-        )
+        import_module = f"cyberfusion.RabbitMQHandlers.exchanges.{exchange.name}"
 
         try:
             modules[exchange.name] = importlib_.import_module(import_module)

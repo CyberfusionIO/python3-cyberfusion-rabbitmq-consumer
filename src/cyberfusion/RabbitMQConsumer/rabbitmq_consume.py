@@ -43,9 +43,7 @@ root_logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.INFO)
 
-formatter = logging.Formatter(
-    "[%(threadName)s] [%(levelname)s] %(name)s: %(message)s"
-)
+formatter = logging.Formatter("[%(threadName)s] [%(levelname)s] %(name)s: %(message)s")
 handler.setFormatter(formatter)
 
 root_logger.addHandler(handler)
@@ -77,9 +75,7 @@ def handle_sigterm(  # type: ignore[no-untyped-def]
         if not thread.is_alive():
             continue
 
-        logger.info(
-            "Waiting for thread '%s' to finish before exiting...", thread.name
-        )
+        logger.info("Waiting for thread '%s' to finish before exiting...", thread.name)
 
         thread.join()
 
