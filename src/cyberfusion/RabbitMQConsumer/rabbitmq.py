@@ -28,9 +28,7 @@ class RabbitMQ:
         self.virtual_host_name = virtual_host_name
         self.config = config
 
-        self.virtual_host_config = self.config.get_virtual_host(
-            self.virtual_host_name
-        )
+        self.virtual_host_config = self.config.get_virtual_host(self.virtual_host_name)
 
         self.set_connection()
         self.set_channel()
@@ -59,9 +57,7 @@ class RabbitMQ:
         }
 
         if self.config.server.ssl:
-            arguments["ssl_options"] = get_pika_ssl_options(
-                self.config.server.host
-            )
+            arguments["ssl_options"] = get_pika_ssl_options(self.config.server.host)
 
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(

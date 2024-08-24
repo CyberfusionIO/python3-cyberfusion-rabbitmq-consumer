@@ -86,9 +86,7 @@ class Config:
                 "exchanges"
             ].items():
                 exchanges.append(
-                    Exchange(
-                        name=exchange_name, type=exchange_properties["type"]
-                    )
+                    Exchange(name=exchange_name, type=exchange_properties["type"])
                 )
 
             # Get arguments
@@ -96,16 +94,14 @@ class Config:
             arguments = {
                 self.KEY_NAME: virtual_host_name,
                 self.KEY_QUEUE: virtual_host_properties[self.KEY_QUEUE],
-                self.KEY_FERNET_KEY: virtual_host_properties[
-                    self.KEY_FERNET_KEY
-                ],
+                self.KEY_FERNET_KEY: virtual_host_properties[self.KEY_FERNET_KEY],
                 self.KEY_EXCHANGES: exchanges,
             }
 
             if self.KEY_MAX_SIMULTANEOUS_REQUESTS in virtual_host_properties:
-                arguments[self.KEY_MAX_SIMULTANEOUS_REQUESTS] = (
-                    virtual_host_properties[self.KEY_MAX_SIMULTANEOUS_REQUESTS]
-                )
+                arguments[self.KEY_MAX_SIMULTANEOUS_REQUESTS] = virtual_host_properties[
+                    self.KEY_MAX_SIMULTANEOUS_REQUESTS
+                ]
 
             # Add virtual host
 
