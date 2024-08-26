@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python3-cyberfusion-rabbitmq-consumer"
+version = "2.1.1.6.2"
+description = "Lean RPC framework based on RabbitMQ."
+readme = "README.md"
+authors = [
+    { name = "Cyberfusion", email = "support@cyberfusion.io" },
+]
+dependencies = [
+    "cached_property==1.5.2",
+    "cryptography==38.0.4",
+    "docopt==0.6.2",
+    "pika==1.2.0",
+    "pydantic==1.10.4",
+    "PyYAML==6.0",
+    "schema==0.7.5",
+    "sdnotify==0.3.1",
+    "python3-cyberfusion-common~=2.10",
+    "python3-cyberfusion-systemd-support~=1.0",
+]
+
+[project.urls]
+"Source" = "https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer"
+
+[project.scripts]
+rabbitmq-consumer = "cyberfusion.RabbitMQConsumer.rabbitmq_consume:main"

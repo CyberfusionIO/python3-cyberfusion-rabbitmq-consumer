@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (2.1.1.6.2) unstable; urgency=low
+
+  - Remove deprecated setup.py in favour of pyproject.toml
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 26 Aug 2024 11:38:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (2.1.1.6.1) unstable; urgency=low
 
   - Fix pydist file name

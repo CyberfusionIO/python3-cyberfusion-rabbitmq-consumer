@@ -509,12 +509,6 @@ Run the following command to install the package from PyPI:
 
     pip3 install python3-cyberfusion-rabbitmq-consumer
 
-## Generic
-
-Run the following command to create a source distribution:
-
-    python3 setup.py sdist
-
 ## Debian
 
 Run the following commands to build a Debian package:
