@@ -1,3 +1,5 @@
-# Activate trigger only once by using await. Otherwise, when using noawait, trigger is activated for
-# each package that modifies the specified directory. This would cause many unnecessary activations.
+# Any changed exchange handlers
 interest-await /usr/lib/python3/dist-packages/cyberfusion/RabbitMQHandlers
+
+# Named trigger for anyone to use
+interest-await rabbitmq-consumer-restart
