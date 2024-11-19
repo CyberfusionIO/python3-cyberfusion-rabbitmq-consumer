@@ -235,6 +235,15 @@ You can then ship submodules from another package, of which the tree may look li
                         dx_create_tree/
                             __init__.py
 
+## Restarting
+
+When the RabbitMQ consumer is installed as a Debian package, changes to exchanges trigger a restart of all consumer processes.
+
+If you ship your exchanges as a Debian package, and need files outside of the `RabbitMQHandlers` directory to trigger a restart of all consumer processes, use the `rabbitmq-consumer-restart` trigger. For example:
+
+    $ cat debian/python3-cyberfusion-cluster-configuration-manager.triggers
+    activate-await rabbitmq-consumer-restart
+
 ## Locking
 
 To prevent conflicting RPC requests from running simultaneously, use `Handler.lock_attribute`.
