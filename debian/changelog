@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (2.3) unstable; urgency=low
+
+  - Allow all properties to be Fernet-encrypted
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 24 Nov 2024 19:07:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (2.2) unstable; urgency=low
 
   - Add 'rabbitmq-consumer-restart' trigger

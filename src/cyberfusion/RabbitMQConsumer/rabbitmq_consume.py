@@ -18,16 +18,16 @@ import threading
 from types import ModuleType
 from typing import Dict, List, Optional
 
+
 import pika
 import sdnotify
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from docopt import docopt
 from schema import And, Schema
 
 from cyberfusion.RabbitMQConsumer.config import Config
-from cyberfusion.RabbitMQConsumer.exceptions import FernetKeyMissingError
 from cyberfusion.RabbitMQConsumer.processor import Processor
-from cyberfusion.RabbitMQConsumer.rabbitmq import FERNET_TOKEN_KEYS, RabbitMQ
+from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import (
     _prefix_message,
@@ -107,20 +107,22 @@ def callback(
         body,
     )
 
-    # Decrypt request
+    # Decrypt message
 
     payload = {}
 
-    for k, v in json.loads(body).items():
-        if k not in FERNET_TOKEN_KEYS:
-            payload[k] = v
+    for key, value in json.loads(body).items():
+        # If Fernet key is set, decrypt messages opportunistically
 
-            continue
+        if rabbitmq.fernet_key:
+            try:
+                value = Fernet(rabbitmq.fernet_key).decrypt(value.encode()).decode()
+            except InvalidToken:
+                # Not Fernet-encrypted
 
-        if not rabbitmq.fernet_key:
-            raise FernetKeyMissingError
+                pass
 
-        payload[k] = Fernet(rabbitmq.fernet_key).decrypt(v.encode()).decode()
+        payload[key] = value
 
     # Run processor
 
