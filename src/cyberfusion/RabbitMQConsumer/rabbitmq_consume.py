@@ -114,7 +114,7 @@ def callback(
     for key, value in json.loads(body).items():
         # If Fernet key is set, decrypt messages opportunistically
 
-        if rabbitmq.fernet_key:
+        if isinstance(value, str) and rabbitmq.fernet_key:
             try:
                 value = Fernet(rabbitmq.fernet_key).decrypt(value.encode()).decode()
             except InvalidToken:
