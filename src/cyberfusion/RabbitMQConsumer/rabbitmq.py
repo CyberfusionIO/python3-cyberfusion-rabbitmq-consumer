@@ -11,15 +11,6 @@ from cyberfusion.RabbitMQConsumer.utilities import get_pika_ssl_options
 logger = logging.getLogger(__name__)
 
 
-FERNET_TOKEN_KEYS = [
-    "secret_values",
-    "passphrase",
-    "password",
-    "admin_password",
-    "database_user_password",
-]
-
-
 class RabbitMQ:
     """Class to interact with RabbitMQ."""
 
