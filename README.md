@@ -6,6 +6,7 @@ Lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 
 * Request and response validation (using [Pydantic](https://docs.pydantic.dev/latest/)).
 * Auto-generated documentation (using the standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server)).
+* Central logging (using the standalone [log server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-log-server)).
 * Strong request-response contract (see '[Pydantic model generation](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server/tree/main?tab=readme-ov-file#pydantic-model-generation)').
 * Process multiple RPC requests simultaneously (using threading).
 * Encryption (using [Fernet](https://cryptography.io/en/latest/fernet/)).
@@ -142,6 +143,20 @@ This brings many advantages of local calls, such as type validation, to RPC (rem
 
 The RabbitMQ standalone [documentation server](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server) can generate Pydantic models for exchange request/request models, which you can use on the client.
 For more information, see '[Pydantic model generation](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-documentation-server?tab=readme-ov-file#pydantic-model-generation)' in its README.
+
+## Central logging
+
+Use the log server to see all RPC requests/responses - in a single web GUI.
+
+First, set up the log server using its [README](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer-log-server/blob/main/README.md).
+
+Then, configure your RabbitMQ consumer to ship logs to the log server. To the [config file](#config-file), add the following stanza:
+
+```yaml
+log_server:
+  base_url: https://rabbitmq-log-server.example.com/api/v1/  # Replace by the URL of the log server
+  api_token: foobar  # Replace by the API token configured on the log server
+```
 
 ## Encryption using Fernet
 
@@ -302,6 +317,7 @@ Run the following commands to build a Debian package:
 The config file contains:
 
 * RabbitMQ server details
+* (Optional) Log server details; see '[Central logging](#central-logging)'
 * [Virtual hosts](https://www.rabbitmq.com/docs/vhosts)
 * Per virtual host: exchanges (see '[Handlers are per-exchange](#handlers-are-per-exchange)')
 

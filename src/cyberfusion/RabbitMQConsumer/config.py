@@ -28,6 +28,14 @@ class Server:
 
 
 @dataclass
+class LogServer:
+    """Log server."""
+
+    base_url: str
+    api_token: str
+
+
+@dataclass
 class Exchange:
     """Exchange."""
 
@@ -69,6 +77,14 @@ class Config:
     def server(self) -> Server:
         """Get server config."""
         return Server(**self._contents["server"])
+
+    @property
+    def log_server(self) -> Optional[LogServer]:
+        """Get log server config."""
+        if "log_server" not in self._contents:
+            return None
+
+        return LogServer(**self._contents["log_server"])
 
     @property
     def virtual_hosts(self) -> List[VirtualHost]:

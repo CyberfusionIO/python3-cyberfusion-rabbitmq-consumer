@@ -26,6 +26,7 @@ from docopt import docopt
 from schema import And, Schema
 
 from cyberfusion.RabbitMQConsumer.config import Config
+from cyberfusion.RabbitMQConsumer.log_server_client import LogServerClient
 from cyberfusion.RabbitMQConsumer.processor import Processor
 from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
@@ -92,6 +93,7 @@ def callback(
     method: pika.spec.Basic.Deliver,
     properties: pika.spec.BasicProperties,
     modules: Dict[str, ModuleType],
+    log_server_client: Optional[LogServerClient],
     body: bytes,
 ) -> None:
     """Pass RabbitMQ message to processor."""
@@ -109,6 +111,8 @@ def callback(
 
     # Decrypt message
 
+    decrypted_values = []
+
     payload = {}
 
     for key, value in json.loads(body).items():
@@ -117,6 +121,8 @@ def callback(
         if isinstance(value, str) and rabbitmq.fernet_key:
             try:
                 value = Fernet(rabbitmq.fernet_key).decrypt(value.encode()).decode()
+
+                decrypted_values.append(key)
             except InvalidToken:
                 # Not Fernet-encrypted
 
@@ -135,6 +141,8 @@ def callback(
             properties=properties,
             locks=locks,
             payload=payload,
+            log_server_client=log_server_client,
+            decrypted_values=decrypted_values,
         )
     except Exception:
         logger.exception("Exception initialising processor")
@@ -183,6 +191,15 @@ def main() -> None:
             rabbitmq.virtual_host_config.exchanges
         )
 
+        # Create log server client
+
+        log_server_client = None
+
+        if config.log_server:
+            log_server_client = LogServerClient(
+                config.log_server.base_url, config.log_server.api_token, rabbitmq
+            )
+
         # Configure consuming
 
         rabbitmq.channel.basic_consume(
@@ -193,6 +210,7 @@ def main() -> None:
                 method,
                 properties,
                 modules,
+                log_server_client,
                 body.decode("utf-8"),
             ),
         )

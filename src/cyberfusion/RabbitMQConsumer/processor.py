@@ -1,9 +1,11 @@
 """Classes for processing RPC requests."""
 
+from typing import List
 import functools
 import logging
 import threading
-from typing import Any
+import traceback
+from typing import Any, Optional
 
 import pika
 from pydantic import ValidationError
@@ -12,6 +14,7 @@ from cyberfusion.RabbitMQConsumer.contracts import (
     RPCRequestBase,
     RPCResponseBase,
 )
+from cyberfusion.RabbitMQConsumer.log_server_client import LogServerClient
 from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import (
@@ -41,6 +44,8 @@ class Processor:
         properties: pika.spec.BasicProperties,
         locks: Locks,
         payload: dict,
+        log_server_client: Optional[LogServerClient],
+        decrypted_values: List[str],
     ):
         """Set attributes."""
         self.module = module
@@ -49,6 +54,9 @@ class Processor:
         self.method = method
         self.properties = properties
         self.payload = payload
+        self.log_server_client = log_server_client
+        self.decrypted_values = decrypted_values
+
         self.handler = module.Handler()
 
         # Add value of lock attribute to locks
@@ -92,6 +100,20 @@ class Processor:
         self._acquire_lock()
 
         try:
+            if self.log_server_client:
+                logger.info(
+                    self._prefix_message("Shipping RPC request to log server...")
+                )
+
+                self.log_server_client.log_rpc_request(
+                    correlation_id=self.properties.correlation_id,
+                    request_payload=self.request.dict(),
+                    decrypted_values=self.decrypted_values,
+                    exchange_name=self.method.exchange,
+                )
+
+                logger.info(self._prefix_message("Shipped RPC request to log server"))
+
             result = self.handler(self.request)
 
             if not isinstance(result, RPCResponseBase):
@@ -107,7 +129,10 @@ class Processor:
 
             # Send RPC response
 
-            self._publish(body=RESPONSE_ERROR)
+            self._publish(
+                body=RESPONSE_ERROR,
+                traceback=traceback.format_exc(),
+            )
         finally:
             # Release the lock before acknowledgement. If acknowledgement fails and
             # the message is redelivered, the lock is already released, preventing
@@ -136,7 +161,9 @@ class Processor:
 
         logger.info(self._prefix_message("Released lock"))
 
-    def _publish(self, *, body: RPCResponseBase) -> None:
+    def _publish(
+        self, *, body: RPCResponseBase, traceback: Optional[str] = None
+    ) -> None:
         """Publish result."""
         json_body = body.json()
 
@@ -159,6 +186,17 @@ class Processor:
                 body=json_body,
             )
         )
+
+        if self.log_server_client:
+            logger.info(self._prefix_message("Shipping RPC response to log server..."))
+
+            self.log_server_client.log_rpc_response(
+                correlation_id=self.properties.correlation_id,
+                response_payload=body.dict(),
+                traceback=traceback,
+            )
+
+            logger.info(self._prefix_message("Shipped RPC response to log server"))
 
     def _acknowledge(self) -> None:
         """Acknowledge message."""
