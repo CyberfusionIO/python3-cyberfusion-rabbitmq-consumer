@@ -1,10 +1,14 @@
 ---
 server:
-  host: rabbitmq.cyberfusion.nl
+  host: rabbitmq.example.com
   username: test
   password: C4P4BZFcaBUYk2PvVyZU7CV3
   port: 5671
   ssl: true
+
+log_server:
+  base_url: https://rabbitmq-log-server.example.com/api/v1/
+  api_token: foobar
 
 virtual_hosts:
   test1:

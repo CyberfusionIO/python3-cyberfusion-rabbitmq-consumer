@@ -1,5 +1,6 @@
 """Generic utilities."""
 
+from urllib.parse import urljoin
 import importlib.util
 import inspect
 import logging
@@ -107,3 +108,28 @@ def get_exchange_handler_class_response_model(
 ) -> RPCResponseBase:
     """Get exchange handler response model by introspection."""
     return inspect.signature(handler.__call__).return_annotation
+
+
+def join_url_parts(*args: str) -> str:
+    """Join URL parts."""
+    result = ""
+
+    for arg in args:
+        result = urljoin(result, arg)
+
+        # Prevent part from being replaced:
+        #
+        # >>> from urllib.parse import urljoin
+        # >>> urljoin('http://localhost/certificates', 'request')
+        # 'http://localhost/request'
+        # >>> urljoin('http://localhost/certificates/', 'request')
+        # 'http://localhost/certificates/request'
+
+        if result.endswith("/"):
+            continue
+
+        result += "/"
+
+    result = result[: -len("/")]  # Remove trailing slash
+
+    return result

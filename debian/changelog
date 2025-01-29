@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (2.5) unstable; urgency=low
+
+  - Implement log server support
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 28 Jan 2025 20:58:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (2.4) unstable; urgency=low
 
   - Bump SystemdSupport dependency
