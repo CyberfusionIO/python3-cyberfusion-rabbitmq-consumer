@@ -1,4 +1,6 @@
 ---
+mock: false
+
 server:
   host: rabbitmq.example.com
   username: test

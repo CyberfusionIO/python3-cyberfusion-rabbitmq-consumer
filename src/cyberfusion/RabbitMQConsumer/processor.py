@@ -23,6 +23,7 @@ from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import (
     get_exchange_handler_class_request_model,
+    get_exchange_handler_class_response_model,
 )
 
 logger = logging.getLogger(__name__)
@@ -140,7 +141,29 @@ class Processor:
 
                 logger.info(self._prefix_message("Shipped RPC request to log server"))
 
-            result = self.handler(self.request)
+            if not self.rabbitmq.config.mock:
+                logger.info(self._prefix_message("Calling RPC handler..."))
+
+                result = self.handler(self.request)
+
+                logger.info(self._prefix_message("Called RPC handler"))
+            else:
+                logger.info(self._prefix_message("Mocking RPC response..."))
+
+                response_model = get_exchange_handler_class_response_model(self.handler)
+
+                try:
+                    from polyfactory.factories.pydantic_factory import ModelFactory
+                except ImportError:
+                    raise RuntimeError(
+                        "Polyfactory not installed, can't mock RPC response"
+                    )
+
+                factory = ModelFactory.create_factory(response_model)
+
+                result = factory.build()
+
+                logger.info(self._prefix_message("Mocked RPC response"))
 
             if not isinstance(result, RPCResponseBase):
                 raise ValueError("RPC response must be of type RPCResponse")

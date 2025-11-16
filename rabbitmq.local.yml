@@ -1,4 +1,6 @@
 ---
+mock: true
+
 server:
   host: localhost
   username: test

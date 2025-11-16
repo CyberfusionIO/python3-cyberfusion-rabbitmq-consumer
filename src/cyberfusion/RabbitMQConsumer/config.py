@@ -79,6 +79,10 @@ class Config:
         return Server(**self._contents["server"])
 
     @property
+    def mock(self) -> bool:
+        return self._contents.get("mock", False)
+
+    @property
     def log_server(self) -> Optional[LogServer]:
         """Get log server config."""
         if "log_server" not in self._contents:
