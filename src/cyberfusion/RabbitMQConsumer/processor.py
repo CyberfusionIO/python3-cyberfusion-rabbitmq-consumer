@@ -15,6 +15,10 @@ from cyberfusion.RabbitMQConsumer.contracts import (
     RPCResponseBase,
 )
 from cyberfusion.RabbitMQConsumer.log_server_client import LogServerClient
+from cyberfusion.RabbitMQConsumer.models import (
+    RPCResponseDataValidationErrors,
+    RPCResponseDataValidationError,
+)
 from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.types import Locks
 from cyberfusion.RabbitMQConsumer.utilities import (
@@ -23,10 +27,13 @@ from cyberfusion.RabbitMQConsumer.utilities import (
 
 logger = logging.getLogger(__name__)
 
-MESSAGE_ERROR = "An unexpected error occurred"
-RESPONSE_ERROR = RPCResponseBase(
+MESSAGE_UNEXPECTED_ERROR = "An unexpected error occurred"
+
+MESSAGE_VALIDATION_ERROR = "Request validation failed"
+
+RESPONSE_UNEXPECTED_ERROR = RPCResponseBase(
     success=False,
-    message=MESSAGE_ERROR,
+    message=MESSAGE_UNEXPECTED_ERROR,
     data=None,
 )
 
@@ -46,7 +53,7 @@ class Processor:
         payload: dict,
         log_server_client: Optional[LogServerClient],
         decrypted_values: List[str],
-    ):
+    ) -> None:
         """Set attributes."""
         self.module = module
         self.rabbitmq = rabbitmq
@@ -90,8 +97,27 @@ class Processor:
 
         try:
             return request_class(**self.payload)
-        except ValidationError:
-            self._publish(body=RESPONSE_ERROR)
+        except ValidationError as e:
+            custom_errors = []
+
+            pydantic_errors = e.errors()
+
+            for pydantic_error in pydantic_errors:
+                custom_errors.append(
+                    RPCResponseDataValidationError(
+                        location=pydantic_error["loc"],
+                        message=pydantic_error["msg"],
+                        type=pydantic_error["type"],
+                    )
+                )
+
+            body = RPCResponseBase(
+                success=False,
+                message=MESSAGE_VALIDATION_ERROR,
+                data=RPCResponseDataValidationErrors(errors=custom_errors),
+            )
+
+            self._publish(body=body)
 
             raise
 
@@ -130,7 +156,7 @@ class Processor:
             # Send RPC response
 
             self._publish(
-                body=RESPONSE_ERROR,
+                body=RESPONSE_UNEXPECTED_ERROR,
                 traceback=traceback.format_exc(),
             )
         finally:

@@ -13,7 +13,7 @@ Lean RPC framework based on [RabbitMQ](https://www.rabbitmq.com/).
 * Dynamic structure using namespace packaging (see '[Namespace packaging: shipping handlers from multiple packages](#namespace-packaging-shipping-handlers-from-multiple-packages)'.
 * Locking.
 * Idempotency.
-* * RPC requests are retried if anything happens before they are fully processed (as the AMQP message wouldn't be acknowledged).
+  * RPC requests are retried if anything happens before they are fully processed (as the AMQP message wouldn't be acknowledged).
 
 # Project origins and use case
 
@@ -343,6 +343,12 @@ To check if all systemd services are running, run:
     /usr/bin/rabbitmq-consumer-status
 
 If any service is inactive, the script exits with a non-zero RC.
+
+### Development
+
+To run the RabbitMQ consumer for development, start the 'RabbitMQ Consumer' PyCharm run configuration.
+
+To publish, run the 'Publisher' PyCharm run configuration (or `publisher.py`). This script publishes a test RPC request to the first virtual host and exchange in `rabbitmq.yml`.
 
 ### Config file
 

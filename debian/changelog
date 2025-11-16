@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (3.0) UNRELEASED; urgency=low
+
+  - Return validation errors
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 16 Nov 2025 13:57:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (2.5) unstable; urgency=low
 
   - Implement log server support

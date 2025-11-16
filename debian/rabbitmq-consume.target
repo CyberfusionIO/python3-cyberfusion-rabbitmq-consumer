@@ -1,5 +1,5 @@
 [Unit]
-Description=Description=RabbitMQ Consumer for Virtual Hosts
+Description=RabbitMQ Consumer for Virtual Hosts
 After=network.target
 
 [Install]
