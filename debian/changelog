@@ -2,7 +2,7 @@ python3-cyberfusion-rabbitmq-consumer (3.0) UNRELEASED; urgency=low
 
   - Return validation errors
   - Add mock mode
-  -
+  - Let rabbitmq-consumer-status.py only check for failed units
 
  -- William Edwards <wedwards@cyberfusion.nl>  Sun, 16 Nov 2025 13:57:00 +0200
 
