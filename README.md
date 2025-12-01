@@ -338,11 +338,11 @@ For example, if your config contains the virtual hosts `trees` and `servers`, ru
 
 ### Monitoring
 
-To check if all systemd services are running, run:
+To check if all systemd services are working, run:
 
     /usr/bin/rabbitmq-consumer-status
 
-If any service is inactive, the script exits with a non-zero RC.
+If any service is failed, the script exits with a non-zero RC.
 
 ### Development
 

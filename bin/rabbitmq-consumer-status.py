@@ -15,32 +15,32 @@ def main() -> None:
 
     # Set empty list
 
-    inactive_units: List[str] = []
+    failed_units: List[str] = []
 
     # Loop through found units
 
     for unit in Systemd().search_units(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
         # If active, skip
 
-        if unit.is_active:
+        if unit.is_failed:
             continue
 
         # If not active, add to list
 
-        inactive_units.append(unit.name)
+        failed_units.append(unit.name)
 
     # Print critical and exit if not active
 
-    if inactive_units:
-        inactive_units_names = ", ".join(inactive_units)
+    if failed_units:
+        failed_units_names = ", ".join(failed_units)
 
-        print(f"CRITICAL: Inactive units: {inactive_units_names}")
+        print(f"CRITICAL: Failed units: {failed_units_names}")
 
         sys.exit(2)
 
     # Print OK and exit if active
 
-    print("OK: No inactive units")
+    print("OK: No failed units")
 
     sys.exit(0)
 
