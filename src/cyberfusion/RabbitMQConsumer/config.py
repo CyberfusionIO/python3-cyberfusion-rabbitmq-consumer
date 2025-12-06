@@ -5,7 +5,7 @@ from enum import Enum
 from typing import List, Optional
 
 import yaml
-from cached_property import cached_property
+from functools import cached_property
 
 from cyberfusion.RabbitMQConsumer.exceptions import VirtualHostNotExistsError
 
@@ -67,7 +67,7 @@ class Config:
         """Path to config file."""
         self.path = path
 
-    @cached_property  # type: ignore[misc]
+    @cached_property
     def _contents(self) -> dict:
         """Set config from YAML file."""
         with open(self.path, "rb") as fh:

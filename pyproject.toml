@@ -11,7 +11,6 @@ authors = [
     { name = "Cyberfusion", email = "support@cyberfusion.io" },
 ]
 dependencies = [
-    "cached_property==1.5.2",
     "cryptography==38.0.4",
     "docopt==0.6.2",
     "pika==1.2.0",
@@ -22,7 +21,6 @@ dependencies = [
     "python3-cyberfusion-common~=2.10",
     "python3-cyberfusion-systemd-support~=2.3.0",
     "requests==2.25.1",
-    "cached_property==1.5.2",
 ]
 
 [project.urls]
