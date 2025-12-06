@@ -6,7 +6,7 @@ from cyberfusion.RabbitMQConsumer.rabbitmq import RabbitMQ
 from cyberfusion.RabbitMQConsumer.utilities import join_url_parts
 from typing import Optional
 from requests.adapters import HTTPAdapter, Retry
-from cached_property import cached_property
+from functools import cached_property
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ class LogServerClient:
         self.api_token = api_token
         self.rabbitmq = rabbitmq
 
-    @cached_property  # type: ignore[misc]
+    @cached_property
     def session(self) -> requests.sessions.Session:
         """Get requests session with retries."""
         session = requests.Session()
