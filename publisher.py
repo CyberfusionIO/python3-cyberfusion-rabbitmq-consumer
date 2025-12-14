@@ -54,7 +54,7 @@ def get_body(handler: HandlerBase) -> dict:
 
     built_model = factory.build()
 
-    body = built_model.dict()
+    body = built_model.model_dump()
 
     return body
 

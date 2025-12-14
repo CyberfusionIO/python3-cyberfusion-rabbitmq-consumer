@@ -17,7 +17,7 @@ stages:
 
 unit test and feature test:
   stage: test
-  image: python:3.11
+  image: python:3.13
   services:
     # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3163#note_63471739
     - name: rabbitmq:3.13.6-management

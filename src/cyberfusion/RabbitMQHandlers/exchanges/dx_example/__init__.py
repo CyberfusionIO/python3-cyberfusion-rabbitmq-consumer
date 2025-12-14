@@ -38,7 +38,7 @@ class RPCRequestExample(RPCRequestBase):
     class Config:
         """Config."""
 
-        schema_extra = {
+        json_schema_extra = {
             "examples": [
                 {"favourite_food": FavouriteFoodEnum.BANANA},
                 {
@@ -63,7 +63,7 @@ class RPCResponseExample(RPCResponseBase):
     class Config:
         """Config."""
 
-        schema_extra = {
+        json_schema_extra = {
             "examples": [
                 {
                     "_description": "Not tolerable",

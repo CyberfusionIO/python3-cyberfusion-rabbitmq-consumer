@@ -134,7 +134,7 @@ class Processor:
 
                 self.log_server_client.log_rpc_request(
                     correlation_id=self.properties.correlation_id,
-                    request_payload=self.request.dict(),
+                    request_payload=self.request.model_dump(),
                     decrypted_values=self.decrypted_values,
                     exchange_name=self.method.exchange,
                 )
@@ -214,7 +214,7 @@ class Processor:
         self, *, body: RPCResponseBase, traceback: Optional[str] = None
     ) -> None:
         """Publish result."""
-        json_body = body.json()
+        json_body = body.model_dump_json()
 
         logger.info(
             self._prefix_message(
@@ -241,7 +241,7 @@ class Processor:
 
             self.log_server_client.log_rpc_response(
                 correlation_id=self.properties.correlation_id,
-                response_payload=body.dict(),
+                response_payload=body.model_dump(),
                 traceback=traceback,
             )
 
