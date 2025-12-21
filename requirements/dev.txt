@@ -1,5 +1,5 @@
 mypy==1.19.1
-polyfactory==3.1.0
+polyfactory==3.2.0
 pre-commit==4.5.1
 python3-cyberfusion-rpc-client==1.1
 ruff==0.14.10
