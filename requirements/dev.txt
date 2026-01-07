@@ -4,4 +4,4 @@ pre-commit==4.5.1
 python3-cyberfusion-rpc-client==1.1
 ruff==0.14.10
 types-PyYAML==6.0.12.20250915
-types-requests==2.32.4.20250913
+types-requests==2.32.4.20260107
