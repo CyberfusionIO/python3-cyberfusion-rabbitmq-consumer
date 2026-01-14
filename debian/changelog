@@ -1,8 +1,14 @@
-python3-cyberfusion-rabbitmq-consumer (3.0.1) unstable; urgency=low
+python3-cyberfusion-rabbitmq-consumer (3.1.1) unstable; urgency=low
 
   - Fix rabbitmq-consumer-status failing on non-failed units
 
  -- William Edwards <wedwards@cyberfusion.nl>  Wed, 14 Jan 2026 15:11:00 +0200
+
+python3-cyberfusion-rabbitmq-consumer (3.1) unstable; urgency=low
+
+  - Update custom types to Pydantic v2
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Mon, 15 Dec 2025 23:23:00 +0200
 
 python3-cyberfusion-rabbitmq-consumer (3.0) unstable; urgency=low
 
