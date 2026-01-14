@@ -22,7 +22,7 @@ def main() -> None:
     for unit in Systemd().search_units(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
         # If active, skip
 
-        if unit.is_failed:
+        if not unit.is_failed:
             continue
 
         # If not active, add to list
