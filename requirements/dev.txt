@@ -2,6 +2,6 @@ mypy==1.19.1
 polyfactory==3.2.0
 pre-commit==4.5.1
 python3-cyberfusion-rpc-client==1.1
-ruff==0.15.1
+ruff==0.15.2
 types-PyYAML==6.0.12.20250915
 types-requests==2.32.4.20260107
