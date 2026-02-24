@@ -134,7 +134,7 @@ class Processor:
 
                 self.log_server_client.log_rpc_request(
                     correlation_id=self.properties.correlation_id,
-                    request_payload=self.request.model_dump(),
+                    request_payload=self.request.model_dump(mode="json"),
                     decrypted_values=self.decrypted_values,
                     exchange_name=self.method.exchange,
                 )
@@ -241,7 +241,7 @@ class Processor:
 
             self.log_server_client.log_rpc_response(
                 correlation_id=self.properties.correlation_id,
-                response_payload=body.model_dump(),
+                response_payload=body.model_dump(mode="json"),
                 traceback=traceback,
             )
 
