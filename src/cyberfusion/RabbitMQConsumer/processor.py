@@ -153,13 +153,13 @@ class Processor:
                 response_model = get_exchange_handler_class_response_model(self.handler)
 
                 try:
-                    from polyfactory.factories.pydantic_factory import ModelFactory
+                    from cyberfusion.RabbitMQConsumer.polyfactory import PydanticFactory
                 except ImportError:
                     raise RuntimeError(
                         "Polyfactory not installed, can't mock RPC response"
                     )
 
-                factory = ModelFactory.create_factory(response_model)
+                factory = PydanticFactory.create_factory(response_model)
 
                 result = factory.build()
 
