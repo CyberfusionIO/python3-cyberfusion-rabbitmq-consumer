@@ -3,5 +3,5 @@ polyfactory==3.3.0
 pre-commit==4.5.1
 python3-cyberfusion-rpc-client==1.1
 ruff==0.15.9
-types-PyYAML==6.0.12.20250915
-types-requests==2.33.0.20260402
+types-PyYAML==6.0.12.20260408
+types-requests==2.33.0.20260408
