@@ -1,5 +1,7 @@
 """Classes for processing RPC requests."""
 
+import subprocess
+import json
 from typing import List
 import functools
 import logging
@@ -8,12 +10,14 @@ import traceback
 from typing import Any, Optional
 
 import pika
+from cyberfusion.SystemdSupport.units import TransientUnit
 from pydantic import ValidationError
 
 from cyberfusion.RabbitMQConsumer.contracts import (
     RPCRequestBase,
     RPCResponseBase,
 )
+from cyberfusion.RabbitMQConsumer.exceptions import RpcCallFailedError
 from cyberfusion.RabbitMQConsumer.log_server_client import LogServerClient
 from cyberfusion.RabbitMQConsumer.models import (
     RPCResponseDataValidationErrors,
@@ -25,6 +29,7 @@ from cyberfusion.RabbitMQConsumer.utilities import (
     get_exchange_handler_class_request_model,
     get_exchange_handler_class_response_model,
 )
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +42,12 @@ RESPONSE_UNEXPECTED_ERROR = RPCResponseBase(
     message=MESSAGE_UNEXPECTED_ERROR,
     data=None,
 )
+
+BINARY_HANDLE = os.path.join(
+    os.path.sep, "usr", "bin", "rabbitmq-consumer-handle-handler"
+)
+
+PATH_DIR_RUN = os.path.join(os.path.sep, "run", "rabbitmq-consumer")
 
 
 class Processor:
@@ -122,11 +133,18 @@ class Processor:
 
             raise
 
+    def get_runtime_directory(self) -> str:
+        return os.path.join(
+            os.path.sep, "run", f"rabbitmq-consumer-{self.rabbitmq.virtual_host_name}"
+        )
+
     def __call__(self) -> None:
         """Process message."""
         self._acquire_lock()
 
         try:
+            request_payload = self.request.model_dump(mode="json")
+
             if self.log_server_client:
                 logger.info(
                     self._prefix_message("Shipping RPC request to log server...")
@@ -134,7 +152,7 @@ class Processor:
 
                 self.log_server_client.log_rpc_request(
                     correlation_id=self.properties.correlation_id,
-                    request_payload=self.request.model_dump(mode="json"),
+                    request_payload=request_payload,
                     decrypted_values=self.decrypted_values,
                     exchange_name=self.method.exchange,
                 )
@@ -144,7 +162,77 @@ class Processor:
             if not self.rabbitmq.config.mock:
                 logger.info(self._prefix_message("Calling RPC handler..."))
 
-                result = self.handler(self.request)
+                name = f"rabbitmq-handler.{self.properties.correlation_id}"
+
+                runtime_directory = self.get_runtime_directory()
+
+                response_file = os.path.join(runtime_directory, name)
+
+                user = self.handler.user(self.request)
+
+                php_version = self.handler.php_version(self.request)
+
+                nodejs_version = self.handler.nodejs_version(self.request)
+
+                command = [
+                    BINARY_HANDLE,
+                    "--exchange-name",
+                    self.method.exchange,
+                    "--response-file",
+                    response_file,
+                ]
+
+                response_model = get_exchange_handler_class_response_model(self.handler)
+
+                properties = {}
+
+                if user:
+                    properties["User"] = [user]
+                    properties["Group"] = [user]
+
+                bind_read_only_paths = []
+
+                if php_version:
+                    bind_read_only_paths.append(
+                        f"/usr/bin/php{php_version}:/usr/bin/php"
+                    )
+
+                if nodejs_version:
+                    for binary in ["node", "npm", "npx"]:
+                        bind_read_only_paths.append(
+                            f"/usr/local/lib/nodejs/{nodejs_version}/bin/{binary}:/usr/bin/{binary}"
+                        )
+
+                properties["BindReadOnlyPaths"] = bind_read_only_paths
+
+                try:
+                    TransientUnit.run_sync(
+                        name,
+                        command,
+                        properties=properties,
+                        input_=json.dumps(request_payload),
+                    )
+                except subprocess.CalledProcessError as e:
+                    logger.error(
+                        self._prefix_message(
+                            f"""Call failed with RC {e.returncode}
+
+Stdout: {e.stdout}
+Stderr: {e.stderr}
+"""
+                        )
+                    )
+
+                    raise RpcCallFailedError(
+                        rc=e.returncode, stdout=e.stdout, stderr=e.stderr
+                    ) from e
+
+                with open(response_file, "r") as f:
+                    result_json = json.loads(f.read())
+
+                os.unlink(response_file)
+
+                result = response_model(**result_json)
 
                 logger.info(self._prefix_message("Called RPC handler"))
             else:

@@ -10,13 +10,16 @@ ExecStart=/usr/bin/rabbitmq-consumer --virtual-host-name %i --config-file-path $
 Restart=on-failure
 RestartSec=120
 
-# We wait for the child process to exit in the parent when the parent receives SIGTERM. So, we want to wait for the child process to return, and thus not send it SIGTERM as well.
-# With 'mixed', systemd sends SIGTERM only to the parent. If the child process doesn't return before the systemd timeout, then eventually, systemd will send SIGKILL to all processes.
-# When the parent process receives SIGKILL, it doesn't get a chance to run the 'finally' block. We assume the consumer reconnects quickly, so we don't see that as much of a problem.
+# Don't kill `systemd-run --wait`. On SIGTERM, we wait for message-handling
+# threads to finish (which invoke `systemd-run --wait`). Immediately killing
+# `systemd-run` (with the default `KillMode`) would cause the thread to finish
+# immediately (i.e. not `--wait`ing anymore), even though the transient unit
+# that `systemd-run` spawned would still be running (not a child process, but
+# started separately by systemd).
 KillMode=mixed
 
-# Limit the amount of tasks (AFAIK, tasks are threads + processes). We already limit the amount of threads in the code, so this is extra safety for not running out of OS threads.
-TasksMax=150
+RuntimeDirectory=rabbitmq-consumer-%i
+RuntimeDirectoryMode=0711
 
 [Install]
 WantedBy=rabbitmq-consume.target
