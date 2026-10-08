@@ -2,7 +2,7 @@ python3-cyberfusion-rabbitmq-consumer (3.2) unstable; urgency=low
 
   - Run exchange handlers using systemd-run
 
- -- William Edwards <wedwards@cyberfusion.nl>  Sat, 03 Oct 2026 21:31:00 +0200
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 08 Oct 2026 20:09:00 +0200
 
 python3-cyberfusion-rabbitmq-consumer (3.1.4) unstable; urgency=low
 
