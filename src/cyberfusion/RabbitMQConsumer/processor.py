@@ -47,8 +47,6 @@ BINARY_HANDLE = os.path.join(
     os.path.sep, "usr", "bin", "rabbitmq-consumer-handle-handler"
 )
 
-PATH_DIR_RUN = os.path.join(os.path.sep, "run", "rabbitmq-consumer")
-
 
 class Processor:
     """Class to process RPC requests, by passing to handler."""
