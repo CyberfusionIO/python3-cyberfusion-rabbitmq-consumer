@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (3.3) unstable; urgency=low
+
+  - Allow limiting resources per RPC request
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 08 Oct 2026 22:03:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (3.2) unstable; urgency=low
 
   - Run exchange handlers using systemd-run
