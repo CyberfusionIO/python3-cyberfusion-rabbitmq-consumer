@@ -40,6 +40,18 @@ class HandlerBase:
         """
         return None
 
+    def user(self, request: RPCRequestBase) -> str:
+        if hasattr(request, "user"):
+            return request.user
+
+        return "root"
+
+    def php_version(self, request: RPCRequestBase) -> Optional[str]:
+        return getattr(request, "php_version", None)
+
+    def nodejs_version(self, request: RPCRequestBase) -> Optional[str]:
+        return getattr(request, "nodejs_version", None)
+
     def __call__(self, request: RPCRequestBase) -> RPCResponseBase:
         """Handle message."""
         raise NotImplementedError

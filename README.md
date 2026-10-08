@@ -282,8 +282,17 @@ class Handler(HandlerBase):
     ...
 
     @property
-    def lock_attribute(self) -> str:
+    def lock_attribute(self) -> str | None:
         return "name"
+
+    def user(self, request: RPCRequestBase) -> str | None:
+        return "name"
+
+    def php_version(self, request: RPCRequestBase) -> str | None:
+        return request.php_version
+
+    def nodejs_version(self, request: RPCRequestBase) -> str | None:
+        return "22.0"
 ```
 
 # Executing RPC requests
