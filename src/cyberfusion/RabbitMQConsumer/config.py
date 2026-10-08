@@ -28,6 +28,14 @@ class Server:
 
 
 @dataclass
+class Resources:
+    """Resources."""
+
+    memory_limit: int | None = None
+    cpu_limit: int | None = None
+
+
+@dataclass
 class LogServer:
     """Log server."""
 
@@ -77,6 +85,11 @@ class Config:
     def server(self) -> Server:
         """Get server config."""
         return Server(**self._contents["server"])
+
+    @property
+    def resources(self) -> Resources:
+        """Get resources config."""
+        return Resources(**self._contents.get("resources", {}))
 
     @property
     def mock(self) -> bool:

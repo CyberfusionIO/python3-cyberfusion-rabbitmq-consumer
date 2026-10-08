@@ -184,6 +184,16 @@ class Processor:
 
                 properties = {}
 
+                cpu_limit = self.rabbitmq.config.resources.cpu_limit
+
+                if cpu_limit:
+                    properties["CPUQuota"] = [cpu_limit]
+
+                memory_limit = self.rabbitmq.config.resources.memory_limit
+
+                if memory_limit:
+                    properties["MemoryMax"] = [memory_limit]
+
                 if user:
                     properties["User"] = [user]
                     properties["Group"] = [user]

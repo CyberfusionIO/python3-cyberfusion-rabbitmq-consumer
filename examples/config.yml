@@ -8,6 +8,11 @@ server:
   port: 5671
   ssl: true
 
+# Resource limits per RPC request
+resources:
+  memory_limit: 20%  # May also be absolute
+  cpu_limit: 200%
+
 log_server:
   base_url: https://rabbitmq-log-server.example.com/api/v1/
   api_token: foobar
