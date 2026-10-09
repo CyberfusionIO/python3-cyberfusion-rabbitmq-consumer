@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (3.4.1) unstable; urgency=low
+
+  - Bump Pydantic
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 09 Oct 2026 18:38:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (3.4) unstable; urgency=low
 
   - Make default user configurable
