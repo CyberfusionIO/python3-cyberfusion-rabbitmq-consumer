@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (3.4) unstable; urgency=low
+
+  - Make default user configurable
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 09 Oct 2026 18:17:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (3.3) unstable; urgency=low
 
   - Allow limiting resources per RPC request

@@ -8,6 +8,10 @@ server:
   port: 5671
   ssl: true
 
+# Exchange handlers are run as this user, if the handler does not allow specifying
+# a user, or if the specified user was set to `null`
+default_user: root
+
 # Resource limits per RPC request
 resources:
   memory_limit: 20%  # May also be absolute

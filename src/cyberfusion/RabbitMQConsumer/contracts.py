@@ -40,11 +40,11 @@ class HandlerBase:
         """
         return None
 
-    def user(self, request: RPCRequestBase) -> str:
+    def user(self, request: RPCRequestBase) -> Optional[str]:
         if hasattr(request, "user"):
             return request.user
 
-        return "root"
+        return None
 
     def php_version(self, request: RPCRequestBase) -> Optional[str]:
         return getattr(request, "php_version", None)
