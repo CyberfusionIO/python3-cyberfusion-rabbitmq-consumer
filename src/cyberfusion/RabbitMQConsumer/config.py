@@ -82,6 +82,10 @@ class Config:
             return yaml.load(fh.read(), Loader=yaml.SafeLoader)
 
     @property
+    def default_user(self) -> str:
+        return self._contents.get("default_user", "root")
+
+    @property
     def server(self) -> Server:
         """Get server config."""
         return Server(**self._contents["server"])

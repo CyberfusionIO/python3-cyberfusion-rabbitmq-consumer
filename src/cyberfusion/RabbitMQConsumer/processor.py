@@ -168,6 +168,9 @@ class Processor:
 
                 user = self.handler.user(self.request)
 
+                if not user:
+                    user = self.rabbitmq.config.default_user
+
                 php_version = self.handler.php_version(self.request)
 
                 nodejs_version = self.handler.nodejs_version(self.request)
