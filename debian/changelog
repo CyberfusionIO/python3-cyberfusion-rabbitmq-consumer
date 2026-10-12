@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer (3.4.2) UNRELEASED; urgency=low
+
+  - Fix logging statements in `LogServerClient.handle_request`
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Fri, 09 Oct 2026 18:38:00 +0200
+
 python3-cyberfusion-rabbitmq-consumer (3.4.1) unstable; urgency=low
 
   - Bump Pydantic

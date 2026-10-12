@@ -45,10 +45,12 @@ class LogServerClient:
         except requests.exceptions.HTTPError as e:
             logger.warning(
                 "HTTP %s error on %s: %s",
-                (e.response.status_code, e.request.url, e.response.text),
+                e.response.status_code,
+                e.request.url,
+                e.response.text,
             )
 
-        logger.debug("HTTP request on %s succeeded: %s", (request.url, request.text))
+        logger.debug("HTTP request on %s succeeded: %s", request.url, request.text)
 
     def log_rpc_request(
         self,
