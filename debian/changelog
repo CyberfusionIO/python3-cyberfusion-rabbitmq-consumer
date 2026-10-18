@@ -1,6 +1,7 @@
 python3-cyberfusion-rabbitmq-consumer (3.4.2) UNRELEASED; urgency=low
 
   - Fix logging statements in `LogServerClient.handle_request`
+  - `rabbitmq-consumer-status`: return RC 2 if systemd command fails
 
  -- William Edwards <wedwards@cyberfusion.nl>  Fri, 09 Oct 2026 18:38:00 +0200
 

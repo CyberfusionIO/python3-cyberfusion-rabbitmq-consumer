@@ -19,7 +19,16 @@ def main() -> None:
 
     # Loop through found units
 
-    for unit in Systemd().search_units(PATTERN_NAME_UNIT_RABBITMQ_CONSUME):
+    try:
+        units = Systemd().search_units(PATTERN_NAME_UNIT_RABBITMQ_CONSUME)
+    except Exception as e:
+        # Systemd command failed, so unit states are unknown
+
+        print(f"CRITICAL: Unable to get units: {e}")
+
+        sys.exit(2)
+
+    for unit in units:
         # If active, skip
 
         if not unit.is_failed:
