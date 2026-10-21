@@ -1,10 +1,11 @@
-python3-cyberfusion-rabbitmq-consumer (3.4.2) UNRELEASED; urgency=low
+python3-cyberfusion-rabbitmq-consumer (3.4.2) unstable; urgency=low
 
   - Fix logging statements in `LogServerClient.handle_request`
   - `rabbitmq-consumer-status`: return RC 2 if systemd command fails
   - Copy payload in `log_rpc_request`
+  - Touch response file and set permissions in processor
 
- -- William Edwards <wedwards@cyberfusion.nl>  Fri, 09 Oct 2026 18:38:00 +0200
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 22 Oct 2026 01:41:00 +0200
 
 python3-cyberfusion-rabbitmq-consumer (3.4.1) unstable; urgency=low
 
