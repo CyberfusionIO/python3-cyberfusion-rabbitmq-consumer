@@ -61,6 +61,8 @@ class LogServerClient:
         exchange_name: str,
     ) -> None:
         """Log RPC request."""
+        request_payload = request_payload.copy()
+
         for decrypted_value in decrypted_values:
             request_payload[decrypted_value] = "*****"
 
