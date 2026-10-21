@@ -1,7 +1,8 @@
 """Classes for processing RPC requests."""
-
+import pwd
 import subprocess
 import json
+from pathlib import Path
 from typing import List
 import functools
 import logging
@@ -9,6 +10,7 @@ import threading
 import traceback
 from typing import Any, Optional
 
+import grp
 import pika
 from cyberfusion.SystemdSupport.units import TransientUnit
 from pydantic import ValidationError
@@ -170,6 +172,16 @@ class Processor:
 
                 if not user:
                     user = self.rabbitmq.config.default_user
+
+                Path(response_file).touch()
+
+                try:
+                    uid = pwd.getpwnam(user).pw_uid
+                    gid = grp.getgrnam(user).gr_gid
+                except KeyError:
+                    raise ValueError("User or group doesn't exist")
+
+                os.chown(response_file, uid, gid)
 
                 php_version = self.handler.php_version(self.request)
 
